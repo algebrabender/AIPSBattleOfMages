@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour
 {
-
     private void Awake()
     {
        //TODO: postaviti tekst ko je winner
@@ -14,6 +13,6 @@ public class GameOver : MonoBehaviour
 
     public void MainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(2);
     }
 }
