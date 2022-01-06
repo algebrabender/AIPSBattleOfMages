@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using DataLayer.Models;
-using Services;
+using webapi.DataLayer.Models;
+using webapi.Services;
 
 namespace webapi.Controllers
 {

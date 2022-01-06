@@ -35,5 +35,19 @@ namespace webapi.Repository
         {
             base.Update(entity);
         }
+
+        public async Task<User> GetUserByUsername(string username)
+        {
+            //proveriti zbog ovog castina i sto nema await
+            User user = (User)dbSet.Where(user => user.Username == username);
+            return user;
+        }
+
+        public async Task<User> GetUserByUsernameAndTag(string username, string tag)
+        {
+            //proveriti zbog ovog castina i sto nema await
+            User user = (User)dbSet.Where(user => user.Username == username && user.Tag == tag);
+            return user;
+        }
     }
 }
