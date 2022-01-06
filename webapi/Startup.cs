@@ -55,7 +55,7 @@ namespace webapi
                 });
             });
             services.AddDbContext<BOMContext>(options => {
-                options.UseSqlServer(Configuration.GetConnectionString("BattleOfMagesDb"));
+                options.UseSqlServer(Configuration.GetConnectionString("BattleOfMagesDB"));
             });
         }
 

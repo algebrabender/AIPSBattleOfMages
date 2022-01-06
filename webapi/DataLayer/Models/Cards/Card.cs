@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -29,10 +30,7 @@ namespace webapi.DataLayer.Models.Cards
         [Column("NumberInDeck")]
         public int NumberInDeck{get; set; }
 
-        public int DeckID { get; set; }
-
-        [JsonIgnore]
-        public Deck Deck {get; set; }
+        public virtual List<CardDeck> Decks { get; set; }
 
 
         

@@ -36,8 +36,6 @@ namespace webapi.DataLayer.Models
 
         [JsonIgnore]
         public Game Game { get; set; }
-
-        public int DeckID { get; set;}
         
         [JsonIgnore]
         public Deck Deck { get; set; }

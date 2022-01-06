@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using webapi.DataLayer;
 using webapi.DataLayer.Models.Cards;
 using webapi.Interfaces.RepositoryInterfaces;
@@ -31,6 +33,14 @@ namespace webapi.Repository
         {
             return base.GetById(id);
         }
+
+        public async Task<Deck> GetDeckByUserID(int userID)
+        {
+           return await this.dbSet.Include(deck => deck.Cards)
+                                    .FirstOrDefaultAsync(deck => deck.UserID == userID);
+
+        }
+
         public override void Update(Deck entity)
         {
             base.Update(entity);

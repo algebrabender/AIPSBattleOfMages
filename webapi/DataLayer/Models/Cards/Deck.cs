@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.DataLayer.Models.Cards
 {
@@ -13,8 +14,11 @@ namespace webapi.DataLayer.Models.Cards
         [Column("NumberOfCards")]
         public int NumberOfCards { get; set; }
 
-        public virtual List<Card> Cards { get; set; }
+        public virtual List<CardDeck> Cards { get; set; }
 
-        
+        public int UserID { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
     }
 }
