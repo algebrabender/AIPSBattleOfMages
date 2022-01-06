@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameOver : MonoBehaviour
+public class EndGame : MonoBehaviour
 {
     private void Awake()
     {
