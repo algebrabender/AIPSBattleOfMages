@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using webapi.DataLayer;
 using webapi.DataLayer.Models;
 using webapi.Interfaces.RepositoryInterfaces;
@@ -39,16 +40,12 @@ namespace webapi.Repository
 
         public async Task<User> GetUserByUsername(string username)
         {
-            //proveriti zbog ovog castina i sto nema await
-            User user = (User)dbSet.Where(user => user.Username == username);
-            return user;
+            return await this.dbSet.FirstOrDefaultAsync(user => user.Username == username);
         }
 
         public async Task<User> GetUserByUsernameAndTag(string username, string tag)
         {
-            //proveriti zbog ovog castina i sto nema await
-            User user = (User)dbSet.Where(user => user.Username == username && user.Tag == tag);
-            return user;
+            return await this.dbSet.FirstOrDefaultAsync(user => user.Username == username && user.Tag == tag);
         }
     }
 }

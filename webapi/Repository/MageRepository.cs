@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using webapi.DataLayer;
 using webapi.DataLayer.Models;
 using webapi.Interfaces.RepositoryInterfaces;
@@ -34,6 +35,11 @@ namespace webapi.Repository
         public override void Update(Mage entity)
         {
             base.Update(entity);
+        }
+
+        public async Task<Mage> GetMageByType(string type)
+        {
+            return await this.dbSet.FirstOrDefaultAsync(mage => mage.Type == type); 
         }
     }
 }

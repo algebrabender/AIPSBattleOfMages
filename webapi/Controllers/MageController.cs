@@ -17,6 +17,43 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class MageController : ControllerBase
     {
+        private readonly MageService mageService;
 
+        public MageController(MageService mageService)
+        {
+            this.mageService = mageService;
+        }
+
+        [Route("CreateMage")]
+        [HttpPost]
+        public async Task<ActionResult> CreateMage([FromBody] Mage mage)
+        {
+            var result = await mageService.CreateMage(mage);
+            return Ok(result);
+        }
+
+        [Route("GetMageByType/{type}")]
+        [HttpGet]
+        public async Task<ActionResult> GetMageByType(string type)
+        {
+            var Mage = await mageService.GetMageByType(type);
+
+            if (Mage == null)
+                return BadRequest(); //ERROR
+
+            return Ok(Mage);
+        }
+
+        [Route("GetMageByID/{MageID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetMageByID(int MageID)
+        {
+            var Mage = await mageService.GetMageByID(MageID);
+
+            if (Mage == null)
+                return BadRequest(); //ERROR
+
+            return Ok(Mage);
+        }
     }
 }

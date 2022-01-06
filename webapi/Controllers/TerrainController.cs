@@ -24,25 +24,36 @@ namespace webapi.Controllers
             this.terrainService = terrainService;
         }
 
+        [Route("CreateTerrain")]
+        [HttpPost]
+        public async Task<ActionResult> CreateTerrain([FromBody] Terrain terrain)
+        {
+            var result = await terrainService.CreateTerrain(terrain);
+            return Ok(result);
+        }
+
         [Route("GetTerrainByType/{type}")]
         [HttpGet]
         public async Task<ActionResult> GetTerrainByType(string type)
         {
-            return Ok();
+            var terrain = await terrainService.GetTerrainByType(type);
+
+            if (terrain == null)
+                return BadRequest(); //ERROR
+
+            return Ok(terrain);
         }
 
         [Route("GetTerrainByID/{terrainID}")]
         [HttpGet]
         public async Task<ActionResult> GetTerrainByID(int terrainID)
         {
-            return Ok();
-        }
+            var terrain = await terrainService.GetTerrainByID(terrainID);
 
-        [Route("GetTerrainByGameID/{gameID}")]
-        [HttpGet]
-        public async Task<ActionResult> GetTerrainByGameID(int gameID)
-        {
-            return Ok();
+            if (terrain == null)
+                return BadRequest(); //ERROR
+
+            return Ok(terrain);
         }
     }
 }

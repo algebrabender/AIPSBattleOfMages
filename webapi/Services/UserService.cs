@@ -173,5 +173,23 @@ namespace webapi.Services
                 return user;
             }
         }
+        public async Task<string> GetUserMageType(int userID)
+        {
+            using (unitOfWork)
+            {
+                User user = await unitOfWork.UserRepository.GetById(userID);
+
+                return user.Mage.Type;
+            }
+        }
+        public async Task<int> GetUserGameID(int userID)
+        {
+            using (unitOfWork)
+            {
+                User user = await unitOfWork.UserRepository.GetById(userID);
+
+                return user.GameID;
+            }
+        }
     }
 }

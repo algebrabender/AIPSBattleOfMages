@@ -61,20 +61,38 @@ namespace webapi.Controllers
 
             if (user == null)
                 return BadRequest(); //ERROR
-            else
-                return Ok(user);
+
+            return Ok(user);
         }
 
         [Route("GetUserByUsername/{username}")]
         [HttpGet]
-        public async Task<ActionResult> GetuserByUsername(string username)
+        public async Task<ActionResult> GetUserByUsername(string username)
         {
             var user = await userService.GetUserByUsername(username);
 
             if (user == null)
                 return BadRequest(); //ERROR
-            else
-                return Ok(user);
+            
+            return Ok(user);
+        }
+
+        [Route("GetUserMageType/{userID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetUserMageType(int userID)
+        {
+            string mageType = await userService.GetUserMageType(userID);
+
+            return Ok(mageType);
+        }
+
+        [Route("GetUserGameID/{userID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetUserGameID(int userID)
+        {
+            int gameID = await userService.GetUserGameID(userID);
+
+            return Ok(gameID);
         }
     }
 }
