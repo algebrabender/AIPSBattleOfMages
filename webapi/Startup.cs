@@ -13,6 +13,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using webapi.DataLayer;
+using webapi.Interfaces;
+using webapi.Repository;
+using webapi.Services;
 
 namespace webapi
 {
@@ -28,7 +31,16 @@ namespace webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            //TODO: pogledati da li ovo treba ili transient
+            services.AddScoped<CardService>();
+            services.AddScoped<DeckService>();
+            services.AddScoped<GameService>();
+            services.AddScoped<TerrainService>();
+            services.AddScoped<MageService>();
+            services.AddScoped<UserService>();
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
