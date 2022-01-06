@@ -14,5 +14,7 @@ namespace webapi.DataLayer.Models.Cards
         public int NumberOfCards { get; set; }
 
         public virtual List<Card> Cards { get; set; }
+
+        
     }
 }
