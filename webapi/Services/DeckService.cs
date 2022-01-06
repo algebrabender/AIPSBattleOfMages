@@ -2,6 +2,7 @@ using webapi.Interfaces.ServiceInterfaces;
 using webapi.Interfaces;
 using webapi.DataLayer.Models.Cards;
 using System.Threading.Tasks;
+using webapi.DataLayer.Models;
 
 namespace webapi.Services
 {
@@ -19,6 +20,9 @@ namespace webapi.Services
             using(unitOfWork)
             {
                 //TODO: neka provera
+                var u = await this.unitOfWork.UserRepository.GetById(deck.UserID);
+                if(u == null)
+                    return null;
                 unitOfWork.DeckRepository.Create(deck);
                 await unitOfWork.CompleteAsync();
 
@@ -27,8 +31,7 @@ namespace webapi.Services
                 // CardDeck cardDeck = new CardDeck();
                 // cardDeck.DeckID = d.ID;
                 // cardDeck.Deck = d;
-
-                //karte ne znam da li se ovde dodaju
+                //ovo treba kad se dodaju karte
 
                 return deck;
             }

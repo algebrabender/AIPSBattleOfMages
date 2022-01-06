@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.DataLayer.Models.Cards;
 
 namespace webapi.Controllers
 {
@@ -24,25 +25,46 @@ namespace webapi.Controllers
             this.deckService = deckService;
         }
 
-        [Route("CreateDeck/{numOfCards}")]
+        [Route("CreateDeck")]
         [HttpPost]
-        public async Task<ActionResult> CreateDeck(int numOfCards)
+        public async Task<ActionResult> CreateDeck([FromBody] Deck deck)
         {
-            return Ok();
+            var result = await deckService.CreateDeck(deck);
+            if(result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [Route("GetDeckByID/{deckID}")]
         [HttpGet]
-        public async Task<ActionResult> GetDeckByID(int cardID)
+        public async Task<ActionResult> GetDeckByID(int deckID)
         {
-            return Ok();
+            var deck = await deckService.GetDeckByID(deckID);
+            if (deck == null)
+                return BadRequest(); //ERROR
+            else
+                return Ok(deck);
         }
 
         [Route("GetDeckByUserID/{userID}")]
         [HttpGet]
         public async Task<ActionResult> GetDeckByUserID(int userID)
         {
-            return Ok();
+            var deck = await deckService.GetDeckByUserID(userID);
+
+            if(deck != null)
+            {
+                return Ok(deck);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
