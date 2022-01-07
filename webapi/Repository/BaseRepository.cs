@@ -28,9 +28,9 @@ namespace webapi.Repository
             dbSet.Remove(entity);
         }
 
-        public virtual Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
-            throw new System.NotImplementedException();
+            return await this.dbSet.ToListAsync();
         }
 
         public virtual async Task<T> GetById(int id)

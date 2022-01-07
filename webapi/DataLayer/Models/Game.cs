@@ -12,8 +12,6 @@ namespace webapi.DataLayer.Models
 
         public virtual List<User> Users { get; set; }
 
-        public int TerrainID { get; set; }
-
         [JsonIgnore]
         public Terrain Terrain { get; set; }
         

@@ -26,13 +26,9 @@ namespace webapi.DataLayer.Models
 
         [Column("LastName")]
         public string LastName { get; set; }
-
-        public int MageID { get; set; }
         
         [JsonIgnore]
         public Mage Mage {get; set; }
-
-        public int GameID { get; set; }
 
         [JsonIgnore]
         public Game Game { get; set; }

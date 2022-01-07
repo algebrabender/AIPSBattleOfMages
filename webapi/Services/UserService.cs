@@ -188,7 +188,7 @@ namespace webapi.Services
             {
                 User user = await unitOfWork.UserRepository.GetById(userID);
 
-                return user.GameID;
+                return user.Game.ID;
             }
         }
     }
