@@ -13,6 +13,7 @@ namespace webapi.Interfaces.ServiceInterfaces
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserByID(int userID);
         Task<User> GetUserByUsername(string username);
+        Task<User> GetUserByTag(string tag);
         Task<string> GetUserMageType(int userID);
         Task<int> GetUserGameID(int userID);
     }

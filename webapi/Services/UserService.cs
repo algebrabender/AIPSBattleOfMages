@@ -173,6 +173,21 @@ namespace webapi.Services
                 return user;
             }
         }
+        public async Task<User> GetUserByTag(string tag)
+        {
+            using (unitOfWork)
+            {
+                User user = await unitOfWork.UserRepository.GetUserByTag(tag);
+
+                if (user != null)
+                {
+                    user.Password = null;
+                    user.Salt = null;
+                }
+
+                return user;
+            }
+        }
         public async Task<string> GetUserMageType(int userID)
         {
             using (unitOfWork)

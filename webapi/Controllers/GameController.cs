@@ -23,11 +23,27 @@ namespace webapi.Controllers
             this.gameService = gameService;
         }
 
-        [Route("CreateGame")]
+        [Route("CreateGame/{userID}")]
         [HttpPost]
-        public async Task<ActionResult> CreateGame([FromBody] Game game)
+        public async Task<ActionResult> CreateGame([FromBody] Game game, int userID)
         {
-            var result = await gameService.CreateGame(game);
+            var result = await gameService.CreateGame(game, userID);
+            return Ok(result);
+        }
+        
+        [Route("AddUserToGame/{gameID}/{userID}")]
+        [HttpPut]
+        public async Task<ActionResult> AddUserToGame(int gameID, int userID)
+        {
+            var result = await gameService.AddUserToGame(gameID, userID);
+            return Ok(result);
+        }
+
+        [Route("RemoveUserFromGame/{gameID}/{userID}")]
+        [HttpPut]
+        public async Task<ActionResult> RemoveUserFromGame(int gameID, int userID)
+        {
+            var result = await gameService.RemoveUserFromGame(gameID, userID);
             return Ok(result);
         }
 

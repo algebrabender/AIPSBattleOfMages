@@ -77,6 +77,18 @@ namespace webapi.Controllers
             return Ok(user);
         }
 
+        [Route("GetUserByTag/{tag}")]
+        [HttpGet]
+        public async Task<ActionResult> GetUserByTag(string tag)
+        {
+            var user = await userService.GetUserByTag(tag);
+
+            if (user == null)
+                return BadRequest(); //ERROR
+            
+            return Ok(user);
+        }
+
         [Route("GetUserMageType/{userID}")]
         [HttpGet]
         public async Task<ActionResult> GetUserMageType(int userID)

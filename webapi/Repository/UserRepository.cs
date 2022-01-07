@@ -23,12 +23,11 @@ namespace webapi.Repository
         {
             base.Delete(id);
         }
-
+        
         public override Task<IEnumerable<User>> GetAll()
         {
             return base.GetAll();
         }
-
         public override Task<User> GetById(int id)
         {
             return base.GetById(id);
@@ -37,12 +36,14 @@ namespace webapi.Repository
         {
             base.Update(entity);
         }
-
         public async Task<User> GetUserByUsername(string username)
         {
             return await this.dbSet.FirstOrDefaultAsync(user => user.Username == username);
         }
-
+        public async Task<User> GetUserByTag(string tag)
+        {
+            return await this.dbSet.FirstOrDefaultAsync(user => user.Tag == tag);
+        }
         public async Task<User> GetUserByUsernameAndTag(string username, string tag)
         {
             return await this.dbSet.FirstOrDefaultAsync(user => user.Username == username && user.Tag == tag);
