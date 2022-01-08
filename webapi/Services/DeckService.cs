@@ -82,8 +82,8 @@ namespace webapi.Services
 
                 unitOfWork.CardDeckRepository.Create(cd);
 
-                deck.Cards.Add(cd);
-                unitOfWork.DeckRepository.Update(deck);
+                //deck.Cards.Add(cd);
+                //unitOfWork.DeckRepository.Update(deck);
 
                 await unitOfWork.CompleteAsync();
 

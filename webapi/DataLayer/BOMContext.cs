@@ -27,10 +27,20 @@ namespace webapi.DataLayer
         {
             modelBuilder.Entity<CardDeck>().HasKey(x => new { x.CardID, x.DeckID});
 
+            modelBuilder.Entity<CardDeck>()
+                .HasOne(cd => cd.Card)
+                .WithMany(c => c.Decks)
+                .HasForeignKey(cd => cd.CardID);
+            modelBuilder.Entity<CardDeck>()
+                .HasOne(cd => cd.Deck)
+                .WithMany(d => d.Cards)
+                .HasForeignKey(cd => cd.DeckID);
+
             modelBuilder.Entity<User>()
                 .HasOne<Deck>(u => u.Deck)
                 .WithOne(d => d.User)
                 .HasForeignKey<Deck>(d => d.UserID);
+
         }
     }
 }
