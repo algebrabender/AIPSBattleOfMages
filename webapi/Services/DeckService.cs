@@ -90,5 +90,16 @@ namespace webapi.Services
                 return deck;
             }
         }
+
+        public async Task<Deck> AddCardToDeck(int cardID, int deckID)
+        {
+            using (unitOfWork)
+            {
+                Card card = await this.unitOfWork.CardRepository.GetById(cardID);
+                if(card == null)
+                    return null;
+                return await this.AddCardToDeck(card, deckID);
+            }
+        }
     }
 }

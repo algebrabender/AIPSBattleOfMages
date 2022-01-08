@@ -10,6 +10,9 @@ namespace webapi.DataLayer.Models
         [Column("ID")]
         public int ID { get; set; }
 
+        [Column("NumOfPlayers")]
+        public int NumOfPlayers { get; set; }
+
         [Column("CreatedGameUserID")]
         public int CreatedGameUserID { get; set; }
 

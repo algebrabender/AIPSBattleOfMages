@@ -27,8 +27,17 @@ namespace webapi.DataLayer.Models.Cards
         [Column("Damage")]
         public int Damage {get; set; }
 
-        [Column("NumberInDeck")]
-        public int NumberInDeck{get; set; }
+        [Column("Fire")]
+        public int Fire { get; set; }
+
+        [Column("Ice")]
+        public int Ice { get; set; }
+
+        [Column("Air")]
+        public int Air { get; set; }
+
+        [Column("Earth")]
+        public int Earth { get; set; }
 
         public virtual List<CardDeck> Decks { get; set; }
 

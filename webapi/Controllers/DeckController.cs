@@ -66,5 +66,21 @@ namespace webapi.Controllers
                 return BadRequest();
             }
         }
+
+        [Route("AddCard/{deckID}/{cardID}")]
+        [HttpPut]
+        public async Task<ActionResult> AddCardToDeck(int deckID, int cardID)
+        {
+            var deck = await this.deckService.AddCardToDeck(cardID, deckID);
+
+            if(deck != null)
+            {
+                return Ok(deck);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

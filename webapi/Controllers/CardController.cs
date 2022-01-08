@@ -53,7 +53,7 @@ namespace webapi.Controllers
             return Ok(cards);
         }
 
-        [Route("GetCardsByManaCost/{manacost}")]
+        [Route("GetCardsByManaCost/{manaCost}")]
         [HttpGet]
         public async Task<ActionResult> GetCardsByManaCost(int manaCost)
         {

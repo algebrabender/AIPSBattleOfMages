@@ -14,6 +14,8 @@ namespace webapi.DataLayer.Models.Cards
         [Column("DeckID")]
         public int DeckID { get; set; }
 
+        [Column("NumberInDeck")]
+        public int NumberInDeck{get; set; }
 
         [Column("Deck")]
         public Deck Deck { get; set; }
