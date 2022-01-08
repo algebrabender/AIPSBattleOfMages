@@ -20,19 +20,12 @@ namespace webapi.Services
         {
             using(unitOfWork)
             {
-                //TODO: neka provera
-                var u = await this.unitOfWork.UserRepository.GetById(deck.UserID);
-                if(u == null)
-                    return null;
+                //TODO: nesto za player state 
+                // var u = await this.unitOfWork.UserRepository.GetById(deck.UserID);
+                // if(u == null)
+                //     return null;
                 unitOfWork.DeckRepository.Create(deck);
                 await unitOfWork.CompleteAsync();
-
-                //var d = await unitOfWork.DeckRepository.GetById(deck.ID);
-
-                // CardDeck cardDeck = new CardDeck();
-                // cardDeck.DeckID = d.ID;
-                // cardDeck.Deck = d;
-                //ovo treba kad se dodaju karte
 
                 return deck;
             }
@@ -52,11 +45,11 @@ namespace webapi.Services
                 return deck;
             }
         }
-        public async Task<Deck> GetDeckByUserID(int userID)
+        public async Task<Deck> GetDeckByUserID(int userID, int gameID)
         {
             using(unitOfWork)
             {
-                Deck deck = await unitOfWork.DeckRepository.GetDeckByUserID(userID);
+                Deck deck = await unitOfWork.PlayerStateRepository.GetUserDeck(userID, gameID);
             
                 if(deck != null)
                 {

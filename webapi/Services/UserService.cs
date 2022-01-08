@@ -188,23 +188,26 @@ namespace webapi.Services
                 return user;
             }
         }
-        public async Task<string> GetUserMageType(int userID)
+        public async Task<string> GetUserMageType(int userID, int gameID)
         {
             using (unitOfWork)
             {
-                User user = await unitOfWork.UserRepository.GetById(userID);
-
-                return user.Mage.Type;
+                return await this.unitOfWork.PlayerStateRepository.GetUserMageType(userID, gameID);
             }
         }
-        public async Task<int> GetUserGameID(int userID)
-        {
-            using (unitOfWork)
-            {
-                User user = await unitOfWork.UserRepository.GetById(userID);
 
-                return user.Game.ID;
-            }
-        }
+
+        //TODO: ovo se nigde ne koristi  i mislim da ne moze ovako sad
+        //verovatno moze da bude slucaj da postoji vise gameID za isto usera
+
+        // public async Task<int> GetUserGameID(int userID)
+        // {
+        //     using (unitOfWork)
+        //     {
+        //         User user = await unitOfWork.UserRepository.GetById(userID);
+
+        //         return user.Game.ID;
+        //     }
+        // }
     }
 }

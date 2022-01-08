@@ -5,7 +5,6 @@ namespace webapi.Interfaces.RepositoryInterfaces
 {
     public interface IDeckRepository : IBaseRepository<Deck>
     {
-        Task<Deck> GetDeckByUserID(int userID);
         Task<Deck> GetDeckWithCards(int deckID);
     }
 }

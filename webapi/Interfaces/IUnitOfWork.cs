@@ -13,7 +13,7 @@ namespace webapi.Interfaces
         IUserRepository UserRepository { get; }
         ITerrainRepository TerrainRepository { get; }
         ICardDeckRepository CardDeckRepository { get; }
-        IUserMageGameRepository UserMageGameRepository { get; }
+        IPlayerStateRepository PlayerStateRepository { get; }
         Task CompleteAsync();
 
     }

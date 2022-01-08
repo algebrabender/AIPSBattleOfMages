@@ -24,22 +24,28 @@ namespace webapi.Services
             {
                 User user = await unitOfWork.UserRepository.GetById(userID);
 
-                game.Users = new List<User>();
-                game.Users.Add(user);
+                game.PlayerStates = new List<PlayerState>();
+
                 game.CreatedGameUserID = userID;
 
                 unitOfWork.GameRepository.Create(game);
 
                 int gameID = await unitOfWork.GameRepository.GetGameID(game);
 
-                UserMageGame umg = new UserMageGame();
-                umg.GameID = gameID;
-                umg.MageID = mageID;
-                umg.UserID = userID;
-                umg.ManaPoints = manaPoints;
-                umg.HealthPoints = healthPoints;
+                PlayerState playerState = new PlayerState();
+                playerState.GameID = gameID;
+                playerState.Mage = await this.unitOfWork.MageRepository.GetById(mageID);
+                playerState.MageID = mageID;
+                playerState.UserID = userID;
+                playerState.User = user;
+
+                //TODO: mozda pravi loop
+                game.PlayerStates.Add(playerState);
+
+                playerState.ManaPoints = manaPoints;
+                playerState.HealthPoints = healthPoints;
                 
-                unitOfWork.UserMageGameRepository.Create(umg);
+                unitOfWork.PlayerStateRepository.Create(playerState);
 
                 await unitOfWork.CompleteAsync();
 
@@ -60,18 +66,23 @@ namespace webapi.Services
                 if (user == null)
                     return null;
 
-                game.Users.Add(user);
-
                 unitOfWork.GameRepository.Update(game);
 
-                UserMageGame umg = new UserMageGame();
-                umg.GameID = gameID;
-                umg.MageID = mageID;
-                umg.UserID = userID;
-                umg.ManaPoints = manaPoints;
-                umg.HealthPoints = healthPoints;
+                //TODO: deck gde se dodaje
+                PlayerState playerState = new PlayerState();
+                playerState.GameID = gameID;
+                playerState.MageID = mageID;
                 
-                unitOfWork.UserMageGameRepository.Create(umg);
+                playerState.Mage = await this.unitOfWork.MageRepository.GetById(mageID);
+                playerState.UserID = userID;
+                playerState.User = user;
+
+                playerState.ManaPoints = manaPoints;
+                playerState.HealthPoints = healthPoints;
+                
+                unitOfWork.PlayerStateRepository.Create(playerState);
+
+                game.PlayerStates.Add(playerState);
 
                 await unitOfWork.CompleteAsync();
 
@@ -92,7 +103,14 @@ namespace webapi.Services
                 if (user == null)
                     return null;
 
-                game.Users.Remove(user);
+                var ps = await this.unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, userID);
+
+                if(ps == null)
+                    return null;
+
+                game.PlayerStates.Remove(ps);
+
+                unitOfWork.PlayerStateRepository.Delete(ps.ID); 
 
                 unitOfWork.GameRepository.Update(game);
                 
@@ -147,13 +165,13 @@ namespace webapi.Services
         {
             using (unitOfWork)
             {
-                UserMageGame umgTurnuser = await unitOfWork.UserMageGameRepository.GetByGameIDAndUserID(gameID, turnUserID);
+                PlayerState umgTurnuser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
                 umgTurnuser.ManaPoints -= manaSpent;
-                unitOfWork.UserMageGameRepository.Update(umgTurnuser);
+                unitOfWork.PlayerStateRepository.Update(umgTurnuser);
 
-                UserMageGame umgAttackedUser = await unitOfWork.UserMageGameRepository.GetByGameIDAndUserID(gameID, attackedUserID);
+                PlayerState umgAttackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
                 umgAttackedUser.HealthPoints -= damageDone;                
-                unitOfWork.UserMageGameRepository.Update(umgAttackedUser);
+                unitOfWork.PlayerStateRepository.Update(umgAttackedUser);
 
                 Game game = await unitOfWork.GameRepository.GetById(gameID);
                 game.WhoseTurnID = nextUserID;   

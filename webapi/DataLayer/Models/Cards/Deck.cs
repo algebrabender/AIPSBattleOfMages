@@ -16,9 +16,7 @@ namespace webapi.DataLayer.Models.Cards
 
         public virtual List<CardDeck> Cards { get; set; }
 
-        public int UserID { get; set; }
-
         [JsonIgnore]
-        public User User { get; set; }
+        public PlayerState PlayerState { get; set; }
     }
 }

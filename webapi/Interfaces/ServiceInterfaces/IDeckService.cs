@@ -7,7 +7,7 @@ namespace webapi.Interfaces.ServiceInterfaces
     {
         Task<Deck> CreateDeck(Deck deck);
         Task<Deck> GetDeckByID(int ID);
-        Task<Deck> GetDeckByUserID(int userID);
+        Task<Deck> GetDeckByUserID(int userID, int gameID);
         Task<Deck> AddCardToDeck(Card card, int deckID);
         Task<Deck> AddCardToDeck(int cardID, int deckID);
     }

@@ -25,8 +25,9 @@ namespace webapi.Services
             {
                 User user = await unitOfWork.UserRepository.GetById(userID);
 
-                mage.Users = new List<User>();
-                mage.Users.Add(user);
+                //TODO: nesto za playerstate
+                // mage.Users = new List<User>();
+                // mage.Users.Add(user);
                 
                 unitOfWork.MageRepository.Create(mage);
                 await unitOfWork.CompleteAsync();

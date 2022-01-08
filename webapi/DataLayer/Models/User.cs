@@ -28,13 +28,7 @@ namespace webapi.DataLayer.Models
         public string LastName { get; set; }
         
         [JsonIgnore]
-        public Mage Mage {get; set; }
-
-        [JsonIgnore]
-        public Game Game { get; set; }
-        
-        [JsonIgnore]
-        public Deck Deck { get; set; }
+        public PlayerState PlayerState{ get; set; }
 
     }
 

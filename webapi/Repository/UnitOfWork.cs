@@ -22,7 +22,7 @@ namespace webapi.Repository
 
         public ICardDeckRepository CardDeckRepository { get; private set; }
 
-        public IUserMageGameRepository UserMageGameRepository { get; private set; }
+        public IPlayerStateRepository PlayerStateRepository { get; private set; }
 
         public UnitOfWork(BOMContext context)
         {
@@ -35,7 +35,7 @@ namespace webapi.Repository
             TerrainRepository = new TerrainRepository(context);
             GameRepository = new GameRepository(context);
             CardDeckRepository = new CardDeckRepository(context);
-            UserMageGameRepository = new UserMageGameRepository(context);
+            PlayerStateRepository = new PlayerStateRepository(context);
         }
         public async Task CompleteAsync()
         {

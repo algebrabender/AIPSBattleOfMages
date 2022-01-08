@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.DataLayer.Models
 {
@@ -11,7 +12,8 @@ namespace webapi.DataLayer.Models
         [Column("Type")]
         public string Type { get; set; }
 
-        public virtual List<User> Users { get; set; }
+        [JsonIgnore]
+        public PlayerState PlayerState { get; set; }
 
     }
 

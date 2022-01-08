@@ -51,11 +51,11 @@ namespace webapi.Controllers
                 return Ok(deck);
         }
 
-        [Route("GetDeckByUserID/{userID}")]
+        [Route("GetDeckByUserID/{userID}/{gameID}")]
         [HttpGet]
-        public async Task<ActionResult> GetDeckByUserID(int userID)
+        public async Task<ActionResult> GetDeckByUserID(int userID, int gameID)
         {
-            var deck = await deckService.GetDeckByUserID(userID);
+            var deck = await deckService.GetDeckByUserID(userID, gameID);
 
             if(deck != null)
             {

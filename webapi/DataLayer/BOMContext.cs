@@ -16,7 +16,7 @@ namespace webapi.DataLayer
 
         public DbSet<CardDeck> CardDeck { get; set; } 
 
-        public DbSet<UserMageGame> UserMageGames { get; set; }
+        public DbSet<PlayerState> PlayerStates { get; set; }
 
         public BOMContext(DbContextOptions options) : base(options)
         {
@@ -37,9 +37,22 @@ namespace webapi.DataLayer
                 .HasForeignKey(cd => cd.DeckID);
 
             modelBuilder.Entity<User>()
-                .HasOne<Deck>(u => u.Deck)
-                .WithOne(d => d.User)
-                .HasForeignKey<Deck>(d => d.UserID);
+                .HasOne<PlayerState>(u => u.PlayerState)
+                .WithOne(p => p.User)
+                .HasForeignKey<PlayerState>(d => d.UserID);
+
+            modelBuilder.Entity<Mage>()
+                .HasOne<PlayerState>(m => m.PlayerState)
+                .WithOne(p => p.Mage)
+                .HasForeignKey<PlayerState>(p => p.MageID);
+
+            modelBuilder.Entity<Deck>()
+                .HasOne<PlayerState>(d => d.PlayerState)
+                .WithOne(p => p.Deck)
+                .HasForeignKey<PlayerState>(p => p.DeckID);
+
+            modelBuilder.Entity<PlayerState>()
+                .HasKey(nameof(PlayerState.GameID), nameof(PlayerState.UserID));
 
         }
     }

@@ -14,7 +14,7 @@ namespace webapi.Interfaces.ServiceInterfaces
         Task<User> GetUserByID(int userID);
         Task<User> GetUserByUsername(string username);
         Task<User> GetUserByTag(string tag);
-        Task<string> GetUserMageType(int userID);
-        Task<int> GetUserGameID(int userID);
+        Task<string> GetUserMageType(int userID, int gameID);
+        //Task<int> GetUserGameID(int userID);
     }
 }

@@ -89,22 +89,22 @@ namespace webapi.Controllers
             return Ok(user);
         }
 
-        [Route("GetUserMageType/{userID}")]
+        [Route("GetUserMageType/{userID}/{gameID}")]
         [HttpGet]
-        public async Task<ActionResult> GetUserMageType(int userID)
+        public async Task<ActionResult> GetUserMageType(int userID, int gameID)
         {
-            string mageType = await userService.GetUserMageType(userID);
+            string mageType = await userService.GetUserMageType(userID, gameID);
 
             return Ok(mageType);
         }
 
-        [Route("GetUserGameID/{userID}")]
-        [HttpGet]
-        public async Task<ActionResult> GetUserGameID(int userID)
-        {
-            int gameID = await userService.GetUserGameID(userID);
+    //     [Route("GetUserGameID/{userID}")]
+    //     [HttpGet]
+    //     public async Task<ActionResult> GetUserGameID(int userID)
+    //     {
+    //         int gameID = await userService.GetUserGameID(userID);
 
-            return Ok(gameID);
-        }
+    //         return Ok(gameID);
+    //     }
     }
 }

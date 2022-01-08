@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -10,6 +11,7 @@ namespace webapi.DataLayer.Models
         [Column("ID")]
         public int ID { get; set; }
 
+        [Range(1, 4)]
         [Column("NumOfPlayers")]
         public int NumOfPlayers { get; set; }
 
@@ -22,7 +24,7 @@ namespace webapi.DataLayer.Models
         [Column("WhoseTurnID")]
         public int WhoseTurnID { get; set; }
 
-        public virtual List<User> Users { get; set; }
+        public virtual List<PlayerState> PlayerStates { get; set; }
 
         [JsonIgnore]
         public Terrain Terrain { get; set; }
