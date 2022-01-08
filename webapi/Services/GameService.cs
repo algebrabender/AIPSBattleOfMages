@@ -24,15 +24,16 @@ namespace webapi.Services
             {
                 User user = await unitOfWork.UserRepository.GetById(userID);
 
+                game.Users = new List<User>();
                 game.Users.Add(user);
                 game.CreatedGameUserID = userID;
 
                 unitOfWork.GameRepository.Create(game);
 
-                var g = await unitOfWork.GameRepository.GetById(game.ID);
-                
+                int gameID = await unitOfWork.GameRepository.GetGameID(game);
+
                 UserMageGame umg = new UserMageGame();
-                umg.GameID = g.ID;
+                umg.GameID = gameID;
                 umg.MageID = mageID;
                 umg.UserID = userID;
                 umg.ManaPoints = manaPoints;

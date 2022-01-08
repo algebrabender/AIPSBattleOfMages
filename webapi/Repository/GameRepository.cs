@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using webapi.DataLayer;
 using webapi.DataLayer.Models;
 using webapi.Interfaces.RepositoryInterfaces;
@@ -34,6 +35,11 @@ namespace webapi.Repository
         public override void Update(Game entity)
         {
             base.Update(entity);
+        }
+        public async Task<int> GetGameID(Game game)
+        {
+            var g = await this.dbSet.FirstOrDefaultAsync(g => g.CreatedGameUserID == game.CreatedGameUserID);
+            return g.ID;
         }
     }
 }

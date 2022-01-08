@@ -70,14 +70,25 @@ namespace webapi.Services
 
         public async Task<Deck> AddCardToDeck(Card card, int deckID)
         {
-            Deck deck = await unitOfWork.DeckRepository.GetById(deckID);
+            using (unitOfWork)
+            {
+                Deck deck = await unitOfWork.DeckRepository.GetById(deckID);
 
-            //dodavanje u tabelu carddeck
+                CardDeck cd = new CardDeck();
+                cd.CardID = card.ID;
+                cd.Card = card;
+                cd.DeckID = deckID;
+                cd.Deck = deck;
 
-            unitOfWork.DeckRepository.Update(deck);
-            await unitOfWork.CompleteAsync();
+                unitOfWork.CardDeckRepository.Create(cd);
 
-            return deck;
+                deck.Cards.Add(cd);
+                unitOfWork.DeckRepository.Update(deck);
+
+                await unitOfWork.CompleteAsync();
+
+                return deck;
+            }
         }
     }
 }

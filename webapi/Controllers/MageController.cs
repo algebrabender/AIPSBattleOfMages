@@ -24,11 +24,11 @@ namespace webapi.Controllers
             this.mageService = mageService;
         }
 
-        [Route("CreateMage")]
+        [Route("CreateMage/{userID}")]
         [HttpPost]
-        public async Task<ActionResult> CreateMage([FromBody] Mage mage)
+        public async Task<ActionResult> CreateMage([FromBody] Mage mage, int userID)
         {
-            var result = await mageService.CreateMage(mage);
+            var result = await mageService.CreateMage(mage, userID);
             return Ok(result);
         }
 

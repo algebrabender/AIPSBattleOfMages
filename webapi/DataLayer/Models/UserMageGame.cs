@@ -7,6 +7,9 @@ namespace webapi.DataLayer.Models
     [Table("UserMageGame")]
     public class UserMageGame
     {
+        [Column("ID")]
+        public int ID { get; set; }
+        
         [Column("UserID")]
         public int UserID { get; set; }
 
