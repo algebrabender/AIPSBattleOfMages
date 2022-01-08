@@ -38,10 +38,5 @@ namespace webapi.DataLayer.Models.Cards
 
         [Column("Earth")]
         public int Earth { get; set; }
-
-        public virtual List<CardDeck> Decks { get; set; }
-
-
-        
     }
 }

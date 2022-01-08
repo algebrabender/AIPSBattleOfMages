@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -57,6 +58,9 @@ namespace webapi
             services.AddDbContext<BOMContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("BattleOfMagesDB"));
             });
+
+            services.AddControllers().AddJsonOptions(x =>
+                            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
