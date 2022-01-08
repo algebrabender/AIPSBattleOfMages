@@ -18,24 +18,34 @@ namespace webapi.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Game> CreateGame(Game game, int userID)
+        public async Task<Game> CreateGame(Game game, int userID, int mageID, int manaPoints, int healthPoints)
         {
             using(unitOfWork)
             {
-                //provera?
                 User user = await unitOfWork.UserRepository.GetById(userID);
 
                 game.Users.Add(user);
+                game.CreatedGameUserID = userID;
 
                 unitOfWork.GameRepository.Create(game);
-                await unitOfWork.CompleteAsync();
 
                 var g = await unitOfWork.GameRepository.GetById(game.ID);
+                
+                UserMageGame umg = new UserMageGame();
+                umg.GameID = g.ID;
+                umg.MageID = mageID;
+                umg.UserID = userID;
+                umg.ManaPoints = manaPoints;
+                umg.HealthPoints = healthPoints;
+                
+                unitOfWork.UserMageGameRepository.Create(umg);
+
+                await unitOfWork.CompleteAsync();
 
                 return game;
             }
         }
-        public async Task<Game> AddUserToGame(int gameID, int userID)
+        public async Task<Game> AddUserToGame(int gameID, int userID, int mageID, int manaPoints, int healthPoints)
         {
             using (unitOfWork)
             {
@@ -52,7 +62,16 @@ namespace webapi.Services
                 game.Users.Add(user);
 
                 unitOfWork.GameRepository.Update(game);
+
+                UserMageGame umg = new UserMageGame();
+                umg.GameID = gameID;
+                umg.MageID = mageID;
+                umg.UserID = userID;
+                umg.ManaPoints = manaPoints;
+                umg.HealthPoints = healthPoints;
                 
+                unitOfWork.UserMageGameRepository.Create(umg);
+
                 await unitOfWork.CompleteAsync();
 
                 return game;
@@ -107,6 +126,41 @@ namespace webapi.Services
                 Game game = await unitOfWork.GameRepository.GetById(gameID);
 
                 return game.Terrain.Type;
+            }
+        }
+        public async Task<Game> SetWinnerUserID(int gameID, int userID)
+        {
+            using (unitOfWork)
+            {
+                Game game = await unitOfWork.GameRepository.GetById(gameID);
+            
+                game.WinnerUserID = userID;
+
+                unitOfWork.GameRepository.Update(game);
+                await unitOfWork.CompleteAsync();
+
+                return game;
+            }
+        }
+        public async Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID)
+        {
+            using (unitOfWork)
+            {
+                UserMageGame umgTurnuser = await unitOfWork.UserMageGameRepository.GetByGameIDAndUserID(gameID, turnUserID);
+                umgTurnuser.ManaPoints -= manaSpent;
+                unitOfWork.UserMageGameRepository.Update(umgTurnuser);
+
+                UserMageGame umgAttackedUser = await unitOfWork.UserMageGameRepository.GetByGameIDAndUserID(gameID, attackedUserID);
+                umgAttackedUser.HealthPoints -= damageDone;                
+                unitOfWork.UserMageGameRepository.Update(umgAttackedUser);
+
+                Game game = await unitOfWork.GameRepository.GetById(gameID);
+                game.WhoseTurnID = nextUserID;   
+                unitOfWork.GameRepository.Update(game);
+
+                await unitOfWork.CompleteAsync();
+
+                return game;
             }
         }
     }

@@ -16,6 +16,8 @@ namespace webapi.DataLayer
 
         public DbSet<CardDeck> CardDeck { get; set; } 
 
+        public DbSet<UserMageGame> UserMageGames { get; set; }
+
         public BOMContext(DbContextOptions options) : base(options)
         {
 

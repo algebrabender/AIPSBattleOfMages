@@ -8,11 +8,13 @@ namespace webapi.Interfaces.ServiceInterfaces
 {
     public interface IGameService
     {
-        Task<Game> CreateGame(Game game, int userID);
-        Task<Game> AddUserToGame(int gameID, int userID);
+        Task<Game> CreateGame(Game game, int userID, int mageID, int manaPoints, int healthPoints);
+        Task<Game> AddUserToGame(int gameID, int userID, int mageID, int manaPoints, int healthPoints);
         Task<Game> RemoveUserFromGame(int gameID, int userID);
         Task<IEnumerable<Game>> GetAllGames();
         Task<Game> GetGameByID(int gameID);
         Task<string> GetGameTerrainType(int gameID);
+        Task<Game> SetWinnerUserID(int gameID, int userID);
+        Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID);
     }
 }

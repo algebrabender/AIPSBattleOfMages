@@ -76,5 +76,14 @@ namespace webapi.Controllers
 
             return Ok(terrainType);
         }
+    
+        [Route("SetWinner/{gameID}/{userID}")]
+        [HttpPut]
+        public async Task<ActionResult> SetWinner(int gameID, int userID)
+        {
+            var game = await gameService.SetWinnerUserID(gameID, userID);
+
+            return Ok(game);
+        }
     }
 }

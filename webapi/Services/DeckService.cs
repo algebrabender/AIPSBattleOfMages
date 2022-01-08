@@ -52,7 +52,6 @@ namespace webapi.Services
                 return deck;
             }
         }
-
         public async Task<Deck> GetDeckByUserID(int userID)
         {
             using(unitOfWork)
@@ -67,6 +66,18 @@ namespace webapi.Services
             
             }
 
+        }
+
+        public async Task<Deck> AddCardToDeck(Card card, int deckID)
+        {
+            Deck deck = await unitOfWork.DeckRepository.GetById(deckID);
+
+            //dodavanje u tabelu carddeck
+
+            unitOfWork.DeckRepository.Update(deck);
+            await unitOfWork.CompleteAsync();
+
+            return deck;
         }
     }
 }
