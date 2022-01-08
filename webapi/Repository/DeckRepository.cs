@@ -41,6 +41,12 @@ namespace webapi.Repository
 
         }
 
+        public async Task<Deck> GetDeckWithCards(int deckID)
+        {
+            return await this.dbSet.Include(deck => deck.Cards)
+                                    .FirstOrDefaultAsync(deck => deck.ID == deckID);
+        }
+
         public override void Update(Deck entity)
         {
             base.Update(entity);

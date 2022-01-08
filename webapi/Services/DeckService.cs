@@ -10,6 +10,7 @@ namespace webapi.Services
     {
 
         private readonly IUnitOfWork unitOfWork;
+
         public DeckService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
@@ -26,7 +27,7 @@ namespace webapi.Services
                 unitOfWork.DeckRepository.Create(deck);
                 await unitOfWork.CompleteAsync();
 
-                var d = await unitOfWork.DeckRepository.GetById(deck.ID);
+                //var d = await unitOfWork.DeckRepository.GetById(deck.ID);
 
                 // CardDeck cardDeck = new CardDeck();
                 // cardDeck.DeckID = d.ID;

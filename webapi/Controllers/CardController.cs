@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.DataLayer.Models.Cards;
 
 namespace webapi.Controllers
 {
@@ -28,42 +29,76 @@ namespace webapi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllCards()
         {
-            return Ok();
+            var cards = await this.cardService.GetAllCards();
+            return Ok(cards);
+        }
+
+        [Route("GetCardsByDeckID/{deckID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetCardsByDeckID(int deckID)
+        {
+            var cards = await this.cardService.GetCardsByDeckID(deckID);
+            if(cards != null)
+            {
+                return Ok(cards);
+            }
+            return BadRequest();
         }
 
         [Route("GetCardsByType/{type}")]
         [HttpGet]
         public async Task<ActionResult> GetCardsByType(string type)
         {
-            return Ok();
+            var cards = await this.cardService.GetCardsByType(type);
+            return Ok(cards);
         }
 
         [Route("GetCardsByManaCost/{manacost}")]
         [HttpGet]
         public async Task<ActionResult> GetCardsByManaCost(int manaCost)
         {
-            return Ok();
+            var cards = await this.cardService.GetCardsByManaCost(manaCost);
+            return Ok(cards);
         }
 
         [Route("GetCardsByDamage/{damage}")]
         [HttpGet]
         public async Task<ActionResult> GetCardsByDamage(int damage)
         {
-            return Ok();
+            var cards = await this.cardService.GetCardsByDamage(damage);
+            return Ok(cards);
         }
 
         [Route("GetCardByID/{cardID}")]
         [HttpGet]
         public async Task<ActionResult> GetCardByID(int cardID)
         {
-            return Ok();
+            var card = await this.cardService.GetCardByID(cardID);
+            if(card != null)
+            {
+                return Ok(card);
+            }
+            return BadRequest();
         }
 
         [Route("GetCardsByTitle/{title}")]
         [HttpGet]
         public async Task<ActionResult> GetCardByTitle(string title)
         {
-            return Ok();
+            var card = await this.cardService.GetCardsByTitle(title);
+            return Ok(card);
+        }
+
+        [Route("CreateCard")]
+        [HttpPost]
+        public async Task<ActionResult> CreateCard([FromBody] Card card)
+        {
+            var r = await cardService.CreateCard(card);
+            if(r != null)
+            {
+                return Ok(r);
+            }
+            return BadRequest();
         }
     }
 }
