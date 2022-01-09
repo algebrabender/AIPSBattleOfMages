@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi.Controllers
 {
@@ -17,9 +18,9 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class MageController : ControllerBase
     {
-        private readonly MageService mageService;
+        private readonly IMageService mageService;
 
-        public MageController(MageService mageService)
+        public MageController(IMageService mageService)
         {
             this.mageService = mageService;
         }

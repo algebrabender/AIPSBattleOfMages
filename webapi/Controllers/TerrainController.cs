@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi.Controllers
 {
@@ -17,9 +18,9 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class TerrainController : ControllerBase
     {
-        private readonly TerrainService terrainService;
+        private readonly ITerrainService terrainService;
 
-        public TerrainController(TerrainService terrainService)
+        public TerrainController(ITerrainService terrainService)
         {
             this.terrainService = terrainService;
         }

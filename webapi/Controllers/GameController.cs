@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi.Controllers
 {
@@ -16,9 +17,9 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class GameController : ControllerBase
     {
-        private readonly GameService gameService;
+        private readonly IGameService gameService;
 
-        public GameController(GameService gameService)
+        public GameController(IGameService gameService)
         {
             this.gameService = gameService;
         }

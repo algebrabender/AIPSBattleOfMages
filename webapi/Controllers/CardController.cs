@@ -11,6 +11,7 @@ using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
 using webapi.DataLayer.Models.Cards;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi.Controllers
 {
@@ -18,9 +19,9 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class CardController : ControllerBase
     {
-        private readonly CardService cardService;
+        private readonly ICardService cardService;
 
-        public CardController(CardService cardService)
+        public CardController(ICardService cardService)
         {
             this.cardService = cardService;
         }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using webapi.DataLayer.Models;
 using webapi.Services;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi.Controllers
 {
@@ -16,8 +17,8 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserService userService;
-        public UserController(UserService userService)
+        private readonly IUserService userService;
+        public UserController(IUserService userService)
         {
             this.userService = userService;
         }

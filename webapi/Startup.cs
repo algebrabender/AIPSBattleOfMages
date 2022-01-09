@@ -17,6 +17,7 @@ using webapi.DataLayer;
 using webapi.Interfaces;
 using webapi.Repository;
 using webapi.Services;
+using webapi.Interfaces.ServiceInterfaces;
 
 namespace webapi
 {
@@ -35,12 +36,12 @@ namespace webapi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //TODO: pogledati da li ovo treba ili transient
-            services.AddScoped<CardService>();
-            services.AddScoped<DeckService>();
-            services.AddScoped<GameService>();
-            services.AddScoped<TerrainService>();
-            services.AddScoped<MageService>();
-            services.AddScoped<UserService>();
+            services.AddScoped<ICardService, CardService>();
+            services.AddScoped<IDeckService, DeckService>();
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<ITerrainService, TerrainService>();
+            services.AddScoped<IMageService, MageService>();
+            services.AddScoped<IUserService, UserService>();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>
