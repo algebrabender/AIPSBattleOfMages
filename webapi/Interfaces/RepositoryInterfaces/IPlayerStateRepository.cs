@@ -12,5 +12,6 @@ namespace webapi.Interfaces.RepositoryInterfaces
         Task<PlayerState> GetByGameIDAndUserID(int gameID, int userID);
         Task<string> GetUserMageType(int userID, int gameID);
         Task<Deck> GetUserDeck(int userID, int gameID);
+        void Delete(int gameID, int userID);
     }
 }

@@ -24,11 +24,11 @@ namespace webapi.Controllers
             this.mageService = mageService;
         }
 
-        [Route("CreateMage/{userID}")]
+        [Route("CreateMage")]
         [HttpPost]
-        public async Task<ActionResult> CreateMage([FromBody] Mage mage, int userID)
+        public async Task<ActionResult> CreateMage([FromBody] Mage mage)
         {
-            var result = await mageService.CreateMage(mage, userID);
+            var result = await mageService.CreateMage(mage);
             return Ok(result);
         }
 
@@ -39,7 +39,7 @@ namespace webapi.Controllers
             var Mage = await mageService.GetMageByType(type);
 
             if (Mage == null)
-                return BadRequest(); //ERROR
+                return BadRequest("No mage with selected type"); //ERROR
 
             return Ok(Mage);
         }
@@ -51,7 +51,7 @@ namespace webapi.Controllers
             var Mage = await mageService.GetMageByID(MageID);
 
             if (Mage == null)
-                return BadRequest(); //ERROR
+                return BadRequest("No mage with this ID"); //ERROR
 
             return Ok(Mage);
         }

@@ -19,16 +19,10 @@ namespace webapi.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Mage> CreateMage(Mage mage, int userID)
+        public async Task<Mage> CreateMage(Mage mage)
         {
             using (unitOfWork)
-            {
-                User user = await unitOfWork.UserRepository.GetById(userID);
-
-                //TODO: nesto za playerstate
-                // mage.Users = new List<User>();
-                // mage.Users.Add(user);
-                
+            {                
                 unitOfWork.MageRepository.Create(mage);
                 await unitOfWork.CompleteAsync();
 
@@ -51,6 +45,5 @@ namespace webapi.Services
                 return mage;
             }
         }
-    
     }
 }

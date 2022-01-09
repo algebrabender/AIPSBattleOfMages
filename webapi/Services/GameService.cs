@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using webapi.DataLayer.Models;
+using webapi.DataLayer.Models.Cards;
 using webapi.Interfaces;
 using webapi.Interfaces.ServiceInterfaces;
 
@@ -18,41 +19,59 @@ namespace webapi.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Game> CreateGame(Game game, int userID, int mageID, int manaPoints, int healthPoints)
+        public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int manaPoints, int healthPoints)
         {
             using(unitOfWork)
             {
+                Terrain terrain = await unitOfWork.TerrainRepository.GetTerrainByType(terrainType);
+                game.Terrain = terrain;
+
                 User user = await unitOfWork.UserRepository.GetById(userID);
+                game.CreatedGameUserID = userID;
 
                 game.PlayerStates = new List<PlayerState>();
 
-                game.CreatedGameUserID = userID;
-
                 unitOfWork.GameRepository.Create(game);
 
-                int gameID = await unitOfWork.GameRepository.GetGameID(game);
+                terrain.Games.Add(game);
+                //TODO: deck
+                Deck deck = new Deck();
+                deck.NumberOfCards = 5; //ovo ce trebati da se salje kao parametar
 
+                unitOfWork.DeckRepository.Create(deck);
+
+                await unitOfWork.CompleteAsync();
+                
+                //TODO: treba da se nadje nacin da se dodaju karte
+                //await this.deckService.AddCardToDeck(2, deck.ID);
+
+                int gameID = await unitOfWork.GameRepository.GetGameID(game);
+                //int gameID = game.ID;
                 PlayerState playerState = new PlayerState();
                 playerState.GameID = gameID;
-                playerState.Mage = await this.unitOfWork.MageRepository.GetById(mageID);
-                playerState.MageID = mageID;
+                playerState.Mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
+                playerState.MageID = playerState.Mage.ID;
                 playerState.UserID = userID;
                 playerState.User = user;
-
-                //TODO: mozda pravi loop
-                game.PlayerStates.Add(playerState);
+                playerState.DeckID = deck.ID;
+                playerState.Deck = deck;
 
                 playerState.ManaPoints = manaPoints;
                 playerState.HealthPoints = healthPoints;
                 
                 unitOfWork.PlayerStateRepository.Create(playerState);
+                                
+                game.PlayerStates.Add(playerState);
+                deck.PlayerState = playerState;
+                unitOfWork.GameRepository.Update(game);
+                unitOfWork.DeckRepository.Update(deck);
 
                 await unitOfWork.CompleteAsync();
 
                 return game;
             }
         }
-        public async Task<Game> AddUserToGame(int gameID, int userID, int mageID, int manaPoints, int healthPoints)
+        public async Task<Game> AddUserToGame(int gameID, int userID, string mageType, int manaPoints, int healthPoints)
         {
             using (unitOfWork)
             {
@@ -66,16 +85,25 @@ namespace webapi.Services
                 if (user == null)
                     return null;
 
-                unitOfWork.GameRepository.Update(game);
+                //TODO: deck
+                Deck deck = new Deck();
+                deck.NumberOfCards = 5; //ovo ce trebati da se salje kao parametar
 
-                //TODO: deck gde se dodaje
+                unitOfWork.DeckRepository.Create(deck);
+
+                await unitOfWork.CompleteAsync();
+
+                //TODO: treba da se nadje nacin da se dodaju karte
+                //await this.deckService.AddCardToDeck(2, deck.ID);
+
                 PlayerState playerState = new PlayerState();
+                playerState.Mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
+                playerState.MageID = playerState.Mage.ID;
                 playerState.GameID = gameID;
-                playerState.MageID = mageID;
-                
-                playerState.Mage = await this.unitOfWork.MageRepository.GetById(mageID);
                 playerState.UserID = userID;
                 playerState.User = user;
+                playerState.DeckID = deck.ID;
+                playerState.Deck = deck;
 
                 playerState.ManaPoints = manaPoints;
                 playerState.HealthPoints = healthPoints;
@@ -83,6 +111,9 @@ namespace webapi.Services
                 unitOfWork.PlayerStateRepository.Create(playerState);
 
                 game.PlayerStates.Add(playerState);
+                deck.PlayerState = playerState;
+                unitOfWork.GameRepository.Update(game);
+                unitOfWork.DeckRepository.Update(deck);
 
                 await unitOfWork.CompleteAsync();
 
@@ -110,7 +141,7 @@ namespace webapi.Services
 
                 game.PlayerStates.Remove(ps);
 
-                unitOfWork.PlayerStateRepository.Delete(ps.ID); 
+                unitOfWork.PlayerStateRepository.Delete(ps.GameID, ps.UserID); 
 
                 unitOfWork.GameRepository.Update(game);
                 

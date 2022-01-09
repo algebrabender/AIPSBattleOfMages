@@ -39,7 +39,7 @@ namespace webapi.Controllers
             var terrain = await terrainService.GetTerrainByType(type);
 
             if (terrain == null)
-                return BadRequest(); //ERROR
+                return BadRequest("No terrain with selected type"); //ERROR
 
             return Ok(terrain);
         }
@@ -51,7 +51,7 @@ namespace webapi.Controllers
             var terrain = await terrainService.GetTerrainByID(terrainID);
 
             if (terrain == null)
-                return BadRequest(); //ERROR
+                return BadRequest("No terrain with this ID"); //ERROR
 
             return Ok(terrain);
         }

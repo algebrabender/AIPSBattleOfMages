@@ -23,6 +23,7 @@ namespace webapi.Services
         {
             using (unitOfWork)
             {
+                terrain.Games = new List<Game>();
                 unitOfWork.TerrainRepository.Create(terrain);
                 await unitOfWork.CompleteAsync();
 

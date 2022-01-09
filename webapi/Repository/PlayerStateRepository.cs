@@ -24,6 +24,12 @@ namespace webapi.Repository
             base.Delete(id);
         }
 
+        public void Delete(int gameID, int userID)
+        {
+            PlayerState entity = this.dbSet.Find(gameID, userID);
+            this.dbSet.Remove(entity);
+        }
+
         public override Task<IEnumerable<PlayerState>> GetAll()
         {
             return base.GetAll();
