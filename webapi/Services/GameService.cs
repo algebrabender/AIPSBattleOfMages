@@ -45,8 +45,8 @@ namespace webapi.Services
                 //TODO: treba da se nadje nacin da se dodaju karte
                 //await this.deckService.AddCardToDeck(2, deck.ID);
 
-                int gameID = await unitOfWork.GameRepository.GetGameID(game);
-                //int gameID = game.ID;
+                //int gameID = await unitOfWork.GameRepository.GetGameID(game);
+                int gameID = game.ID;
                 PlayerState playerState = new PlayerState();
                 playerState.GameID = gameID;
                 playerState.Mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
