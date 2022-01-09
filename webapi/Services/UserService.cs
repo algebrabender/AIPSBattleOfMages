@@ -112,13 +112,13 @@ namespace webapi.Services
 
                 User u = await unitOfWork.UserRepository.GetUserByUsernameAndTag(un, tag);
 
-                if (u != null)
+                if (u == null)
                     return null;
                 
                 string passAndSalt = user.Password + u.Salt;
                 string hashedPassword = this.PasswordHashing(passAndSalt);
 
-                if (user.Password != hashedPassword) //hashedPassword
+                if (u.Password != hashedPassword) //hashedPassword
                     return null;
                 else
                 {
