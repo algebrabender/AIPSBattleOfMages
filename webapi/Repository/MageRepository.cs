@@ -39,7 +39,7 @@ namespace webapi.Repository
 
         public async Task<Mage> GetMageByType(string type)
         {
-            return await this.dbSet.FirstOrDefaultAsync(mage => mage.Type == type); 
+            return await this.dbSet.Include(mage => mage.PlayerStates).FirstOrDefaultAsync(mage => mage.Type == type); 
         }
     }
 }

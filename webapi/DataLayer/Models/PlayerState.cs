@@ -20,6 +20,7 @@ namespace webapi.DataLayer.Models
         [Column("MageID")]
         public int MageID { get; set; }
 
+        [JsonIgnore]
         public Mage Mage { get; set; }
     
         [Column("GameID")]

@@ -12,8 +12,8 @@ namespace webapi.DataLayer.Models
         [Column("Type")]
         public string Type { get; set; }
 
-        [JsonIgnore]
-        public PlayerState PlayerState { get; set; }
+        
+        public virtual List<PlayerState> PlayerStates { get; set; }
 
     }
 

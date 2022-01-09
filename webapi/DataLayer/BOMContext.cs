@@ -27,10 +27,6 @@ namespace webapi.DataLayer
         {
             modelBuilder.Entity<CardDeck>().HasKey(x => new { x.CardID, x.DeckID});
 
-            // modelBuilder.Entity<CardDeck>()
-            //     .HasOne(cd => cd.Card)
-            //     .WithMany(c => c.Decks)
-            //     .HasForeignKey(cd => cd.CardID);
             modelBuilder.Entity<CardDeck>()
                 .HasOne(cd => cd.Deck)
                 .WithMany(d => d.Cards)
@@ -40,11 +36,6 @@ namespace webapi.DataLayer
                 .HasOne<PlayerState>(u => u.PlayerState)
                 .WithOne(p => p.User)
                 .HasForeignKey<PlayerState>(d => d.UserID);
-
-            modelBuilder.Entity<Mage>()
-                .HasOne<PlayerState>(m => m.PlayerState)
-                .WithOne(p => p.Mage)
-                .HasForeignKey<PlayerState>(p => p.MageID);
 
             modelBuilder.Entity<Deck>()
                 .HasOne<PlayerState>(d => d.PlayerState)

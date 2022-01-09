@@ -36,10 +36,10 @@ namespace webapi.Repository
         {
             base.Update(entity);
         }
-        public async Task<int> GetGameID(Game game)
+        public async Task<Game> GetGameWithTerrain(int gameID)
         {
-            var g = await this.dbSet.FirstOrDefaultAsync(g => g.CreatedGameUserID == game.CreatedGameUserID);
-            return g.ID;
+            var game = await this.dbSet.Include(game => game.Terrain).FirstOrDefaultAsync(game => game.ID == gameID);
+            return game;
         }
     }
 }

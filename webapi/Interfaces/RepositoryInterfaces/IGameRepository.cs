@@ -8,6 +8,6 @@ namespace webapi.Interfaces.RepositoryInterfaces
 {
     public interface IGameRepository : IBaseRepository<Game>
     {
-        Task<int> GetGameID(Game game);
+        Task<Game> GetGameWithTerrain(int gameID);
     }
 }
