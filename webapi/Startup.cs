@@ -18,6 +18,7 @@ using webapi.Interfaces;
 using webapi.Repository;
 using webapi.Services;
 using webapi.Interfaces.ServiceInterfaces;
+using webapi.Communication;
 
 namespace webapi
 {
@@ -62,6 +63,11 @@ namespace webapi
 
             services.AddControllers().AddJsonOptions(x =>
                             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });    
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,6 +91,7 @@ namespace webapi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MessageHub>("messageHub");
             });
         }
     }
