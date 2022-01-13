@@ -7,6 +7,7 @@ namespace webapi.Interfaces.RepositoryInterfaces
 {
     public interface ICardDeckRepository : IBaseRepository<CardDeck>
     {
-         
+        public void AddCardToDeck(Card card, Deck deck);
+        public void DeleteCardFromDeck(Card card, Deck deck);
     }
 }

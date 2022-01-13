@@ -87,11 +87,11 @@ namespace webapi.Controllers
             return Ok(game);
         }
         
-        [Route("Turn/{gameID}/{turnUserID}/{manaSpent}/{attackedUserID}/{damageDone}/{nextUserID}")]
+        [Route("Turn/{gameID}/{turnUserID}/{manaSpent}/{attackedUserID}/{damageDone}/{nextUserID}/{cardID}")]
         [HttpPut]
-        public async Task<ActionResult> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID)
-        {
-            var game = await gameService.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID);
+        public async Task<ActionResult> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID)
+        { 
+            var game = await gameService.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID, cardID);
 
             return Ok(game);
         }

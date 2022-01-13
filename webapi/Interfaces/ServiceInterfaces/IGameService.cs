@@ -15,6 +15,6 @@ namespace webapi.Interfaces.ServiceInterfaces
         Task<Game> GetGameByID(int gameID);
         Task<string> GetGameTerrainType(int gameID);
         Task<Game> SetWinnerUserID(int gameID, int userID);
-        Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID);
+        Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID);
     }
 }

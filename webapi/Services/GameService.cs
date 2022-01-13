@@ -7,16 +7,29 @@ using webapi.DataLayer.Models;
 using webapi.DataLayer.Models.Cards;
 using webapi.Interfaces;
 using webapi.Interfaces.ServiceInterfaces;
+using webapi.Communication;
+using Microsoft.AspNetCore.SignalR;
 
 namespace webapi.Services
 {
     public class GameService : IGameService
     {
         private readonly IUnitOfWork unitOfWork;
+        private HubService hubService;
 
-        public GameService(IUnitOfWork unitOfWork)
+        private struct TurnStruct
+        {
+            public Card Card { set; get; }
+            public PlayerState AttackedUser { set; get; }
+            public int DamageDone { set; get; }
+            public int NextPlayerID { set; get; }
+        }
+
+
+        public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub) 
         {
             this.unitOfWork = unitOfWork;
+            this.hubService = new HubService(hub);
         }
 
         public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int manaPoints, int healthPoints)
@@ -41,9 +54,11 @@ namespace webapi.Services
                 unitOfWork.DeckRepository.Create(deck);
 
                 await unitOfWork.CompleteAsync();
-                
-                //TODO: treba da se nadje nacin da se dodaju karte
-                //await this.deckService.AddCardToDeck(2, deck.ID);
+
+                //TODO: izmeniti hardkodiranje
+                Card card1 = await this.unitOfWork.CardRepository.GetById(1006);
+                Deck deck1 = await this.unitOfWork.DeckRepository.GetDeckWithCards(deck.ID);
+                this.unitOfWork.CardDeckRepository.AddCardToDeck(card1, deck1);
 
                 int gameID = game.ID;
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
@@ -95,8 +110,14 @@ namespace webapi.Services
 
                 await unitOfWork.CompleteAsync();
 
-                //TODO: treba da se nadje nacin da se dodaju karte
-                //await this.deckService.AddCardToDeck(2, deck.ID);
+                //TODO: izmeniti hardkodiranje
+                Card card1 = await this.unitOfWork.CardRepository.GetById(1005);
+                Deck deck1 = await this.unitOfWork.DeckRepository.GetDeckWithCards(deck.ID);
+                this.unitOfWork.CardDeckRepository.AddCardToDeck(card1, deck1);
+
+                Card card2 = await this.unitOfWork.CardRepository.GetById(1006);
+                this.unitOfWork.CardDeckRepository.AddCardToDeck(card2, deck1);
+
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
                 PlayerState playerState = new PlayerState();
                 playerState.Mage = mage;
@@ -120,6 +141,8 @@ namespace webapi.Services
                 unitOfWork.DeckRepository.Update(deck);
 
                 await unitOfWork.CompleteAsync();
+
+                await hubService.NotifyOnGameChanges(gameID, "AddUserToGame", user);
 
                 return game;
             }
@@ -150,6 +173,8 @@ namespace webapi.Services
                 unitOfWork.GameRepository.Update(game);
                 
                 await unitOfWork.CompleteAsync();
+
+                await hubService.NotifyOnGameChanges(gameID, "RemoveUserFromGame", user);
 
                 return game;
             }
@@ -193,10 +218,12 @@ namespace webapi.Services
                 unitOfWork.GameRepository.Update(game);
                 await unitOfWork.CompleteAsync();
 
+                await hubService.NotifyOnGameChanges(gameID, "SetWinner", game);
+
                 return game;
             }
         }
-        public async Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID)
+        public async Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
             using (unitOfWork)
             {
@@ -212,7 +239,18 @@ namespace webapi.Services
                 game.WhoseTurnID = nextUserID;   
                 unitOfWork.GameRepository.Update(game);
 
+                Card card = await unitOfWork.CardRepository.GetById(cardID);
+                Deck deck = await unitOfWork.DeckRepository.GetDeckWithCards(umgTurnuser.DeckID);
+                unitOfWork.CardDeckRepository.DeleteCardFromDeck(card, deck);               
+
                 await unitOfWork.CompleteAsync();
+
+                TurnStruct turn = new TurnStruct();
+                turn.AttackedUser = umgAttackedUser;
+                turn.DamageDone = damageDone;
+                turn.NextPlayerID = game.WhoseTurnID;
+                turn.Card = card;
+                await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
 
                 return game;
             }

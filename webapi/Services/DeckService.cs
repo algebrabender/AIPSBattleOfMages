@@ -65,15 +65,10 @@ namespace webapi.Services
         {
             using (unitOfWork)
             {
-                Deck deck = await unitOfWork.DeckRepository.GetById(deckID);
+                Deck deck = await unitOfWork.DeckRepository.GetDeckWithCards(deckID);
 
-                CardDeck cd = new CardDeck();
-                cd.CardID = card.ID;
-                cd.Card = card;
-                cd.DeckID = deckID;
-                cd.Deck = deck;
-
-                unitOfWork.CardDeckRepository.Create(cd);
+         
+                unitOfWork.CardDeckRepository.AddCardToDeck(card, deck);
 
                 //deck.Cards.Add(cd);
                 //unitOfWork.DeckRepository.Update(deck);
