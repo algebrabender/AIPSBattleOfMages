@@ -19,5 +19,10 @@ namespace webapi.Communication
         {
             await hubContext.Clients.Group("Game" + gameID).SendAsync(method, object_to_send);
         }
+
+        public async Task NotifyUser(int userID, String method, Object object_to_send)
+        {
+            await hubContext.Clients.Group("User" + userID).SendAsync(method, object_to_send);
+        }
     }
 }
