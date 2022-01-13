@@ -95,5 +95,14 @@ namespace webapi.Controllers
 
             return Ok(game);
         }
+
+        [Route("SendInvite/{gameID}/{username}/{tag}/{userFrom}")]
+        [HttpPut]
+        public async Task<ActionResult> SendInvite(int gameID, string username, string tag, int userFrom)
+        {
+            bool invite = await gameService.SendInvite(gameID, username, tag, userFrom);
+
+            return Ok(invite);
+        }
     }
 }

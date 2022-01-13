@@ -19,12 +19,12 @@ namespace webapi.Services
 
         private struct TurnStruct
         {
+            public int PlayedByUserID { set; get; }
             public Card Card { set; get; }
             public PlayerState AttackedUser { set; get; }
             public int DamageDone { set; get; }
             public int NextPlayerID { set; get; }
         }
-
 
         public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub) 
         {
@@ -246,6 +246,7 @@ namespace webapi.Services
                 await unitOfWork.CompleteAsync();
 
                 TurnStruct turn = new TurnStruct();
+                turn.PlayedByUserID = turnUserID;
                 turn.AttackedUser = umgAttackedUser;
                 turn.DamageDone = damageDone;
                 turn.NextPlayerID = game.WhoseTurnID;
@@ -253,6 +254,21 @@ namespace webapi.Services
                 await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
 
                 return game;
+            }
+        }
+        public async Task<bool> SendInvite(int gameID, string username, string tag, int userFrom)
+        {
+            using (unitOfWork)
+            {
+                User user = await unitOfWork.UserRepository.GetUserByUsernameAndTag(username, tag);
+                User uFrom = await unitOfWork.UserRepository.GetById(userFrom);
+
+                if (user == null)
+                    return false;
+
+                await hubService.NotifyUser(user.ID, "ReceivedInvite", new { UserFrom = uFrom.Username + "#" + uFrom.Tag, GameID = gameID});
+
+                return true;
             }
         }
     }

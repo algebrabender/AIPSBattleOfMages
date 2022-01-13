@@ -8,6 +8,13 @@ namespace webapi.Communication
 {
     public class MessageHub : Hub
     {
+        public async Task<string> JoinApp(int userID)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, "User" + userID);
+
+            return "Joined app";
+        }
+
         public async Task<string> JoinGameGroup(int gameID, string username)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "Game" + gameID);
@@ -24,13 +31,6 @@ namespace webapi.Communication
             await Clients.Group("Game" + gameID).SendAsync("SendMessageLeave", username + " has left the game!");
 
             return "Left group for Game" + gameID;
-        }
-
-        public async Task<string> SendInvite(int userID, string inviteFrom)
-        {
-            await Clients.User("User" + userID).SendAsync("ReceiveInvite", inviteFrom + " has invited you to a game!");
-            
-            return "Received invite for Game";
         }
 
         public async Task SendGroupChatMessage(int gameID, string username, string message)
