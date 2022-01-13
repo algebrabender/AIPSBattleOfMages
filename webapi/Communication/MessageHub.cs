@@ -15,6 +15,11 @@ namespace webapi.Communication
             return "Joined app";
         }
 
+        public async Task LeaveApp(int userID)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "User" + userID);
+        }
+
         public async Task<string> JoinGameGroup(int gameID, string username)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "Game" + gameID);
