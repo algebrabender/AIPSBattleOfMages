@@ -54,7 +54,7 @@ namespace webapi
                 {
                     builder.AllowAnyHeader()
                             .AllowAnyMethod()
-                            .AllowAnyOrigin();
+                            .SetIsOriginAllowed((host) => true).AllowCredentials();
                 });
             });
             services.AddDbContext<BOMContext>(options => {
