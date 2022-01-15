@@ -1,17 +1,27 @@
-﻿using System.Net;
-using System.IO;
+﻿
+using System.Collections.Generic;
 using UnityEngine;
+using Proyecto26;
+using UnityEditor;
 
-public static class APIHelper
+public class APIHelper
 {
-    public static CardData GetNewCardData() //DEAL CARD
-    {
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.chucknorris.io/jokes/random");
+	public readonly string apiLink = "https://api.chucknorris.io/jokes/random";
+	private void LogMessage(string message)
+	{
+#if UNITY_EDITOR
+		EditorUtility.DisplayDialog("Title", message, "Ok");
+#else
+		Debug.Log(message);
+#endif
+	}
 
-        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        StreamReader reader = new StreamReader(response.GetResponseStream());
+	public void Get()
+	{
+		RestClient.Get<string>(apiLink).Then(res =>
+		{
+			this.LogMessage(res);
+		}).Catch(err => this.LogMessage(err.Message));
 
-        string json = reader.ReadToEnd();
-        return JsonUtility.FromJson<CardData>(json);
-    }
+	}
 }

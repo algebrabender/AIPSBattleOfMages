@@ -216,7 +216,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2028886060}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WelcomeMenu, Assembly-CSharp
         m_MethodName: PasswordEntered
         m_Mode: 1
@@ -1197,7 +1197,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2028886060}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WelcomeMenu, Assembly-CSharp
         m_MethodName: UserNameEntered
         m_Mode: 1
@@ -1290,8 +1290,8 @@ MonoBehaviour:
   passwordEntryField: {fileID: 150002647}
   firstNameEntryField: {fileID: 0}
   lastNameEntryField: {fileID: 0}
-  userNameText: Please insert Username with #Tag included
-  passwordText: Please insert Password
+  userNameText: 
+  passwordText: 
   firstNameText: 
   lastNameText: 
 --- !u!4 &2028886061
@@ -1466,7 +1466,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2028886060}
         m_TargetAssemblyTypeName: WelcomeMenu, Assembly-CSharp
-        m_MethodName: NewSignUp
+        m_MethodName: SignUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

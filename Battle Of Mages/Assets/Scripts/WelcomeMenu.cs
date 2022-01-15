@@ -1,19 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class WelcomeMenu : MonoBehaviour
 {
+    private SignalRConnector signalRConnector = new SignalRConnector();
+    private APIHelper apiHelper = new APIHelper(); 
     public InputField userNameEntryField;
     public InputField passwordEntryField;
     public InputField firstNameEntryField;
     public InputField lastNameEntryField;
+
+    public async Task Start()
+    {
+        signalRConnector = new SignalRConnector();
+        //signalRConnector.OnMessageReceived += UpdateReceivedMessages;
+
+        //await signalRConnector.InitAsync();
+    }
 
     [TextArea]
     public string userNameText;
@@ -24,10 +36,15 @@ public class WelcomeMenu : MonoBehaviour
     [TextArea]
     public string lastNameText;
 
+    private void UpdateReceivedMessages(string newMessage)
+    {
+        
+    }
+
     public void UserNameEntered()
     {
         this.LogCurrentUserName();
-        
+
         passwordEntryField.ActivateInputField();
     }
 
@@ -129,14 +146,20 @@ public class WelcomeMenu : MonoBehaviour
         //da vraca string?
     }
 
-    public void LogIn()
+    public async void LogIn()
     {
+        int userID;
+        Int32.TryParse(userNameEntryField.text, out userID);
+
+        await signalRConnector.JoinApp(userID);
+
+
         if (SuccesfullLogIn())
         {
             SceneManager.LoadScene(2);
 
-            userNameEntryField.text = string.Empty;
-            passwordEntryField.text = string.Empty;
+        //    userNameEntryField.text = string.Empty;
+        //    passwordEntryField.text = string.Empty;
         }
         //else deo ako je doslo do greske prilikom api poziva
     }
