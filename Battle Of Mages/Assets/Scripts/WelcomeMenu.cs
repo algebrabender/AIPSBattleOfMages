@@ -12,34 +12,25 @@ using System.Threading.Tasks;
 
 public class WelcomeMenu : MonoBehaviour
 {
-    private SignalRConnector signalRConnector = new SignalRConnector();
-    private APIHelper apiHelper = new APIHelper(); 
+    public static SignalRConnector signalRConnector;
+    //private APIHelper apiHelper = new APIHelper(); 
     public InputField userNameEntryField;
     public InputField passwordEntryField;
     public InputField firstNameEntryField;
     public InputField lastNameEntryField;
+    public InputField userIDEntryField;
 
     public async Task Start()
     {
         signalRConnector = new SignalRConnector();
-        //signalRConnector.OnMessageReceived += UpdateReceivedMessages;
 
-        //await signalRConnector.InitAsync();
+        await signalRConnector.InitAsync();
     }
 
-    [TextArea]
     public string userNameText;
-    [TextArea]
     public string passwordText;
-    [TextArea]
     public string firstNameText;
-    [TextArea]
     public string lastNameText;
-
-    private void UpdateReceivedMessages(string newMessage)
-    {
-        
-    }
 
     public void UserNameEntered()
     {
@@ -149,18 +140,21 @@ public class WelcomeMenu : MonoBehaviour
     public async void LogIn()
     {
         int userID;
-        Int32.TryParse(userNameEntryField.text, out userID);
+        Int32.TryParse(userIDEntryField.text, out userID);
 
         await signalRConnector.JoinApp(userID);
 
+        userNameText = userNameEntryField.text;
 
-        if (SuccesfullLogIn())
-        {
-            SceneManager.LoadScene(2);
+        SceneManager.LoadScene(5);
+
+        //if (SuccesfullLogIn())
+        //{
+        //    SceneManager.LoadScene(2);
 
         //    userNameEntryField.text = string.Empty;
         //    passwordEntryField.text = string.Empty;
-        }
+        //}
         //else deo ako je doslo do greske prilikom api poziva
     }
 
@@ -197,8 +191,12 @@ public class WelcomeMenu : MonoBehaviour
         return true;
     }
 
-    public void Quit()
+    public async void Quit()
     {
+        int userID;
+        Int32.TryParse(userIDEntryField.text, out userID);
+
+        await signalRConnector.LeaveApp(userID);
 #if UNITY_EDITOR
         //for editor
         EditorApplication.isPlaying = false;

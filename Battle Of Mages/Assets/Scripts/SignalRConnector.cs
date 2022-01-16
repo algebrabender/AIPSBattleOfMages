@@ -25,9 +25,13 @@ public class SignalRConnector
     public async Task InitAsync()
     {
 
-        connection.On<string, string>("ReceiveMessage", (message, username) =>
+        connection.On<string, string>("ReceiveMessage", (username, message) =>
         {
-            OnChatMessageReceived.Invoke(new ChatMessage(username, message));
+            OnChatMessageReceived.Invoke(new ChatMessage
+            {
+                Username = username,
+                Message = message
+            });
         });
 
         connection.On<string>("SendMessageJoin", message =>
@@ -75,7 +79,7 @@ public class SignalRConnector
         }
     }
 
-    public async void LeaveApp(int userID)
+    public async Task LeaveApp(int userID)
     {
         try
         {
@@ -87,11 +91,11 @@ public class SignalRConnector
         }
     }
 
-    public async void JoinGame(int gameID)
+    public async Task JoinGame(int gameID, string username)
     {
         try
         {
-            await connection.InvokeAsync("JoinGame", gameID);
+            await connection.InvokeAsync("JoinGameGroup", gameID, username);
         }
         catch(Exception e)
         {
@@ -99,6 +103,29 @@ public class SignalRConnector
         }
     }
 
+    public async Task LeaveGame(int gameID, string username)
+    {
+        try
+        {
+            await connection.InvokeAsync("LeaveGameGroup", gameID, username);
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError($"Error {e.Message}");
+        }
+    }
+
+    public async Task SendChatMessage(int gameID, string username, string message)
+    {
+        try
+        {
+            await connection.InvokeAsync("SendGroupChatMessage", gameID, username, message);
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError($"Error {e.Message}");
+        }
+    }
 }
 
 

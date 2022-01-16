@@ -8,13 +8,7 @@ namespace Assets.Scripts
 {
     public class Invite
     {
-        private string userFrom;
-        private int gameID;
-
-        public Invite(string userFrom, int gameID)
-        {
-            this.userFrom = userFrom;
-            this.gameID = gameID;
-        }
+        public string UserFrom { get; set; }
+        public int GameID { get; set; }
     }
 }
