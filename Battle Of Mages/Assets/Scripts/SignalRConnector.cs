@@ -49,7 +49,10 @@ public class SignalRConnector
             OnInviteReceived.Invoke(invite);
         });
 
-        //TODO: connection on turn
+        connection.On<string>("Turn", turn =>
+        {
+            OnTurnInfoReceived.Invoke(turn);
+        });
 
 
         await this.StartConnectionAsync();

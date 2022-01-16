@@ -17,6 +17,7 @@ public class DemoScene : MonoBehaviour
     public Text chatMessagesText;
     public Text invitesText;
     public Text groupUpdatesText;
+    public Text turnText;
 
     public void Start()
     {
@@ -24,7 +25,7 @@ public class DemoScene : MonoBehaviour
         signalRConnector.OnChatMessageReceived += UpdateChat;
         signalRConnector.OnInviteReceived += UpdateInvites;
         signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
-        signalRConnector.OnLeaveMessageReceived += UpdateLeaveMessage;
+        signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
         signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;
     }
 
@@ -35,7 +36,7 @@ public class DemoScene : MonoBehaviour
         if (string.IsNullOrEmpty(lastMessages) == false)
             lastMessages += "\n";
 
-        lastMessages += $"User:{obj.Username} Message:{obj.Message}";
+        lastMessages += $"{obj.Username}: {obj.Message}";
         this.chatMessagesText.text = lastMessages;
     }
 
@@ -61,20 +62,9 @@ public class DemoScene : MonoBehaviour
         this.groupUpdatesText.text = lastGroupUpdates;
     }
 
-    private void UpdateLeaveMessage(string obj)
-    {
-        var lastGroupUpdates = this.groupUpdatesText.text;
-
-        if (string.IsNullOrEmpty(lastGroupUpdates) == false)
-            lastGroupUpdates += "\n";
-
-        lastGroupUpdates += obj;
-        this.groupUpdatesText.text = lastGroupUpdates;
-    }
-
     private void UpdateTurnMessage(string obj)
     {
-        throw new NotImplementedException();
+        this.turnText.text = obj;
     }
 
     public async void JoinGame()
