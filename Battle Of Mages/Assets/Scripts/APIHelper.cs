@@ -1,12 +1,12 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Proyecto26;
 using UnityEditor;
 
 public class APIHelper
 {
-	public readonly string apiLink = "https://api.chucknorris.io/jokes/random";
+	public UserData ud = null;
+
 	private void LogMessage(string message)
 	{
 #if UNITY_EDITOR
@@ -16,12 +16,31 @@ public class APIHelper
 #endif
 	}
 
-	public void Get()
+	public void SignUp(string username, string password, string firstName, string lastName)
 	{
-		RestClient.Get<string>(apiLink).Then(res =>
+		RestClient.Post<UserData>("https://localhost:5001/User/CreateUser", new UserData
 		{
-			this.LogMessage(res);
+			  username = username,
+			  password = password,
+			  firstName = firstName,
+			  lastName = lastName
+		}).Then(res => 
+		{ 
+			//this.LogMessage(JsonUtility.ToJson(res, true)); 
+			ud = res; 
 		}).Catch(err => this.LogMessage(err.Message));
+	}
 
+	public void LogIn(string usernameWithTag, string password)
+	{
+		RestClient.Post<UserData>("https://localhost:5001/User/UserValidating", new UserData
+		{
+			username = usernameWithTag,
+			password = password
+		}).Then(res =>
+		{
+			//this.LogMessage(JsonUtility.ToJson(res, true));
+			ud = res;
+		}).Catch(err => this.LogMessage(err.Message));
 	}
 }

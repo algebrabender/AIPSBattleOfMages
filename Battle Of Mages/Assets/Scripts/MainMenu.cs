@@ -6,9 +6,17 @@ using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    public Text welcomeText;
+
+    void Start()
+    {
+        welcomeText.text = "Welcome " + GameController.instance.GetPlayer().username + "#" + GameController.instance.GetPlayer().tag + "!";
+    }
+
     public void NewGame()
     {
         SceneManager.LoadScene(3);
