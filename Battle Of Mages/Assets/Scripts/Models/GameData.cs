@@ -1,18 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class GameData : MonoBehaviour
+﻿[System.Serializable]
+public class GameData
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int id;
+    public int numOfPlayers;
+    public int createdGameUserID;
+    public int winnerUserID;
+    public int whoseTurnID;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
