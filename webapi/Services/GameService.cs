@@ -32,7 +32,7 @@ namespace webapi.Services
             this.hubService = new HubService(hub);
         }
 
-        public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int manaPoints, int healthPoints)
+        public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
         {
             using(unitOfWork)
             {
@@ -49,14 +49,14 @@ namespace webapi.Services
                 terrain.Games.Add(game);
                 //TODO: deck
                 Deck deck = new Deck();
-                deck.NumberOfCards = 5; //ovo ce trebati da se salje kao parametar
+                deck.NumberOfCards = 30;
 
                 unitOfWork.DeckRepository.Create(deck);
 
                 await unitOfWork.CompleteAsync();
 
                 //TODO: izmeniti hardkodiranje
-                Card card1 = await this.unitOfWork.CardRepository.GetById(1006);
+                Card card1 = await this.unitOfWork.CardRepository.GetById(1);
                 Deck deck1 = await this.unitOfWork.DeckRepository.GetDeckWithCards(deck.ID);
                 this.unitOfWork.CardDeckRepository.AddCardToDeck(card1, deck1);
 
@@ -71,8 +71,8 @@ namespace webapi.Services
                 playerState.DeckID = deck.ID;
                 playerState.Deck = deck;
 
-                playerState.ManaPoints = manaPoints;
-                playerState.HealthPoints = healthPoints;
+                playerState.ManaPoints = 5;
+                playerState.HealthPoints = 10;
                 
                 unitOfWork.PlayerStateRepository.Create(playerState);
                                 
@@ -88,7 +88,7 @@ namespace webapi.Services
                 return game;
             }
         }
-        public async Task<Game> AddUserToGame(int gameID, int userID, string mageType, int manaPoints, int healthPoints)
+        public async Task<Game> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
         {
             using (unitOfWork)
             {
@@ -104,7 +104,7 @@ namespace webapi.Services
 
                 //TODO: deck
                 Deck deck = new Deck();
-                deck.NumberOfCards = 5; //ovo ce trebati da se salje kao parametar
+                deck.NumberOfCards = 30; //ovo ce trebati da se salje kao parametar
 
                 unitOfWork.DeckRepository.Create(deck);
 
@@ -128,8 +128,8 @@ namespace webapi.Services
                 playerState.DeckID = deck.ID;
                 playerState.Deck = deck;
 
-                playerState.ManaPoints = manaPoints;
-                playerState.HealthPoints = healthPoints;
+                playerState.ManaPoints = 5;
+                playerState.HealthPoints = 10;
                 
                 unitOfWork.PlayerStateRepository.Create(playerState);
 
