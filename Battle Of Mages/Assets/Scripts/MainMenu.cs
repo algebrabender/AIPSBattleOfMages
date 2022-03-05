@@ -14,22 +14,22 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        welcomeText.text = "Welcome " + GameController.instance.GetPlayer().username + "#" + GameController.instance.GetPlayer().tag + "!";
+        welcomeText.text = "Welcome " + GameController.instance.GetPlayer().username.Replace("\"", "") + 
+                            "#" + GameController.instance.GetPlayer().tag.Replace("\"", "") + "!";
     }
 
-    public void NewGame()
+    public void CreateNewGame()
     {
         SceneManager.LoadScene(3);
     }
 
+    public void JoinGame()
+    {
+        SceneManager.LoadScene(4);
+    }
+
     public void Quit()
     {
-#if UNITY_EDITOR
-        //for editor
-        EditorApplication.isPlaying = false;
-#else
-            //for build
-            Application.Quit();
-#endif
+        GameController.instance.Quit();
     }
 }

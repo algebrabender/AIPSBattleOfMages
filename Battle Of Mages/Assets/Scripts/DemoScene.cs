@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 public class DemoScene : MonoBehaviour
 {
-    public SignalRConnector signalRConnector;
     public InputField gameIDInputField;
     public InputField messageInputField;
     public InputField userNameEntryField;
@@ -21,12 +20,11 @@ public class DemoScene : MonoBehaviour
 
     public void Start()
     {
-        signalRConnector = WelcomeMenu.signalRConnector;
-        signalRConnector.OnChatMessageReceived += UpdateChat;
-        signalRConnector.OnInviteReceived += UpdateInvites;
-        signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
-        signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
-        signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;
+        GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
+        GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
+        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
+        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
+        GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;
     }
 
     private void UpdateChat(ChatMessage obj)
@@ -74,7 +72,7 @@ public class DemoScene : MonoBehaviour
 
         string username = userNameEntryField.text;
 
-        await signalRConnector.JoinGame(gameID, username);
+        await GameController.instance.signalRConnector.JoinGame(gameID, username);
     }
 
     public async void LeaveGame()
@@ -84,7 +82,7 @@ public class DemoScene : MonoBehaviour
 
         string username = userNameEntryField.text;
 
-        await signalRConnector.LeaveGame(gameID, username);
+        await GameController.instance.signalRConnector.LeaveGame(gameID, username);
     }
 
     public async void SendChatMessage()
@@ -95,6 +93,6 @@ public class DemoScene : MonoBehaviour
         string username = userNameEntryField.text;
         string message = messageInputField.text;
 
-        await signalRConnector.SendChatMessage(gameID, username, message);
+        await GameController.instance.signalRConnector.SendChatMessage(gameID, username, message);
     }
 }

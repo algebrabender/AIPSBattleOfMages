@@ -12,19 +12,10 @@ using System.Threading.Tasks;
 
 public class WelcomeMenu : MonoBehaviour
 {
-    public static SignalRConnector signalRConnector;
-    private APIHelper apiHelper = new APIHelper(); 
     public InputField userNameEntryField;
     public InputField passwordEntryField;
     public InputField firstNameEntryField;
     public InputField lastNameEntryField;
-
-    public async Task Start()
-    {
-        signalRConnector = new SignalRConnector();
-
-        await signalRConnector.InitAsync();
-    }
 
     public string userNameText;
     public string passwordText;
@@ -135,10 +126,11 @@ public class WelcomeMenu : MonoBehaviour
         //TODO: if 1 -> api helper sign up else if 2 -> api helper log in
         if (sceneNumber == 1)
         {
-            this.apiHelper.SignUp(username, password, firstName, lastName);
-            if (this.apiHelper.ud != null)
+            GameController.instance.apiHelper.SignUp(username, password, firstName, lastName);
+            if (GameController.instance.apiHelper.ud != null)
             {
-                GameController.instance.SetPlayer(this.apiHelper.ud);
+                GameController.instance.SetPlayer(GameController.instance.apiHelper.ud);
+                GameController.instance.JoinApp();
                 return true;
             }
             else
@@ -148,10 +140,11 @@ public class WelcomeMenu : MonoBehaviour
         }
         else
         {
-            this.apiHelper.LogIn(username, password);
-            if ( this.apiHelper.ud != null)
+            GameController.instance.apiHelper.LogIn(username, password);
+            if (GameController.instance.apiHelper.ud != null)
             {
-                GameController.instance.SetPlayer(this.apiHelper.ud);
+                GameController.instance.SetPlayer(GameController.instance.apiHelper.ud);
+                GameController.instance.JoinApp();
                 return true;
             }
             else
@@ -213,12 +206,7 @@ public class WelcomeMenu : MonoBehaviour
         //Int32.TryParse(userIDEntryField.text, out userID);
 
         //await signalRConnector.LeaveApp(userID);
-#if UNITY_EDITOR
-        //for editor
-        EditorApplication.isPlaying = false;
-#else
-            //for build
-            Application.Quit();
-#endif
+        
+        GameController.instance.Quit();
     }
 }

@@ -24,8 +24,8 @@ public class Card : MonoBehaviour
             return;
         }
 
-        titleText.text = cardData.cardTitle;
-        descriptionText.text = cardData.cardDescription;
+        //titleText.text = cardData.cardTitle;
+        //descriptionText.text = cardData.cardDescription;
         cardImage.sprite = cardData.cardImage;
         frameImage.sprite = cardData.frameImage;
 
