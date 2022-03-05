@@ -6,6 +6,7 @@ using UnityEditor;
 public class APIHelper
 {
 	public UserData ud = null;
+	public GameData gd = null;
 
 	private void LogMessage(string message)
 	{
@@ -42,5 +43,17 @@ public class APIHelper
 			//this.LogMessage(JsonUtility.ToJson(res, true));
 			ud = res;
 		}).Catch(err => this.LogMessage(err.Message));
+	}
+
+	public GameData CreateGame(GameData gd, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
+	{
+		string link = "https://localhost:5001/Game/CreateGame/" + terrainType + "/" + userID + "/" + mageType
+			+ "/" + numOfSpellCards + "/" + numbOfAttackCards + "/" + numOfBuffCards;
+		RestClient.Post<GameData>(link, gd).Then(res =>
+		{
+			//this.LogMessage(JsonUtility.ToJson(res, true));
+			this.gd = res;
+		}).Catch(err => this.LogMessage(err.Message));
+		return this.gd;
 	}
 }

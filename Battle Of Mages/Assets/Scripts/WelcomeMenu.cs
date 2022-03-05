@@ -129,7 +129,7 @@ public class WelcomeMenu : MonoBehaviour
             GameController.instance.apiHelper.SignUp(username, password, firstName, lastName);
             if (GameController.instance.apiHelper.ud != null)
             {
-                GameController.instance.SetPlayer(GameController.instance.apiHelper.ud);
+                GameController.instance.SetPlayerData(GameController.instance.apiHelper.ud);
                 GameController.instance.JoinApp();
                 return true;
             }
@@ -143,7 +143,7 @@ public class WelcomeMenu : MonoBehaviour
             GameController.instance.apiHelper.LogIn(username, password);
             if (GameController.instance.apiHelper.ud != null)
             {
-                GameController.instance.SetPlayer(GameController.instance.apiHelper.ud);
+                GameController.instance.SetPlayerData(GameController.instance.apiHelper.ud);
                 GameController.instance.JoinApp();
                 return true;
             }
@@ -202,11 +202,6 @@ public class WelcomeMenu : MonoBehaviour
 
     public void Quit()
     {
-        //int userID;
-        //Int32.TryParse(userIDEntryField.text, out userID);
-
-        //await signalRConnector.LeaveApp(userID);
-        
         GameController.instance.Quit();
     }
 }

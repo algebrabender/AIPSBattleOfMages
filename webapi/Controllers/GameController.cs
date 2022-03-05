@@ -24,19 +24,19 @@ namespace webapi.Controllers
             this.gameService = gameService;
         }
 
-        [Route("CreateGame/{terrainType}/{userID}/{mageType}")]
+        [Route("CreateGame/{terrainType}/{userID}/{mageType}/{numOfSpellCards}/{numOfAttackCards}/{numOfBuffCards}")]
         [HttpPost]
-        public async Task<ActionResult> CreateGame([FromBody] Game game, string terrainType, int userID, string mageType)
+        public async Task<ActionResult> CreateGame([FromBody] Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
         {
-            var result = await gameService.CreateGame(game, terrainType, userID, mageType, 5, 10); //predefinded values
+            var result = await gameService.CreateGame(game, terrainType, userID, mageType, numOfSpellCards, numbOfAttackCards, numOfBuffCards); //predefinded values
             return Ok(result);
         }
         
-        [Route("AddUserToGame/{gameID}/{userID}/{mageType}")]
+        [Route("AddUserToGame/{gameID}/{userID}/{mageType}/{numOfSpellCards}/{numOfAttackCards}/{numOfBuffCards}")]
         [HttpPut]
-        public async Task<ActionResult> AddUserToGame(int gameID, int userID, string mageType)
+        public async Task<ActionResult> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
         {
-            var result = await gameService.AddUserToGame(gameID, userID, mageType, 5, 10);
+            var result = await gameService.AddUserToGame(gameID, userID, mageType, numOfSpellCards, numbOfAttackCards, numOfBuffCards);
             return Ok(result);
         }
 
