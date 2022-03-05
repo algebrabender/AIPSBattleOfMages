@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player
 {
     private UserData playerData;
 
-    public void SetPlayer(UserData ud)
+    internal void SetPlayer(UserData ud)
     {
         this.playerData = ud;
     }
 
-    public UserData GetPlayer()
+    internal UserData GetPlayer()
     {
         return this.playerData;
     }

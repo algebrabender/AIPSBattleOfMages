@@ -14,8 +14,8 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        welcomeText.text = "Welcome " + GameController.instance.GetPlayer().username.Replace("\"", "") + 
-                            "#" + GameController.instance.GetPlayer().tag.Replace("\"", "") + "!";
+        welcomeText.text = "Welcome " + GameController.instance.GetPlayerData().username.Replace("\"", "") + 
+                            "#" + GameController.instance.GetPlayerData().tag.Replace("\"", "") + "!";
     }
 
     public void CreateNewGame()
