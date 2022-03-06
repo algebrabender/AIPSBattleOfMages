@@ -7,6 +7,7 @@ public class APIHelper
 {
 	public UserData ud = null;
 	public GameData gd = null;
+	public PlayerStateData psd = null;
 
 	private void LogMessage(string message)
 	{
@@ -54,6 +55,18 @@ public class APIHelper
 			//this.LogMessage(JsonUtility.ToJson(res, true));
 			this.gd = res;
 		}).Catch(err => this.LogMessage(err.Message));
+
 		return this.gd;
+	}
+
+	public PlayerStateData GetPlayerStateData(int gameID)
+	{
+		RestClient.Get<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID).Then(res =>
+		{
+			//this.LogMessage(JsonUtility.ToJson(res, true));
+			this.psd = res;
+		}).Catch(err => this.LogMessage(err.Message));
+
+		return this.psd;
 	}
 }

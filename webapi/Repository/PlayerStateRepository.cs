@@ -49,6 +49,11 @@ namespace webapi.Repository
             return await this.dbSet.FirstOrDefaultAsync(umg => umg.GameID == gameID && umg.UserID == userID);
         }
 
+        public async Task<PlayerState> GetByGameID(int gameID)
+        {
+            return await this.dbSet.FirstOrDefaultAsync(umg => umg.GameID == gameID);
+        }
+
         public async Task<string> GetUserMageType(int userID, int gameID)
         {
             var ps = await this.dbSet.Include(ps => ps.Mage)

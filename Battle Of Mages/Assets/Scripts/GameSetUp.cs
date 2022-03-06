@@ -55,7 +55,10 @@ public class GameSetUp : MonoBehaviour
 
         List<Player> players = new List<Player>();
         players.Add(GameController.instance.GetPlayer());
-        GameController.instance.SetGame(newGame, players);
+        PlayerStateData psd = GameController.instance.apiHelper.GetPlayerStateData(newGame.id);
+        GameController.instance.SetGame(newGame, players, psd);
+
+        GameController.instance.GetPlayer().turn = true;
 
         SceneManager.LoadScene(5);
     }

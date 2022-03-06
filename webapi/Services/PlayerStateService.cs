@@ -11,6 +11,21 @@ namespace webapi.Services
 {
     public class PlayerStateService : IPlayerStateService
     {
+        private readonly IUnitOfWork unitOfWork;
+        
+        public PlayerStateService(IUnitOfWork unitOfWork) 
+        {
+            this.unitOfWork = unitOfWork;
+        }
 
+        public async Task<PlayerState> GetPlayerStateByGameID(int gameID)
+        {
+            using (unitOfWork)
+            {
+                PlayerState ps = await unitOfWork.PlayerStateRepository.GetByGameID(gameID);
+
+                return ps;
+            }
+        }
     }
 }

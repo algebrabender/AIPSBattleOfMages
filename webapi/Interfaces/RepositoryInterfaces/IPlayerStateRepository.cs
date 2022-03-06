@@ -10,6 +10,7 @@ namespace webapi.Interfaces.RepositoryInterfaces
     public interface IPlayerStateRepository : IBaseRepository<PlayerState>
     {
         Task<PlayerState> GetByGameIDAndUserID(int gameID, int userID);
+        Task<PlayerState> GetByGameID(int gameID);
         Task<string> GetUserMageType(int userID, int gameID);
         Task<Deck> GetUserDeck(int userID, int gameID);
         void Delete(int gameID, int userID);

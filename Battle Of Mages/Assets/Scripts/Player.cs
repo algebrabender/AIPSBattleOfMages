@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Player
 {
     private UserData playerData;
+    internal bool turn;
 
     internal void SetPlayer(UserData ud)
     {

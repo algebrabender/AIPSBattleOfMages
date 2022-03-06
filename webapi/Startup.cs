@@ -43,6 +43,7 @@ namespace webapi
             services.AddScoped<ITerrainService, TerrainService>();
             services.AddScoped<IMageService, MageService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPlayerStateService, PlayerStateService>();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -40,7 +40,7 @@ namespace webapi.Services
             }
         }
 
-        private async void DeckCreating(Deck deck, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+        private async Task DeckCreating(Deck deck, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             //TODO: Proveriti sa svim kartama da li je shuffle ok
             //List<Card> deckCards = new List<Card>(30);
@@ -99,7 +99,7 @@ namespace webapi.Services
 
                 await unitOfWork.CompleteAsync();
 
-                this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
+                await this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
 
                 int gameID = game.ID;
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
@@ -150,7 +150,7 @@ namespace webapi.Services
 
                 await unitOfWork.CompleteAsync();
 
-                this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
+                await this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
 
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
                 PlayerState playerState = new PlayerState();

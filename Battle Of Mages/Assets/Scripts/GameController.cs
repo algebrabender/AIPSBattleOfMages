@@ -44,9 +44,9 @@ public class GameController : MonoBehaviour
         return this.player.GetPlayer();
     }
 
-    public void SetGame(GameData gd, List<Player> players)
+    public void SetGame(GameData gd, List<Player> players, PlayerStateData psd)
     {
-        this.game.SetGame(gd, players);
+        this.game.SetGame(gd, players, psd);
     }
 
     public GameData GetGameData()

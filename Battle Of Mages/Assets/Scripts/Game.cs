@@ -5,18 +5,25 @@ using UnityEngine;
 
 public class Game
 {
-    GameData gameData;
-    List<Player> players;
+    private GameData gameData;
+    private PlayerStateData playerStateData;
+    private List<Player> players;
 
-    internal void SetGame(GameData gm, List<Player> players)
+    internal void SetGame(GameData gd, List<Player> players, PlayerStateData psd)
     {
-        this.gameData = gm;
+        this.gameData = gd;
         this.players = players;
+        this.playerStateData = psd;
     }
 
     internal GameData GetGameData()
     {
         return this.gameData;
+    }
+
+    internal PlayerStateData GetPlayerStateData()
+    {
+        return this.playerStateData;
     }
 
     internal List<Player> GetGamePlayers()
