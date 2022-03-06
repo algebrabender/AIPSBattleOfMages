@@ -3,20 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "Card", menuName = "CardGame/Card")]
+//[CreateAssetMenu(fileName = "Card", menuName = "CardGame/Card")]
 public class CardData
 {
-    public enum CardType
-    {
-        AttackSpell,
-        HealSpell,
-        ReduceCost,
-        AddDamage
-    }
     public int id;
     public string title;
     public string description;
-    public CardType cardType; //non database data
+    public string cardType;
     public string type;
     public int manaCost;
     public int damage;
@@ -27,6 +20,6 @@ public class CardData
     public int earth;
 
     //non database data - TODO: CHECK IF CAN BE MOVED
-    public Sprite cardImage;
-    public Sprite frameImage;
+    //public Sprite cardImage;
+    //public Sprite frameImage;
 }

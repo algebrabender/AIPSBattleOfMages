@@ -202,6 +202,8 @@ public class WelcomeMenu : MonoBehaviour
 
     public void Quit()
     {
-        GameController.instance.Quit();
+        GameController.instance.apiHelper.GetDeckWithCards(6055);
+
+        //GameController.instance.Quit();
     }
 }

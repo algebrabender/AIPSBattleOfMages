@@ -37,7 +37,7 @@ public class GameSetUp : MonoBehaviour
         
     }
 
-    public void CreateGame()
+    public async void CreateGame()
     {
         string terrain = ((MagicType)typeOfTerrainDropdown.value).ToString();
         string mage = ((MagicType)typeOfMageDropdown.value).ToString();
@@ -51,16 +51,28 @@ public class GameSetUp : MonoBehaviour
         gd.whoseTurnID = userID;
         gd.numOfPlayers = numOfPlayersDropdown.value + 2;
 
-        GameData newGame = GameController.instance.apiHelper.CreateGame(gd, terrain, userID, mage, spellCards, attackCards, buffCards);
+        GameController.instance.apiHelper.CreateGame(gd, terrain, userID, mage, spellCards, attackCards, buffCards);
+        GameData newGame = GameController.instance.apiHelper.gd;
+        if (newGame != null)
+        {
+            List<Player> players = new List<Player>();
+            players.Add(GameController.instance.GetPlayer());
+            PlayerStateData psd;
+            GameController.instance.apiHelper.GetPlayerStateData(newGame.id);
 
-        List<Player> players = new List<Player>();
-        players.Add(GameController.instance.GetPlayer());
-        PlayerStateData psd = GameController.instance.apiHelper.GetPlayerStateData(newGame.id);
-        GameController.instance.SetGame(newGame, players, psd);
+            await GameController.instance.signalRConnector.JoinGame(newGame.id, GameController.instance.GetPlayerData().username.Replace("\"", ""));
 
-        GameController.instance.GetPlayer().turn = true;
+            psd = GameController.instance.apiHelper.psd;
 
-        SceneManager.LoadScene(5);
+            if (psd != null)
+            {
+                GameController.instance.SetGame(newGame, players, psd);
+
+                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
+
+                SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+            }
+        }
     }
 
     public async void JoinGame()
@@ -72,7 +84,7 @@ public class GameSetUp : MonoBehaviour
 
         await GameController.instance.signalRConnector.JoinGame(gameID, username);
 
-        SceneManager.LoadScene(5);
+        SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
     }
 
     public void Back()

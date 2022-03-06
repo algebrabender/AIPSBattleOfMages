@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
     public UserData GetPlayerData()
     {
-        return this.player.GetPlayer();
+        return this.player.GetPlayerData();
     }
 
     public void SetGame(GameData gd, List<Player> players, PlayerStateData psd)
@@ -64,21 +64,39 @@ public class GameController : MonoBehaviour
         this.game.AddPlayer(player);
     }
 
+    public PlayerStateData GetPlayerStateData()
+    {
+        return this.game.GetPlayerStateData();
+    }
+
+    public void UpdatePlayerStateData(PlayerStateData psd)
+    {
+        this.game.UpdatePlayerStateData(psd);
+    }
+
     public List<Player> GetGamePlayers()
     {
         return this.game.GetGamePlayers();
     }
 
+    public bool CheckTurn()
+    {
+        if (game.GetGameData().whoseTurnID == player.GetPlayerData().id)
+            return true;
+        else
+            return false;
+    }
+
     //TODO: proveriti
     public async void JoinApp()
     {
-        await signalRConnector.JoinApp(player.GetPlayer().id);
+        await signalRConnector.JoinApp(player.GetPlayerData().id);
     }
 
     //TODO: proveriti
     public async void LeaveApp()
     {
-        await signalRConnector.LeaveApp(player.GetPlayer().id);
+        await signalRConnector.LeaveApp(player.GetPlayerData().id);
     }
 
     public void Quit()

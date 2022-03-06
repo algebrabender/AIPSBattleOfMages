@@ -36,6 +36,12 @@ public class Game
         this.gameData = gd;
     }
 
+
+    internal void UpdatePlayerStateData(PlayerStateData psd)
+    {
+        this.playerStateData = psd;
+    }
+
     internal void AddPlayer(Player player)
     {
         this.players.Add(player);

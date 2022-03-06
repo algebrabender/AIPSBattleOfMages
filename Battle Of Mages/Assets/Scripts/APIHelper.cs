@@ -46,8 +46,11 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 
-	public GameData CreateGame(GameData gd, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
+	public void CreateGame(GameData gd, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
 	{
+		if (this.gd != null)
+			return;
+
 		string link = "https://localhost:5001/Game/CreateGame/" + terrainType + "/" + userID + "/" + mageType
 			+ "/" + numOfSpellCards + "/" + numbOfAttackCards + "/" + numOfBuffCards;
 		RestClient.Post<GameData>(link, gd).Then(res =>
@@ -55,18 +58,26 @@ public class APIHelper
 			//this.LogMessage(JsonUtility.ToJson(res, true));
 			this.gd = res;
 		}).Catch(err => this.LogMessage(err.Message));
-
-		return this.gd;
 	}
 
-	public PlayerStateData GetPlayerStateData(int gameID)
+	public void GetPlayerStateData(int gameID)
 	{
+		if (this.psd != null)
+			return;
+
 		RestClient.Get<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID).Then(res =>
 		{
 			//this.LogMessage(JsonUtility.ToJson(res, true));
 			this.psd = res;
 		}).Catch(err => this.LogMessage(err.Message));
+	}
 
-		return this.psd;
+	public void GetDeckWithCards(int deckID)
+	{
+		RestClient.Get<DeckData>("https://localhost:5001/Deck/GetDeckByID/" + deckID).Then(res =>
+		{
+			this.LogMessage(JsonUtility.ToJson(res, true));
+			GameController.instance.GetPlayer().SetDeck(res);
+		}).Catch(err => this.LogMessage(err.Message));
 	}
 }

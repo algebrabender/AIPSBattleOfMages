@@ -11,31 +11,43 @@ public class Gameplay : MonoBehaviour
 
     private void ChangeTurnText()
     {
-        if (GameController.instance.GetPlayer().turn)
+        if (GameController.instance.CheckTurn())
             turnText.text = "Your Turn!";
         else
             turnText.text = "Player Two turn!";
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void SetTexts()
     {
-        playerInfoText.text = GameController.instance.GetPlayerData().username.Replace("\"", "") + "#" + GameController.instance.GetPlayerData().tag.Replace("\"", "") +
-                              "\nHealth Points: " + 10 + "\nMana Points: " + 5;
+        UserData ud = GameController.instance.GetPlayerData();
+        PlayerStateData psd = GameController.instance.GetPlayerStateData();
+
+        playerInfoText.text = ud.username.Replace("\"", "") + "#" + ud.tag.Replace("\"", "") +
+                              "\nHealth Points: " + psd.healthPoints + "\nMana Points: " + psd.manaPoints;
+
+        //TODO: ovo preko player list
         playerTwoInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
-        
-        ChangeTurnText();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        
+        SetTexts();
+        ChangeTurnText();
     }
 
     public void SkipTurn()
     {
-        GameController.instance.GetPlayer().turn = false;
+        GameData gd = GameController.instance.GetGameData();
+        gd.whoseTurnID = 12; //TODO: da ide preko player liste
+        PlayerStateData psd = GameController.instance.GetPlayerStateData();
+        psd.manaPoints += 1;
+
+        //TODO: odigrati potez kao skip turn da bi se BP updateovala
+
+        GameController.instance.UpdateGameData(gd);
+        GameController.instance.UpdatePlayerStateData(psd);
+
+        SetTexts();
         ChangeTurnText();
     }
 

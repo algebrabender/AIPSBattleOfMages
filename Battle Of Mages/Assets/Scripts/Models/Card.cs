@@ -26,8 +26,8 @@ public class Card : MonoBehaviour
 
         //titleText.text = cardData.cardTitle;
         //descriptionText.text = cardData.cardDescription;
-        cardImage.sprite = cardData.cardImage;
-        frameImage.sprite = cardData.frameImage;
+        //cardImage.sprite = cardData.cardImage;
+        //frameImage.sprite = cardData.frameImage;
 
         //costImage.sprite = GameController.instance.healthNumbers[cardData.cost];
         //damageImage.sprite = GameController.instance.damageNumbers[cardData.damage];

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,15 +7,25 @@ using UnityEngine.UI;
 public class Player
 {
     private UserData playerData;
-    internal bool turn;
+    private DeckData deckData;
 
     internal void SetPlayer(UserData ud)
     {
         this.playerData = ud;
     }
 
-    internal UserData GetPlayer()
+    internal UserData GetPlayerData()
     {
         return this.playerData;
+    }
+
+    internal void SetDeck(DeckData dd)
+    {
+        this.deckData = dd;
+    }
+
+    internal DeckData GetDeckData()
+    {
+        return this.deckData;
     }
 }
