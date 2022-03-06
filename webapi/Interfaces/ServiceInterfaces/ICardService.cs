@@ -15,7 +15,7 @@ namespace webapi.Interfaces.ServiceInterfaces
         Task<List<Card>> GetCardsByType(string type);
         Task<List<Card>> GetCardsByManaCost(int manaCost);
         Task<List<Card>> GetCardsByDamage(int damage);
-
+        Task<List<Card>> GetCardsByMagic(string magic);
 
 
 

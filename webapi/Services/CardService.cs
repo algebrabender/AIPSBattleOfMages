@@ -84,5 +84,10 @@ namespace webapi.Services
         {
            return await this.unitOfWork.CardRepository.GetCardsByType(type);
         }
+
+        public async Task<List<Card>> GetCardsByMagic(string magic)
+        {
+            return await this.unitOfWork.CardRepository.GetCardsByMagic(magic);
+        }
     }
 }

@@ -26,13 +26,57 @@ namespace webapi.Services
             public int NextPlayerID { set; get; }
         }
 
+        private static void Shuffle (List<Card> cards)
+        {
+            Random rand = new Random();
+            int count = cards.Count;
+            while (count > 1)
+            {
+                count--;
+                int j = rand.Next(count + 1);
+                Card c = cards[j];
+                cards[j] = cards[count];
+                cards[count] = c;
+            }
+        }
+
+        private async void DeckCreating(Deck deck, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+        {
+            //TODO: Proveriti sa svim kartama da li je shuffle ok
+            //List<Card> deckCards = new List<Card>(30);
+            List<Card> attackCards = await this.unitOfWork.CardRepository.GetCardsByType("attack");
+            Shuffle(attackCards);
+            List<Card> spellCards = await this.unitOfWork.CardRepository.GetCardsByType("heal");
+            Shuffle(spellCards);
+            List<Card> buffCards = await this.unitOfWork.CardRepository.GetCardsByType("add damage");
+            buffCards.AddRange(await this.unitOfWork.CardRepository.GetCardsByType("reduce cost"));
+                Shuffle(buffCards);
+
+                int i = 0;
+                int max = Math.Max(numOfAttackCards, numOfSpellCards);
+                max = Math.Max(max, numOfBuffCards);
+                while (i < max)
+                {
+                    if (i < numOfAttackCards)
+                        this.unitOfWork.CardDeckRepository.AddCardToDeck(attackCards[i], deck);
+                        //deckCards.Add(attackCards[i]);
+                    if (i < numOfSpellCards)
+                        this.unitOfWork.CardDeckRepository.AddCardToDeck(spellCards[i], deck);
+                        //deckCards.Add(spellCards[i]);
+                    if (i < numOfBuffCards)
+                        this.unitOfWork.CardDeckRepository.AddCardToDeck(buffCards[i], deck);
+                        //deckCards.Add(buffCards[i]);
+                    i++;
+                }
+        }
+
         public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub) 
         {
             this.unitOfWork = unitOfWork;
             this.hubService = new HubService(hub);
         }
 
-        public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
+        public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             using(unitOfWork)
             {
@@ -47,7 +91,7 @@ namespace webapi.Services
                 unitOfWork.GameRepository.Create(game);
 
                 terrain.Games.Add(game);
-                //TODO: deck
+
                 Deck deck = new Deck();
                 deck.NumberOfCards = 30;
 
@@ -55,10 +99,7 @@ namespace webapi.Services
 
                 await unitOfWork.CompleteAsync();
 
-                //TODO: izmeniti hardkodiranje
-                Card card1 = await this.unitOfWork.CardRepository.GetById(1);
-                Deck deck1 = await this.unitOfWork.DeckRepository.GetDeckWithCards(deck.ID);
-                this.unitOfWork.CardDeckRepository.AddCardToDeck(card1, deck1);
+                this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
 
                 int gameID = game.ID;
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
@@ -88,7 +129,7 @@ namespace webapi.Services
                 return game;
             }
         }
-        public async Task<Game> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
+        public async Task<Game> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             using (unitOfWork)
             {
@@ -102,21 +143,14 @@ namespace webapi.Services
                 if (user == null)
                     return null;
 
-                //TODO: deck
                 Deck deck = new Deck();
-                deck.NumberOfCards = 30; //ovo ce trebati da se salje kao parametar
+                deck.NumberOfCards = 30; 
 
                 unitOfWork.DeckRepository.Create(deck);
 
                 await unitOfWork.CompleteAsync();
 
-                //TODO: izmeniti hardkodiranje
-                Card card1 = await this.unitOfWork.CardRepository.GetById(1005);
-                Deck deck1 = await this.unitOfWork.DeckRepository.GetDeckWithCards(deck.ID);
-                this.unitOfWork.CardDeckRepository.AddCardToDeck(card1, deck1);
-
-                Card card2 = await this.unitOfWork.CardRepository.GetById(1006);
-                this.unitOfWork.CardDeckRepository.AddCardToDeck(card2, deck1);
+                this.DeckCreating(deck, numOfSpellCards, numOfAttackCards, numOfBuffCards);
 
                 Mage mage = await this.unitOfWork.MageRepository.GetMageByType(mageType);
                 PlayerState playerState = new PlayerState();

@@ -54,6 +54,23 @@ namespace webapi.Repository
             return await this.dbSet.Where(card => card.Type == type).ToListAsync();
         }
 
+        public async Task<List<Card>> GetCardsByMagic(string magic)
+        {
+            switch (magic)
+            {
+                case "fire":
+                    return await this.dbSet.Where(card => card.Fire == 1).ToListAsync();
+                case "ice":
+                    return await this.dbSet.Where(card => card.Ice == 1).ToListAsync();
+                case "air":
+                    return await this.dbSet.Where(card => card.Air == 1).ToListAsync();
+                case "earth":
+                    return await this.dbSet.Where(card => card.Earth == 1).ToListAsync();
+                default:
+                    return null;
+            }
+        }
+
         public override void Update(Card entity)
         {
             base.Update(entity);

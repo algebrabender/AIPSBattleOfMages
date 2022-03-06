@@ -90,6 +90,14 @@ namespace webapi.Controllers
             return Ok(card);
         }
 
+        [Route("GetCardsByMagic/{magic}")]
+        [HttpGet]
+        public async Task<ActionResult> GetCardsByMagic(string magic)
+        {
+            var cards = await this.cardService.GetCardsByMagic(magic);
+            return Ok(cards);
+        }
+
         [Route("CreateCard")]
         [HttpPost]
         public async Task<ActionResult> CreateCard([FromBody] Card card)
