@@ -77,14 +77,29 @@ public class GameSetUp : MonoBehaviour
 
     public async void JoinGame()
     {
-        int gameID;
-        Int32.TryParse(gameIDEntryField.text, out gameID);
+        string mageType = ((MagicType)typeOfMageDropdown.value).ToString();
+        int userID = GameController.instance.GetPlayerData().id;
+        int spellCards = Int32.Parse(numOfSpellCards.text);
+        int attackCards = Int32.Parse(numOfAttackCards.text);
+        int buffCards = Int32.Parse(numOfBuffCards.text);
+        int gameID = Int32.Parse(gameIDEntryField.text);
 
-        string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
+        GameController.instance.apiHelper.AddUserToGame(gameID, userID, mageType, spellCards, attackCards, buffCards);
+        GameData gd = GameController.instance.apiHelper.gd;
+        if(gd != null)
+        {
 
-        await GameController.instance.signalRConnector.JoinGame(gameID, username);
+            string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
+            await GameController.instance.signalRConnector.JoinGame(gameID, username);
 
-        SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+            
+            //GameController.instance.apiHelper.GetPlayerStateData(gd.id);
+
+            //TODO
+
+            SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+        }
+
     }
 
     public void Back()

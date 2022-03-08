@@ -32,5 +32,14 @@ namespace webapi.Controllers
 
             return Ok(ps);
         }
+
+        [Route("GetPlayersInGame/{gameID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetPlayersInGame(int gameID)
+        {
+            var ps = await playerStateService.GetPlayersInGame(gameID);
+
+            return Ok(ps);
+        }
     }
 }

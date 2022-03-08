@@ -9,5 +9,6 @@ namespace webapi.Interfaces.RepositoryInterfaces
     public interface IGameRepository : IBaseRepository<Game>
     {
         Task<Game> GetGameWithTerrain(int gameID);
+        Task<Game> GetGameWithPlayerStates(int gameID);
     }
 }

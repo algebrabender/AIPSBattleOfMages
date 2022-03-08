@@ -41,5 +41,11 @@ namespace webapi.Repository
             var game = await this.dbSet.Include(game => game.Terrain).FirstOrDefaultAsync(game => game.ID == gameID);
             return game;
         }
+
+        public async Task<Game> GetGameWithPlayerStates(int gameID)
+        {
+            var game = await this.dbSet.Include(game => game.PlayerStates).FirstOrDefaultAsync(game => game.ID == gameID);
+            return game; 
+        }
     }
 }

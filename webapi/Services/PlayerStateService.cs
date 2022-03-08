@@ -18,6 +18,20 @@ namespace webapi.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public async Task<List<PlayerState>> GetPlayersInGame(int gameID)
+        {
+            using (unitOfWork)
+            {
+                Game game = await unitOfWork.GameRepository.GetGameWithPlayerStates(gameID);
+                if(game != null)
+                {
+                    return game.PlayerStates;
+                }
+
+                return null;
+            }
+        }
+
         public async Task<PlayerState> GetPlayerStateByGameID(int gameID)
         {
             using (unitOfWork)

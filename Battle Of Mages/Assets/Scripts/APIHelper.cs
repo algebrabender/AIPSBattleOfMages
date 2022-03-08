@@ -60,6 +60,17 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 
+	public void AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+    {
+		string link = "https://localhost:5001/Game/AddUserToGame/" + gameID + "/" + userID + "/" + mageType 
+			+ "/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
+
+		RestClient.Put<GameData>(link, "").Then(res =>
+		{
+			this.gd = res;
+		}).Catch(err => this.LogMessage(err.Message));
+    }
+
 	public void GetPlayerStateData(int gameID)
 	{
 		if (this.psd != null)
