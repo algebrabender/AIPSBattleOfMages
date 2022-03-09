@@ -11,11 +11,25 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public Text welcomeText;
+    public Text invitesText;
 
     void Start()
     {
+        GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
+
         welcomeText.text = "Welcome " + GameController.instance.GetPlayerData().username.Replace("\"", "") + 
                             "#" + GameController.instance.GetPlayerData().tag.Replace("\"", "") + "!";
+    }
+
+    private void UpdateInvites(InviteData obj)
+    {
+        var lastInvites = this.invitesText.text;
+
+        if (string.IsNullOrEmpty(lastInvites) == false)
+            lastInvites += "\n";
+
+        lastInvites += $"User {obj.userFrom} invited you to Game with ID: {obj.gameID}"; //TODO: videti zasto se na updateuje text field
+        this.invitesText.text = lastInvites;
     }
 
     public void CreateNewGame()

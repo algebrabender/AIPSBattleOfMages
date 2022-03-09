@@ -106,10 +106,11 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 
-	public void Turn()
+	public void Turn(int gameID, int userID, int manaSpent, int attackedUser, int damageDone, int nextUserID, int cardID)
 	{
-		//TODO: srediti link
-		RestClient.Put<GameData>("https://localhost:5001/Game/Turn/7043/2018/2/3/3/3/5", null).Then(res =>
+		string link = "https://localhost:5001/Game/Turn/" + gameID + "/" + userID + "/" + manaSpent
+					  + "/" + attackedUser + "/" + damageDone + "/" + nextUserID + "/" + cardID;
+		RestClient.Put<GameData>(link, null).Then(res =>
 		{
 			GameController.instance.UpdateGameData(res);
 		}).Catch(err => this.LogMessage(err.Message));

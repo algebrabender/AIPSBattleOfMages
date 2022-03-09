@@ -25,18 +25,6 @@ public class GameSetUp : MonoBehaviour
         Ice
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public async void CreateGame()
     {
         string terrain = ((MagicType)typeOfTerrainDropdown.value).ToString();

@@ -20,7 +20,7 @@ public class DemoScene : MonoBehaviour
     public void Start()
     {
         //GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
-        GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
+        //GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
         //GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
         //GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
         //GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;

@@ -7,6 +7,6 @@ public class TurnData
     public int playedByUser;
     public CardData card;
     public PlayerStateData attackedUser;
-    public int DamageDone;
-    public int NextPlayerID;
+    public int damageDone;
+    public int nextPlayerID;
 }
