@@ -6,24 +6,17 @@ using UnityEngine;
 public class Game
 {
     private GameData gameData;
-    private PlayerStateData playerStateData;
     private List<Player> players;
 
-    internal void SetGame(GameData gd, List<Player> players, PlayerStateData psd)
+    internal void SetGame(GameData gd, List<Player> players)
     {
         this.gameData = gd;
         this.players = players;
-        this.playerStateData = psd;
     }
 
     internal GameData GetGameData()
     {
         return this.gameData;
-    }
-
-    internal PlayerStateData GetPlayerStateData()
-    {
-        return this.playerStateData;
     }
 
     internal List<Player> GetGamePlayers()
@@ -34,12 +27,6 @@ public class Game
     internal void UpdateGameData(GameData gd)
     {
         this.gameData = gd;
-    }
-
-
-    internal void UpdatePlayerStateData(PlayerStateData psd)
-    {
-        this.playerStateData = psd;
     }
 
     internal void AddPlayer(Player player)

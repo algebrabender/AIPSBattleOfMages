@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Assets.Scripts;
 using System;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,14 +19,14 @@ public class DemoScene : MonoBehaviour
 
     public void Start()
     {
-        GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
+        //GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
         GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
-        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
-        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
-        GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;
+        //GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinMessage;
+        //GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinMessage;
+        //GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurnMessage;
     }
 
-    private void UpdateChat(ChatMessage obj)
+    private void UpdateChat(ChatMessageData obj)
     {
         var lastMessages = this.chatMessagesText.text;
 
@@ -38,14 +37,14 @@ public class DemoScene : MonoBehaviour
         this.chatMessagesText.text = lastMessages;
     }
 
-    private void UpdateInvites(Invite obj)
+    private void UpdateInvites(InviteData obj)
     {
         var lastInvites = this.invitesText.text;
 
         if (string.IsNullOrEmpty(lastInvites) == false)
             lastInvites += "\n";
 
-        lastInvites += $"User {obj.UserFrom} invited you to Game with ID: {obj.GameID}";
+        lastInvites += $"User {obj.userFrom} invited you to Game with ID: {obj.gameID}";
         this.invitesText.text = lastInvites;
     }
 

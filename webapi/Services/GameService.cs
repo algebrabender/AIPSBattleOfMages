@@ -285,14 +285,14 @@ namespace webapi.Services
                 turn.DamageDone = damageDone;
                 turn.NextPlayerID = game.WhoseTurnID;
                 turn.Card = card;
-                string turnMessage = "Played By UserID: " + turnUserID 
-                                    + "\nAttacked UserID:" + umgAttackedUser.ID
-                                    + ", Damage Done:" + damageDone
-                                    + ", New Health Points: " + umgAttackedUser.HealthPoints
-                                    + "\nNext Player UserID: " + nextUserID;
+                // string turnMessage = "Played By UserID: " + turnUserID 
+                //                     + "\nAttacked UserID:" + umgAttackedUser.ID
+                //                     + ", Damage Done:" + damageDone
+                //                     + ", New Health Points: " + umgAttackedUser.HealthPoints
+                //                     + "\nNext Player UserID: " + nextUserID;
                 
-                //await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
-                await hubService.NotifyOnGameChanges(gameID, "Turn", turnMessage);
+                await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
+                //await hubService.NotifyOnGameChanges(gameID, "Turn", turnMessage);
                 
                 return game;
             }

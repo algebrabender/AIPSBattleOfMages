@@ -22,108 +22,10 @@ public class WelcomeMenu : MonoBehaviour
     public string firstNameText;
     public string lastNameText;
 
-    public void UserNameEntered()
-    {
-        this.LogCurrentUserName();
-
-        //passwordEntryField.ActivateInputField();
-    }
-
-    public void PasswordEntered()
-    {
-        this.LogCurrentPassword();
-    }
-
-    public void FirstNameEntered()
-    {
-        this.LogCurrentFirstName();
-
-        //lastNameEntryField.ActivateInputField();
-    }
-
-    public void LastNameEntered()
-    {
-        this.LogCurrentLastName();
-
-        //userNameEntryField.ActivateInputField();
-    }
-
-    private void LogCurrentUserName()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
-        {
-            //TODO: ako je signup prov
-
-            userNameText = userNameEntryField.text;
-        }
-        else
-        {
-            string text = userNameEntryField.text;
-            int textLen = text.Length;
-            if (text.Substring(textLen - 5).Contains("#"))
-            {
-                string usernameTag = text.Split('#')[1];
-                if (usernameTag.Length == 4)
-                    userNameText = text;
-                else
-                    userNameEntryField.text = "#Tag must have 4 numbers!";
-            }
-            else
-                userNameEntryField.text = "Please insert Username with #Tag!";
-        }
-    }
-
-    private void LogCurrentPassword()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
-        {
-            string text = passwordEntryField.text;
-
-            if (text.Length < 6)
-            {
-                passwordEntryField.text = "Password must have at least 6 characters!";
-                passwordEntryField.contentType = InputField.ContentType.Standard;
-            }
-            else if (!text.Any(char.IsDigit))
-            {
-                passwordEntryField.text = "Password must have at least 1 number!";
-                passwordEntryField.contentType = InputField.ContentType.Standard;
-            }
-            else if (!text.Any(char.IsUpper))
-            {
-                passwordEntryField.text = "Password must have at least 1 uppercase letter!";
-                passwordEntryField.contentType = InputField.ContentType.Standard;
-            }
-            else
-            {
-                passwordText = passwordEntryField.text;
-            }
-            //moze i da se doda za special characters preko regexa a i ne mora
-
-            //prebaciti prikaz greske negde drugde zbog podesavanja contenttypea
-        }
-        else
-        {
-            passwordText = passwordEntryField.text;
-        }
-    }
-
-    private void LogCurrentFirstName()
-    {
-        //TODO: provera neka?
-        firstNameText = firstNameEntryField.text;
-    }
-
-    private void LogCurrentLastName()
-    {
-        //TODO: provera neka?
-        lastNameText = lastNameEntryField.text;
-    }
-
     private bool ProcessInput(string username, string password, int sceneNumber, string firstName = "", string lastName = "")
     {
         //JOS NESTO PORED USERNAME/PASSWORD
-        //TODO: if 1 -> api helper sign up else if 2 -> api helper log in
+        //TODO: if 1 -> api helper sign up else if 0 -> api helper log in
         if (sceneNumber == 1)
         {
             GameController.instance.apiHelper.SignUp(username, password, firstName, lastName);
@@ -183,6 +85,11 @@ public class WelcomeMenu : MonoBehaviour
 
     public void SignUp()
     {
+        userNameText = userNameEntryField.text;
+        passwordText = passwordEntryField.text;
+        firstNameText = firstNameEntryField.text;
+        lastNameText = lastNameEntryField.text;
+
         if (SuccesfulSignUp())
         {
             SceneManager.LoadScene(2);

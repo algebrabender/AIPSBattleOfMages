@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,25 @@ public class Gameplay : MonoBehaviour
     public Text playerInfoText;
     public Text playerTwoInfoText;
     public Text turnText;
+    public Text chatText;
+    public InputField messageInputField;
+
+    private void UpdateChat(ChatMessageData obj)
+    {
+        var lastMessages = chatText.text;
+
+        if (string.IsNullOrEmpty(lastMessages) == false)
+            lastMessages += "\n";
+
+        lastMessages += $"{obj.Username}: {obj.Message}";
+
+        chatText.text = lastMessages; //TODO: videti zasto ne updatuje text polje
+    }
+
+    private void UpdateTurn(TurnData obj)
+    {
+
+    }
 
     private void ChangeTurnText()
     {
@@ -31,8 +51,17 @@ public class Gameplay : MonoBehaviour
 
     void Start()
     {
+        GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
+        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateChat;
+        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateChat;
+        GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurn;
         SetTexts();
         ChangeTurnText();
+    }
+
+    void Update()
+    {
+           
     }
 
     public void SkipTurn()
@@ -49,6 +78,16 @@ public class Gameplay : MonoBehaviour
 
         SetTexts();
         ChangeTurnText();
+    }
+
+    public async void SendChatMessage()
+    {
+        int gameID = GameController.instance.GetGameData().id;
+        UserData player = GameController.instance.GetPlayerData();
+        string username = player.username.Replace("\"", "");
+        string message = messageInputField.text;
+
+        await GameController.instance.signalRConnector.SendChatMessage(gameID, username, message);
     }
 
     public void Quit()

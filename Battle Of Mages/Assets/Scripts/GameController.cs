@@ -34,9 +34,9 @@ public class GameController : MonoBehaviour
         return this.player;
     }
 
-    public void SetPlayerData(UserData ud)
+    public void SetPlayerData(UserData ud, PlayerStateData psd = null)
     {
-        this.player.SetPlayer(ud);
+        this.player.SetPlayer(ud, psd);
     }
 
     public UserData GetPlayerData()
@@ -44,9 +44,9 @@ public class GameController : MonoBehaviour
         return this.player.GetPlayerData();
     }
 
-    public void SetGame(GameData gd, List<Player> players, PlayerStateData psd)
+    public void SetGame(GameData gd, List<Player> players)
     {
-        this.game.SetGame(gd, players, psd);
+        this.game.SetGame(gd, players);
     }
 
     public GameData GetGameData()
@@ -66,12 +66,12 @@ public class GameController : MonoBehaviour
 
     public PlayerStateData GetPlayerStateData()
     {
-        return this.game.GetPlayerStateData();
+        return this.player.GetPlayerStateData();
     }
 
     public void UpdatePlayerStateData(PlayerStateData psd)
     {
-        this.game.UpdatePlayerStateData(psd);
+        this.player.UpdatePlayerStateData(psd);
     }
 
     public List<Player> GetGamePlayers()

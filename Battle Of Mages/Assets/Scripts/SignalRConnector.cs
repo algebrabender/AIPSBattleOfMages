@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Microsoft.AspNetCore.SignalR.Client;
-using Assets.Scripts;
 
 public class SignalRConnector
 {
     private HubConnection connection;
-    public Action<ChatMessage> OnChatMessageReceived;
-    public Action<Invite> OnInviteReceived;
-    public Action<string> OnJoinMessageReceived;
-    public Action<string> OnLeaveMessageReceived;
-    public Action<string> OnTurnInfoReceived;
+    public Action<ChatMessageData> OnChatMessageReceived;
+    public Action<InviteData> OnInviteReceived;
+    public Action<ChatMessageData> OnJoinMessageReceived;
+    public Action<ChatMessageData> OnLeaveMessageReceived;
+    public Action<TurnData> OnTurnInfoReceived;
 
     public SignalRConnector()
     {
@@ -27,29 +26,37 @@ public class SignalRConnector
 
         connection.On<string, string>("ReceiveMessage", (username, message) =>
         {
-            OnChatMessageReceived.Invoke(new ChatMessage
+            OnChatMessageReceived.Invoke(new ChatMessageData
             {
                 Username = username,
                 Message = message
             });
         });
 
-        connection.On<string>("SendMessageJoin", message =>
+        connection.On<string, string>("SendMessageJoin", (username, message) =>
         {
-            OnJoinMessageReceived.Invoke(message);
+            OnJoinMessageReceived.Invoke(new ChatMessageData
+            {
+                Username = username,
+                Message = message
+            });
         });
 
-        connection.On<string>("SendMessageLeave", message =>
+        connection.On<string, string> ("SendMessageLeave", (username, message) =>
         {
-            OnLeaveMessageReceived.Invoke(message);
+            OnLeaveMessageReceived.Invoke(new ChatMessageData
+            {
+                Username = username,
+                Message = message
+            });
         });
 
-        connection.On<Invite>("ReceivedInvite", invite =>
+        connection.On<InviteData>("ReceivedInvite", invite =>
         {
             OnInviteReceived.Invoke(invite);
         });
 
-        connection.On<string>("Turn", turn =>
+        connection.On<TurnData>("Turn", turn =>
         {
             OnTurnInfoReceived.Invoke(turn);
         });

@@ -24,7 +24,7 @@ namespace webapi.Communication
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "Game" + gameID);
 
-            await Clients.Group("Game" + gameID).SendAsync("SendMessageJoin", username + " has joined the game!");
+            await Clients.Group("Game" + gameID).SendAsync("SendMessageJoin", username, " has joined the game!");
             
             return "Joined group for Game" + gameID;
         }
@@ -33,7 +33,7 @@ namespace webapi.Communication
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "Game" + gameID);
             
-            await Clients.Group("Game" + gameID).SendAsync("SendMessageLeave", username + " has left the game!");
+            await Clients.Group("Game" + gameID).SendAsync("SendMessageLeave", username, " has left the game!");
 
             return "Left group for Game" + gameID;
         }

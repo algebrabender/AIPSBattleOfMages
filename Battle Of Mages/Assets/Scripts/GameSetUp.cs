@@ -66,7 +66,9 @@ public class GameSetUp : MonoBehaviour
 
             if (psd != null)
             {
-                GameController.instance.SetGame(newGame, players, psd);
+                GameController.instance.SetGame(newGame, players);
+
+                GameController.instance.UpdatePlayerStateData(psd);
 
                 GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 

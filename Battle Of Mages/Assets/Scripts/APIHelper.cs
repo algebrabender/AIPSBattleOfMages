@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Proyecto26;
 using UnityEditor;
@@ -61,7 +62,7 @@ public class APIHelper
 	}
 
 	public void AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
-    {
+	{
 		string link = "https://localhost:5001/Game/AddUserToGame/" + gameID + "/" + userID + "/" + mageType 
 			+ "/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
 
@@ -69,7 +70,7 @@ public class APIHelper
 		{
 			this.gd = res;
 		}).Catch(err => this.LogMessage(err.Message));
-    }
+	}
 
 	public void GetPlayerStateData(int gameID, int userID)
 	{
@@ -93,10 +94,24 @@ public class APIHelper
 	}
 
 	public void GetPlayersInGame(int gameID)
-    {
+	{
 		RestClient.Get<List<PlayerStateData>>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
 		{
-			//TODO
+			List<Player> players = GameController.instance.GetGamePlayers();
+			foreach (var psd in res)
+			{
+				Player p = players.First(player => player.GetPlayerData().id == psd.userID);
+				p.UpdatePlayerStateData(psd);
+			}
 		}).Catch(err => this.LogMessage(err.Message));
-    }
+	}
+
+	public void Turn()
+	{
+		//TODO: srediti link
+		RestClient.Put<GameData>("https://localhost:5001/Game/Turn/7043/2018/2/3/3/3/5", null).Then(res =>
+		{
+			GameController.instance.UpdateGameData(res);
+		}).Catch(err => this.LogMessage(err.Message));
+	}
 }
