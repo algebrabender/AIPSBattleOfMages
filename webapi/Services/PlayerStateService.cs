@@ -32,11 +32,11 @@ namespace webapi.Services
             }
         }
 
-        public async Task<PlayerState> GetPlayerStateByGameID(int gameID)
+        public async Task<PlayerState> GetPlayerStateByGameID(int gameID, int userID)
         {
             using (unitOfWork)
             {
-                PlayerState ps = await unitOfWork.PlayerStateRepository.GetByGameID(gameID);
+                PlayerState ps = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, userID);
 
                 return ps;
             }

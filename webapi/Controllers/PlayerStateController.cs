@@ -24,14 +24,16 @@ namespace webapi.Controllers
             this.playerStateService = playerStateService;
         }
 
-        [Route("GetPlayerStateForGame/{gameID}")]
+        [Route("GetPlayerStateForGame/{gameID}/{userID}")]
         [HttpGet]
-        public async Task<ActionResult> GetPlayerStateForGame(int gameID)
+        public async Task<ActionResult> GetPlayerStateForGame(int gameID, int userID)
         {
-            var ps = await playerStateService.GetPlayerStateByGameID(gameID);
+            var ps = await playerStateService.GetPlayerStateByGameID(gameID, userID);
 
             return Ok(ps);
         }
+
+
 
         [Route("GetPlayersInGame/{gameID}")]
         [HttpGet]

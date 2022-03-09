@@ -6,6 +6,5 @@ public class GameData
     public int createdGameUserID;
     public int winnerUserID;
     public int whoseTurnID;
-
     
 }

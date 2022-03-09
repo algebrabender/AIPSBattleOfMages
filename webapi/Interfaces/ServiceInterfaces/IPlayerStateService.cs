@@ -8,7 +8,7 @@ namespace webapi.Interfaces.ServiceInterfaces
 {
     public interface IPlayerStateService
     {
-        Task<PlayerState> GetPlayerStateByGameID(int gameID);
+        Task<PlayerState> GetPlayerStateByGameID(int gameID, int userID);
         Task<List<PlayerState>> GetPlayersInGame(int gameID);
     }
 }

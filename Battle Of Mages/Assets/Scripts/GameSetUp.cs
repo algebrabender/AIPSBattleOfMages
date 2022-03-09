@@ -58,7 +58,7 @@ public class GameSetUp : MonoBehaviour
             List<Player> players = new List<Player>();
             players.Add(GameController.instance.GetPlayer());
             PlayerStateData psd;
-            GameController.instance.apiHelper.GetPlayerStateData(newGame.id);
+            GameController.instance.apiHelper.GetPlayerStateData(newGame.id, userID);
 
             await GameController.instance.signalRConnector.JoinGame(newGame.id, GameController.instance.GetPlayerData().username.Replace("\"", ""));
 
@@ -88,16 +88,24 @@ public class GameSetUp : MonoBehaviour
         GameData gd = GameController.instance.apiHelper.gd;
         if(gd != null)
         {
+            GameController.instance.apiHelper.GetPlayerStateData(gd.id, userID);
 
             string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
             await GameController.instance.signalRConnector.JoinGame(gameID, username);
 
-            
-            //GameController.instance.apiHelper.GetPlayerStateData(gd.id);
 
-            //TODO
+            PlayerStateData psd = GameController.instance.apiHelper.psd;
 
-            SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+            if (psd != null)
+            {
+                //TODO: set game
+
+                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
+
+                SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+            }
+
+            //SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
         }
 
     }

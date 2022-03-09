@@ -71,12 +71,12 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
     }
 
-	public void GetPlayerStateData(int gameID)
+	public void GetPlayerStateData(int gameID, int userID)
 	{
 		if (this.psd != null)
 			return;
 
-		RestClient.Get<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID).Then(res =>
+		RestClient.Get<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID + "/" + userID).Then(res =>
 		{
 			//this.LogMessage(JsonUtility.ToJson(res, true));
 			this.psd = res;
@@ -91,4 +91,12 @@ public class APIHelper
 			GameController.instance.GetPlayer().SetDeck(res);
 		}).Catch(err => this.LogMessage(err.Message));
 	}
+
+	public void GetPlayersInGame(int gameID)
+    {
+		RestClient.Get<List<PlayerStateData>>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
+		{
+			//TODO
+		}).Catch(err => this.LogMessage(err.Message));
+    }
 }
