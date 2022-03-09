@@ -63,6 +63,9 @@ public class APIHelper
 
 	public void AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
 	{
+		if (this.gd != null)
+			return;
+
 		string link = "https://localhost:5001/Game/AddUserToGame/" + gameID + "/" + userID + "/" + mageType 
 			+ "/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
 
@@ -97,12 +100,16 @@ public class APIHelper
 	{
 		RestClient.Get<List<PlayerStateData>>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
 		{
-			List<Player> players = GameController.instance.GetGamePlayers();
+			List<Player> players = new List<Player>(res.Count);
 			foreach (var psd in res)
 			{
-				Player p = players.First(player => player.GetPlayerData().id == psd.userID);
+				Player p = new Player();
 				p.UpdatePlayerStateData(psd);
+				p.UpdateUserData(psd.user);
 			}
+
+			GameController.instance.SetGamePlayers(players);
+
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 

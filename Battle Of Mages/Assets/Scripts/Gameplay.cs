@@ -83,6 +83,8 @@ public class Gameplay : MonoBehaviour
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 
+        GameController.instance.apiHelper.GetPlayersInGame(3015);
+
         //TODO: odigrati potez kao skip turn da bi se DB (BP me podseca na blackpink i uvek se zapitam sta je na sekundu) updateovala
 
         GameController.instance.UpdateGameData(gd);

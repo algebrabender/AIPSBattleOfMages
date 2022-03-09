@@ -14,6 +14,16 @@ public class Game
         this.players = players;
     }
 
+    internal void SetGamePlayers(List<Player> players)
+    {
+        this.players = players;
+    }
+
+    internal void SetGameData(GameData gd)
+    {
+        this.gameData = gd;
+    }
+
     internal GameData GetGameData()
     {
         return this.gameData;

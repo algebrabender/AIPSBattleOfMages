@@ -77,5 +77,14 @@ namespace webapi.Repository
 
             return null;
         }
+
+        public async Task<PlayerState> GetWithUserData(int gameID, int userID)
+        {
+            var ps = await this.dbSet.Include(ps => ps.User).FirstOrDefaultAsync(ps => ps.UserID == userID && ps.GameID == gameID);
+            ps.User.Password = null;
+            ps.User.Salt = null;
+            
+            return ps;
+        }
     }
 }

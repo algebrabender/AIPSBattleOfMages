@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class Player
 {
-    private UserData playerData;
+    private UserData userData;
     private DeckData deckData;
     private PlayerStateData playerStateData;
 
     internal void SetPlayer(UserData ud, PlayerStateData psd = null)
     {
-        this.playerData = ud;
+        this.userData = ud;
         this.playerStateData = psd;
     }
 
     internal UserData GetPlayerData()
     {
-        return this.playerData;
+        return this.userData;
     }
 
     internal PlayerStateData GetPlayerStateData()
@@ -29,6 +29,11 @@ public class Player
     internal void UpdatePlayerStateData(PlayerStateData psd)
     {
         this.playerStateData = psd;
+    }
+
+    internal void UpdateUserData(UserData us)
+    {
+        this.userData = us;
     }
 
     internal void SetDeck(DeckData dd)

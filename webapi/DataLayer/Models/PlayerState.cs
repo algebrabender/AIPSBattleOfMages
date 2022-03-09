@@ -14,7 +14,6 @@ namespace webapi.DataLayer.Models
         [Column("UserID")]
         public int UserID { get; set; }
 
-        [JsonIgnore]
         public User User { get; set; }
 
         [Column("MageID")]

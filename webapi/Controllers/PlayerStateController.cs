@@ -33,6 +33,14 @@ namespace webapi.Controllers
             return Ok(ps);
         }
 
+        [Route("GetPlayerStateWithUserData/{gameID}/{userID}")]
+        [HttpGet]
+        public async Task<ActionResult> GetPlayerStateWithUserData(int gameID, int userID)
+        {
+            var ps = await playerStateService.GetPlayerStateWithUserData(gameID, userID);
+
+            return Ok(ps);
+        }
 
 
         [Route("GetPlayersInGame/{gameID}")]

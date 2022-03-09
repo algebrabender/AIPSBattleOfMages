@@ -25,7 +25,16 @@ namespace webapi.Services
                 Game game = await unitOfWork.GameRepository.GetGameWithPlayerStates(gameID);
                 if(game != null)
                 {
-                    return game.PlayerStates;
+                    List<PlayerState> players = new List<PlayerState>(game.PlayerStates.Count);
+                    foreach(var player in game.PlayerStates)
+                    {
+                        PlayerState ps = await unitOfWork.PlayerStateRepository.GetWithUserData(gameID, player.UserID);
+
+                        players.Add(ps);
+                       
+                    }
+
+                     return players;
                 }
 
                 return null;
@@ -39,6 +48,20 @@ namespace webapi.Services
                 PlayerState ps = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, userID);
 
                 return ps;
+            }
+        }
+
+        public async Task<PlayerState> GetPlayerStateWithUserData(int gameID, int userID)
+        {
+            using (unitOfWork)
+            {
+                PlayerState ps = await unitOfWork.PlayerStateRepository.GetWithUserData(gameID, userID);
+
+                ps.User.Password = null;
+                ps.User.Salt = null;
+
+                return ps;
+                
             }
         }
     }

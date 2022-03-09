@@ -61,6 +61,11 @@ namespace webapi.Repository
             return base.GetById(id);
         }
 
+        public async Task<List<CardDeck>> GetCardDecksInDeck(int deckID)
+        {
+            return await this.dbSet.Include(d => d.Card).Where(d => d.DeckID == deckID).ToListAsync();
+        }
+
         public override void Update(CardDeck entity)
         {
             base.Update(entity);

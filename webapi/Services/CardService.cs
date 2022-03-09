@@ -59,11 +59,17 @@ namespace webapi.Services
         {
             using(unitOfWork)
             {
-                Deck d = await unitOfWork.DeckRepository.GetDeckWithCards(deckID);
+                List<CardDeck> cd = await unitOfWork.CardDeckRepository.GetCardDecksInDeck(deckID);
 
-                if(d != null)
+                if(cd != null)
                 {
-                    return d.Cards.Select(item => item.Card);
+                    List<Card> cards = new List<Card>(cd.Count);
+                    foreach(var c in cd)
+                    {
+                        cards.Add(c.Card);
+                    }
+
+                    return cards;                
                 }
 
                 return null;

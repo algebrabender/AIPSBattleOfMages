@@ -11,4 +11,5 @@ public class PlayerStateData
     public int deckID;
     public int manaPoints;
     public int healthPoints;
+    public UserData user;
 }

@@ -10,5 +10,6 @@ namespace webapi.Interfaces.ServiceInterfaces
     {
         Task<PlayerState> GetPlayerStateByGameID(int gameID, int userID);
         Task<List<PlayerState>> GetPlayersInGame(int gameID);
+        Task<PlayerState> GetPlayerStateWithUserData(int gameID, int userID);
     }
 }
