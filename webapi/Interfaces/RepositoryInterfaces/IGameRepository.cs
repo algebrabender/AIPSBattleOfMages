@@ -10,5 +10,6 @@ namespace webapi.Interfaces.RepositoryInterfaces
     {
         Task<Game> GetGameWithTerrain(int gameID);
         Task<Game> GetGameWithPlayerStates(int gameID);
+        Task<int> GetRandomGameID();
     }
 }

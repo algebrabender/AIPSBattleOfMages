@@ -39,6 +39,16 @@ namespace webapi.Controllers
             var result = await gameService.AddUserToGame(gameID, userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
             return Ok(result);
         }
+        
+        [Route("JoinRandomGame/{userID}/{mageType}/{numOfSpellCards}/{numOfAttackCards}/{numOfBuffCards}")]
+        [HttpPut]
+        public async Task<ActionResult> JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+        {
+            var result = await gameService.JoinRandomGame(userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
+        }
 
         [Route("RemoveUserFromGame/{gameID}/{userID}")]
         [HttpPut]

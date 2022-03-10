@@ -47,5 +47,14 @@ namespace webapi.Repository
             var game = await this.dbSet.Include(game => game.PlayerStates).FirstOrDefaultAsync(game => game.ID == gameID);
             return game; 
         }
+
+        public async Task<int> GetRandomGameID()
+        {
+            var game = await this.dbSet.FirstOrDefaultAsync(game => game.NumOfPlayers > game.PlayerStates.Count);
+            if (game != null)
+                return game.ID;
+
+            return -1;
+        }
     }
 }

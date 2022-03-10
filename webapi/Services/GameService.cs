@@ -312,5 +312,17 @@ namespace webapi.Services
                 return true;
             }
         }
+
+        public async Task<Game> JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+        {
+            using (unitOfWork)
+            {
+                int gameID = await unitOfWork.GameRepository.GetRandomGameID();
+                if(gameID > -1)
+                    return await this.AddUserToGame(gameID, userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
+                return null;
+                
+            }
+        }
     }
 }
