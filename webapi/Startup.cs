@@ -62,8 +62,9 @@ namespace webapi
                 options.UseSqlServer(Configuration.GetConnectionString("BattleOfMagesDB"));
             });
 
-            services.AddControllers().AddJsonOptions(x =>
-                            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers();
+            // services.AddControllers().AddJsonOptions(x =>
+            //                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             services.AddSignalR(options =>
             {

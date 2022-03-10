@@ -87,20 +87,22 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 
+
+
 	public void GetDeckWithCards(int deckID)
 	{
-		RestClient.Get<DeckData>("https://localhost:5001/Deck/GetDeckByID/" + deckID).Then(res =>
-		{
-			this.LogMessage(JsonUtility.ToJson(res, true));
+		RestClient.GetArray<CardData>("https://localhost:5001/Card/GetCardsByDeckID/" + deckID).Then(res =>
+		{		
+			//this.LogMessage(JsonUtility.ToJson(res, true));
 			GameController.instance.GetPlayer().SetDeck(res);
 		}).Catch(err => this.LogMessage(err.Message));
 	}
 
 	public void GetPlayersInGame(int gameID)
 	{
-		RestClient.Get<List<PlayerStateData>>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
+		RestClient.GetArray<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
 		{
-			List<Player> players = new List<Player>(res.Count);
+			List<Player> players = new List<Player>(res.Length);
 			foreach (var psd in res)
 			{
 				Player p = new Player();

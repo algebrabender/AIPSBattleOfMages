@@ -14,6 +14,7 @@ namespace webapi.DataLayer.Models
         [Column("UserID")]
         public int UserID { get; set; }
 
+        //[JsonIgnore]
         public User User { get; set; }
 
         [Column("MageID")]
@@ -25,6 +26,7 @@ namespace webapi.DataLayer.Models
         [Column("GameID")]
         public int GameID { get; set; }
 
+        [JsonIgnore]
         public Deck Deck { get; set; }
 
         public int DeckID { get; set; }
