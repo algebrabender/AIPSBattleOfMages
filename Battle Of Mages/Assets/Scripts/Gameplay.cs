@@ -81,22 +81,44 @@ public class Gameplay : MonoBehaviour
         }
 
         SetTexts();
+
+        //Deal New Card
+    }
+
+    private void UpdateJoinLeave(ChatMessageData obj)
+    {
+        UpdateChat(obj);
+
+        SetTexts();
+
+        //Deal Cards
     }
 
     void Start()
     {
         GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
-        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateChat;
-        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateChat;
+        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinLeave;
+        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinLeave;
         GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurn;
 
         SetTexts();
         ChangeTurnText();
+
+        //Deal Cards
     }
 
     void Update()
     {
         //TODO: ako nije Player Turn "blokirati" igranje poteza, ali dozvoliti chat
+
+        if (GameController.instance.CheckTurn())
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     public void SkipTurn()
@@ -112,7 +134,7 @@ public class Gameplay : MonoBehaviour
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 
-        GameController.instance.apiHelper.GetPlayersInGame(3015);
+        //GameController.instance.apiHelper.GetPlayersInGame(3015);
 
         GameController.instance.apiHelper.SkipTurn(gd.id, GameController.instance.GetPlayerData().id, gd.whoseTurnID);
 
