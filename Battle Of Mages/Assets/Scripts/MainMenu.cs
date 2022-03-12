@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
     {
         GameController.instance.signalRConnector.OnInviteReceived += UpdateInvites;
 
-        welcomeText.text = "Welcome " + GameController.instance.GetPlayerData().username.Replace("\"", "") + 
+        welcomeText.text = "Welcome " + GameController.instance.GetPlayerData().username.Replace("\"", "") +
                             "#" + GameController.instance.GetPlayerData().tag.Replace("\"", "") + "!";
     }
 
@@ -40,6 +40,11 @@ public class MainMenu : MonoBehaviour
     public void JoinGame()
     {
         SceneManager.LoadScene(4);
+    }
+
+    public void JoinRandomGame()
+    {
+        SceneManager.LoadScene(8);
     }
 
     public void Quit()

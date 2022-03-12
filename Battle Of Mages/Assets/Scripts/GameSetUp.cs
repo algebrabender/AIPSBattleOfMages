@@ -114,6 +114,46 @@ public class GameSetUp : MonoBehaviour
 
     }
 
+    public async void JoinRandomGame()
+    {
+        string mageType = ((MagicType)typeOfMageDropdown.value).ToString();
+        int userID = GameController.instance.GetPlayerData().id;
+        int spellCards = Int32.Parse(numOfSpellCards.text);
+        int attackCards = Int32.Parse(numOfAttackCards.text);
+        int buffCards = Int32.Parse(numOfBuffCards.text);
+
+        GameController.instance.apiHelper.JoinRandomGame(userID, mageType, spellCards, attackCards, buffCards);
+        GameData gd = GameController.instance.apiHelper.gd;
+
+        if (gd != null)
+        {
+            GameController.instance.apiHelper.GetPlayerStateData(gd.id, userID);
+
+            string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
+            await GameController.instance.signalRConnector.JoinGame(gd.id, username);
+
+            PlayerStateData psd = GameController.instance.apiHelper.psd;
+
+            if (psd != null)
+            {
+                GameController.instance.apiHelper.GetPlayersInGame(gd.id);
+
+                GameController.instance.SetGameData(gd);
+
+                GameController.instance.UpdatePlayerStateData(psd);
+
+                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
+
+                if (gd.numOfPlayers == 2)
+                    SceneManager.LoadScene(5);
+                else if (gd.numOfPlayers == 3)
+                    SceneManager.LoadScene(6);
+                else
+                    SceneManager.LoadScene(7);
+            }
+        }
+    }
+
     public void Back()
     {
         SceneManager.LoadScene(2);

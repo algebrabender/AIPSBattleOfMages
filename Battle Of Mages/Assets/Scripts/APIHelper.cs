@@ -74,6 +74,20 @@ public class APIHelper
 			this.gd = res;
 		}).Catch(err => this.LogMessage(err.Message));
 	}
+	
+	public void JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+    {
+		if (this.gd != null)
+			return;
+		string link = "https://localhost:5001/Game/JoinRandomGame/" + userID + "/" + mageType
+			+"/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
+
+		RestClient.Put<GameData>(link, "").Then(res =>
+		{		this.gd = res;
+		}).Catch(err => this.LogMessage(err.Message));
+
+	}
+
 
 	public void GetPlayerStateData(int gameID, int userID)
 	{
