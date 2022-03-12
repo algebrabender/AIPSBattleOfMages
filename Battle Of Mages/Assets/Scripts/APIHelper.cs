@@ -149,4 +149,14 @@ public class APIHelper
 		}).Catch(err => this.LogMessage(err.Message));
 
 	}
+
+	public void SendInvite(int gameID, string username, string tag, int userFromID)
+    {
+		string link = "https://localhost:5001/Game/SendInvite/" + gameID + "/" + username + "/" + tag + "/" + userFromID;
+
+		RestClient.Put<bool>(link, null).Then(res =>
+		{
+			this.LogMessage(res.ToString());
+		}).Catch(err => this.LogMessage(err.Message));
+	}
 }

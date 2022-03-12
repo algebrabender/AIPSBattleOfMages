@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Gameplay : MonoBehaviour
@@ -168,5 +169,10 @@ public class Gameplay : MonoBehaviour
     public void Quit()
     {
         GameController.instance.Quit();
+    }
+
+    public void SendInvites()
+    {
+        SceneManager.LoadScene(9);
     }
 }
