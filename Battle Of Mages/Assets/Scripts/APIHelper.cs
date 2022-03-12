@@ -124,4 +124,15 @@ public class APIHelper
 			GameController.instance.UpdateGameData(res);
 		}).Catch(err => this.LogMessage(err.Message));
 	}
+
+	public void SkipTurn(int gameID, int userID, int nextUserID)
+	{
+		string link = "https://localhost:5001/Game/SkipTurn/" + gameID + "/" + userID + "/" + nextUserID;
+
+		RestClient.Put<GameData>(link, null).Then(res =>
+		{
+			GameController.instance.UpdateGameData(res);
+		}).Catch(err => this.LogMessage(err.Message));
+
+	}
 }

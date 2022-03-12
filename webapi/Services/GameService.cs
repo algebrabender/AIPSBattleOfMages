@@ -324,5 +324,24 @@ namespace webapi.Services
                 
             }
         }
+
+        public async Task<Game> SkipTurn(int gameID, int turnUserID, int nextUserID)
+        {
+            using (unitOfWork)
+            {
+                User user = await unitOfWork.UserRepository.GetById(turnUserID);
+                PlayerState psdUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
+                psdUser.ManaPoints += 1;                
+                unitOfWork.PlayerStateRepository.Update(psdUser);
+
+                Game game = await unitOfWork.GameRepository.GetById(gameID);
+                game.WhoseTurnID = nextUserID;   
+                unitOfWork.GameRepository.Update(game);
+
+                await unitOfWork.CompleteAsync();
+
+                return game;
+            }
+        }
     }
 }

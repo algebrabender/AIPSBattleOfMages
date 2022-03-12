@@ -28,7 +28,7 @@ public class MainMenu : MonoBehaviour
         if (string.IsNullOrEmpty(lastInvites) == false)
             lastInvites += "\n";
 
-        lastInvites += $"User {obj.userFrom} invited you to Game with ID: {obj.gameID}"; //TODO: videti zasto se na updateuje text field
+        lastInvites += $"User {obj.userFrom} invited you to Game with ID: {obj.gameID}";
         this.invitesText.text = lastInvites;
     }
 

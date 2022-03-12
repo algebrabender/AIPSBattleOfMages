@@ -62,7 +62,12 @@ public class GameSetUp : MonoBehaviour
 
                 GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 
-                SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+                if (gd.numOfPlayers == 2)
+                    SceneManager.LoadScene(5);
+                else if (gd.numOfPlayers == 3)
+                    SceneManager.LoadScene(6);
+                else
+                    SceneManager.LoadScene(7);
             }
         }
     }
@@ -98,10 +103,13 @@ public class GameSetUp : MonoBehaviour
 
                 GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 
-                SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
+                if (gd.numOfPlayers == 2)
+                    SceneManager.LoadScene(5);
+                else if (gd.numOfPlayers == 3)
+                    SceneManager.LoadScene(6);
+                else
+                    SceneManager.LoadScene(7);
             }
-
-            //SceneManager.LoadScene(5); //ubaciti promenu u zavisnosti od broja igraca koja scene se prikazuje
         }
 
     }

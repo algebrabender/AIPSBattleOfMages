@@ -590,6 +590,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInfoText: {fileID: 1718252717}
   playerTwoInfoText: {fileID: 1076425322}
+  playerThreeInfoText: {fileID: 1076425322}
+  playerFourInfoText: {fileID: 1076425322}
   turnText: {fileID: 189682972}
   chatText: {fileID: 1165041566}
   messageInputField: {fileID: 1686744805}

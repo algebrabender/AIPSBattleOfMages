@@ -114,5 +114,14 @@ namespace webapi.Controllers
 
             return Ok(invite);
         }
+
+        [Route("SkipTurn/{gameID}/{turnUserID}/{nextUserID}")]
+        [HttpPut]
+        public async Task<ActionResult> SkipTurn(int gameID, int turnUserID, int nextUserID)
+        {
+            var game = await gameService.SkipTurn(gameID, turnUserID, nextUserID);
+
+            return Ok(game);
+        }
     }
 }

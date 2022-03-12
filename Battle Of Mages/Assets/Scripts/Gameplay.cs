@@ -9,6 +9,8 @@ public class Gameplay : MonoBehaviour
 {
     public Text playerInfoText;
     public Text playerTwoInfoText;
+    public Text playerThreeInfoText = null;
+    public Text playerFourInfoText = null;
     public Text turnText;
     public Text chatText;
     public InputField messageInputField;
@@ -18,19 +20,40 @@ public class Gameplay : MonoBehaviour
         if (GameController.instance.CheckTurn())
             turnText.text = "Your Turn!";
         else
-            turnText.text = "Player Two turn!";
+            turnText.text = "Player Two turn!"; //TODO: promeniti player two na player x
     }
 
     private void SetTexts()
     {
+        GameData gd = GameController.instance.GetGameData();
         UserData ud = GameController.instance.GetPlayerData();
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
 
         playerInfoText.text = ud.username.Replace("\"", "") + "#" + ud.tag.Replace("\"", "") +
                               "\nHealth Points: " + psd.healthPoints + "\nMana Points: " + psd.manaPoints;
 
-        //TODO: ovo preko player list
-        playerTwoInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
+        List<Player> players = GameController.instance.GetGamePlayers();
+
+        for (int i = 1; i <= gd.numOfPlayers /*players.Count*/; i++)
+        {
+            //Player enemy = players[i];
+            //UserData enemyData = enemy.GetPlayerData();
+            //PlayerStateData enemyPSD = enemy.GetPlayerStateData();
+            if (i == 1)
+                playerTwoInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
+            //playerInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+            else if (i == 2)
+                playerThreeInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
+            //playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+            else
+                playerFourInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
+            //playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+        }
+
+        
     }
 
     private void UpdateChat(ChatMessageData obj)
@@ -42,7 +65,7 @@ public class Gameplay : MonoBehaviour
 
         lastMessages += $"{obj.Username}: {obj.Message}";
 
-        chatText.text = lastMessages; //TODO: videti zasto ne updatuje text polje
+        chatText.text = lastMessages;
     }
 
     private void UpdateTurn(TurnData obj)
@@ -79,13 +102,19 @@ public class Gameplay : MonoBehaviour
     public void SkipTurn()
     {
         GameData gd = GameController.instance.GetGameData();
-        gd.whoseTurnID = 12; //TODO: da ide preko player liste
+
+        List<Player> players = GameController.instance.GetGamePlayers();
+
+        int playerID = players.IndexOf(GameController.instance.GetPlayer());
+        UserData nextPlayerData = players[(playerID + 1)%players.Count].GetPlayerData();
+        //gd.whoseTurnID = nextPlayerData.id;
+        gd.whoseTurnID = 12; 
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 
         GameController.instance.apiHelper.GetPlayersInGame(3015);
 
-        //TODO: odigrati potez kao skip turn da bi se DB (BP me podseca na blackpink i uvek se zapitam sta je na sekundu) updateovala
+        GameController.instance.apiHelper.SkipTurn(gd.id, GameController.instance.GetPlayerData().id, gd.whoseTurnID);
 
         GameController.instance.UpdateGameData(gd);
         GameController.instance.UpdatePlayerStateData(psd);
@@ -98,10 +127,10 @@ public class Gameplay : MonoBehaviour
     {
         int gameID = GameController.instance.GetGameData().id;
         UserData player = GameController.instance.GetPlayerData();
-        string username = player.username.Replace("\"", "");
+        string usernameWithTag = player.username.Replace("\"", "") + player.tag.Replace("\"", "");
         string message = messageInputField.text;
 
-        await GameController.instance.signalRConnector.SendChatMessage(gameID, username, message);
+        await GameController.instance.signalRConnector.SendChatMessage(gameID, usernameWithTag, message);
     }
 
    public void ClgButton()

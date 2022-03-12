@@ -18,5 +18,6 @@ namespace webapi.Interfaces.ServiceInterfaces
         Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID);
         Task<bool> SendInvite(int gameID, string username, string tag, int userFrom);
         Task<Game> JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards);
+        Task<Game> SkipTurn(int gameID, int turnUserID, int nextUserID);
     }
 }
