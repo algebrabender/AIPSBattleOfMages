@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Proyecto26;
+using System.Collections;
 using UnityEditor;
+using UnityEngine;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class APIHelper
 {
@@ -19,144 +20,314 @@ public class APIHelper
 #endif
 	}
 
-	public void SignUp(string username, string password, string firstName, string lastName)
+	public IEnumerator SignUp(string username, string password, string firstName, string lastName)
 	{
-		RestClient.Post<UserData>("https://localhost:5001/User/CreateUser", new UserData
+		UserData udString = new UserData
 		{
-			  username = username,
-			  password = password,
-			  firstName = firstName,
-			  lastName = lastName
-		}).Then(res => 
-		{ 
-			//this.LogMessage(JsonUtility.ToJson(res, true)); 
-			ud = res; 
-		}).Catch(err => this.LogMessage(err.Message));
+			username = username,
+			password = password,
+			firstName = firstName,
+			lastName = lastName
+		};
+
+		using (UnityWebRequest req = UnityWebRequest.Post("https://localhost:5001/User/CreateUser", "POST"))
+		{
+			req.SetRequestHeader("Content-Type", "application/json");
+			req.SetRequestHeader("accept", "*/*");
+			byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(JsonUtility.ToJson(udString));
+			req.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			this.ud = JsonConvert.DeserializeObject<UserData>(req.downloadHandler.text);
+		}
 	}
 
-	public void LogIn(string usernameWithTag, string password)
+	public IEnumerator LogIn(string usernameWithTag, string password)
 	{
-		RestClient.Post<UserData>("https://localhost:5001/User/UserValidating", new UserData
-		{
+		UserData udString = new UserData {
 			username = usernameWithTag,
 			password = password
-		}).Then(res =>
+		};
+
+		using (UnityWebRequest req = UnityWebRequest.Post("https://localhost:5001/User/UserValidating", "POST"))
 		{
-			//this.LogMessage(JsonUtility.ToJson(res, true));
-			ud = res;
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SetRequestHeader("Content-Type", "application/json");
+			req.SetRequestHeader("accept", "*/*");
+			byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(JsonUtility.ToJson(udString));
+			req.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			this.ud = JsonConvert.DeserializeObject<UserData>(req.downloadHandler.text);
+		}
 	}
 
-	public void CreateGame(GameData gd, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
+	public IEnumerator CreateGame(GameData gd, string terrainType, int userID, string mageType, int numOfSpellCards, int numbOfAttackCards, int numOfBuffCards)
 	{
 		if (this.gd != null)
-			return;
+			yield break;
 
 		string link = "https://localhost:5001/Game/CreateGame/" + terrainType + "/" + userID + "/" + mageType
 			+ "/" + numOfSpellCards + "/" + numbOfAttackCards + "/" + numOfBuffCards;
-		RestClient.Post<GameData>(link, gd).Then(res =>
+
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{
-			//this.LogMessage(JsonUtility.ToJson(res, true));
-			this.gd = res;
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SetRequestHeader("Content-Type", "application/json");
+			req.SetRequestHeader("accept", "*/*");
+			byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(JsonUtility.ToJson(gd));
+			req.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			this.gd = JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text);
+		}
 	}
 
-	public void AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+	public IEnumerator AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
 	{
 		if (this.gd != null)
-			return;
+			yield break;
 
 		string link = "https://localhost:5001/Game/AddUserToGame/" + gameID + "/" + userID + "/" + mageType 
 			+ "/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
 
-		RestClient.Put<GameData>(link, "").Then(res =>
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{
-			this.gd = res;
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SetRequestHeader("accept", "*/*");
+
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			this.gd = JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text);
+		}
 	}
 	
-	public void JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
-    {
+	public IEnumerator JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
+	{
 		if (this.gd != null)
-			return;
+			yield break;
+
 		string link = "https://localhost:5001/Game/JoinRandomGame/" + userID + "/" + mageType
-			+"/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
+			+ "/" + numOfSpellCards + "/" + numOfAttackCards + "/" + numOfBuffCards;
 
-		RestClient.Put<GameData>(link, "").Then(res =>
-		{		this.gd = res;
-		}).Catch(err => this.LogMessage(err.Message));
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
+		{
+			req.SetRequestHeader("accept", "*/*");
 
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			this.gd = JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text);
+		}
 	}
 
-
-	public void GetPlayerStateData(int gameID, int userID)
+	public IEnumerator GetPlayerStateData(int gameID, int userID)
 	{
 		if (this.psd != null)
-			return;
+			yield break;
 
-		RestClient.Get<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID + "/" + userID).Then(res =>
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/PlayerState/GetPlayerStateForGame/" + gameID + "/" + userID))
 		{
-			//this.LogMessage(JsonUtility.ToJson(res, true));
-			this.psd = res;
-		}).Catch(err => this.LogMessage(err.Message));
-	}
+			req.SendWebRequest();
 
-
-
-	public void GetDeckWithCards(int deckID)
-	{
-		RestClient.GetArray<CardData>("https://localhost:5001/Card/GetCardsByDeckID/" + deckID).Then(res =>
-		{		
-			//this.LogMessage(JsonUtility.ToJson(res, true));
-			GameController.instance.GetPlayer().SetDeck(res);
-		}).Catch(err => this.LogMessage(err.Message));
-	}
-
-	public void GetPlayersInGame(int gameID)
-	{
-		RestClient.GetArray<PlayerStateData>("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID).Then(res =>
-		{
-			List<Player> players = new List<Player>(res.Length);
-			foreach (var psd in res)
+			while (!req.isDone)
 			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			PlayerStateData data = JsonConvert.DeserializeObject<PlayerStateData>(req.downloadHandler.text);
+
+			this.psd = data;
+		}
+	}
+
+	public IEnumerator GetDeckWithCards(int deckID)
+	{
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/Card/GetCardsByDeckID/" + deckID))
+		{
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+	
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			List<CardData> data = JsonConvert.DeserializeObject<List<CardData>>(req.downloadHandler.text);
+
+			GameController.instance.GetPlayer().SetDeck(data);
+		}
+	}
+
+	public IEnumerator GetGamePlayers(int gameID)
+	{
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/PlayerState/GetPlayersInGame/" + gameID))
+		{
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			List<PlayerStateData> data = JsonConvert.DeserializeObject<List<PlayerStateData>>(req.downloadHandler.text);
+			//Debug.Log(data.Count);
+			UserData currentPlayerData = GameController.instance.GetPlayerData();
+			List<Player> players = new List<Player>(data.Count - 1);
+			foreach (var psd in data)
+			{
+				if (psd.user.id == currentPlayerData.id)
+					continue;
+
 				Player p = new Player();
 				p.UpdatePlayerStateData(psd);
 				p.UpdateUserData(psd.user);
+				players.Add(p);
 			}
 
 			GameController.instance.SetGamePlayers(players);
-
-		}).Catch(err => this.LogMessage(err.Message));
+		}
 	}
 
-	public void Turn(int gameID, int userID, int manaSpent, int attackedUser, int damageDone, int nextUserID, int cardID)
+	public IEnumerator Turn(int gameID, int userID, int manaSpent, int attackedUser, int damageDone, int nextUserID, int cardID)
 	{
 		string link = "https://localhost:5001/Game/Turn/" + gameID + "/" + userID + "/" + manaSpent
 					  + "/" + attackedUser + "/" + damageDone + "/" + nextUserID + "/" + cardID;
-		RestClient.Put<GameData>(link, null).Then(res =>
+
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{
-			GameController.instance.UpdateGameData(res);
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			GameController.instance.UpdateGameData(JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text));
+		}
 	}
 
-	public void SkipTurn(int gameID, int userID, int nextUserID)
+	public IEnumerator SkipTurn(int gameID, int userID, int nextUserID)
 	{
 		string link = "https://localhost:5001/Game/SkipTurn/" + gameID + "/" + userID + "/" + nextUserID;
 
-		RestClient.Put<GameData>(link, null).Then(res =>
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{
-			GameController.instance.UpdateGameData(res);
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			GameController.instance.UpdateGameData(JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text));
+		}
 
 	}
 
-	public void SendInvite(int gameID, string username, string tag, int userFromID)
-    {
+	public IEnumerator SendInvite(int gameID, string username, string tag, int userFromID)
+	{
 		string link = "https://localhost:5001/Game/SendInvite/" + gameID + "/" + username + "/" + tag + "/" + userFromID;
 
-		RestClient.Put<bool>(link, null).Then(res =>
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{
-			this.LogMessage(res.ToString());
-		}).Catch(err => this.LogMessage(err.Message));
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			LogMessage(req.downloadHandler.text);
+		}
 	}
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Player
 {
     private UserData userData;
-    private CardData[] currentDeck;
+    private List<CardData> currentDeck;
     private PlayerStateData playerStateData;
 
     internal void SetPlayer(UserData ud, PlayerStateData psd = null)
@@ -36,12 +36,12 @@ public class Player
         this.userData = us;
     }
 
-    internal void SetDeck(CardData[] d)
+    internal void SetDeck(List<CardData> d)
     {
         this.currentDeck = d;
     }
 
-    internal CardData[] GetDeck()
+    internal List<CardData> GetDeck()
     {
         return this.currentDeck;
     }

@@ -35,26 +35,21 @@ public class Gameplay : MonoBehaviour
 
         List<Player> players = GameController.instance.GetGamePlayers();
 
-        for (int i = 1; i <= gd.numOfPlayers /*players.Count*/; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            //Player enemy = players[i];
-            //UserData enemyData = enemy.GetPlayerData();
-            //PlayerStateData enemyPSD = enemy.GetPlayerStateData();
-            if (i == 1)
-                playerTwoInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
-            //playerInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
-            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
-            else if (i == 2)
-                playerThreeInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
-            //playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
-            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+            Player enemy = players[i];
+            UserData enemyData = enemy.GetPlayerData();
+            PlayerStateData enemyPSD = enemy.GetPlayerStateData();
+            if (i + 1 == 1)
+                playerTwoInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                        "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+            else if (i + 1 == 2)
+                playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                          "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
             else
-                playerFourInfoText.text = "Username#tag\nHealth Points: " + 10 + "\nMana Points: " + 5;
-            //playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
-            //                   "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+                playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                         "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
         }
-
-        
     }
 
     private void UpdateChat(ChatMessageData obj)
@@ -95,6 +90,12 @@ public class Gameplay : MonoBehaviour
         //Deal Cards
     }
 
+    void Awake()
+    {
+        GameData gameData = GameController.instance.GetGameData();
+        StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(gameData.id));
+    }
+
     void Start()
     {
         GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
@@ -129,15 +130,13 @@ public class Gameplay : MonoBehaviour
         List<Player> players = GameController.instance.GetGamePlayers();
 
         int playerID = players.IndexOf(GameController.instance.GetPlayer());
-        UserData nextPlayerData = players[(playerID + 1)%players.Count].GetPlayerData();
-        //gd.whoseTurnID = nextPlayerData.id;
+        UserData nextPlayerData = players[0].GetPlayerData();
+        gd.whoseTurnID = nextPlayerData.id;
         gd.whoseTurnID = 12; 
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 
-        //GameController.instance.apiHelper.GetPlayersInGame(3015);
-
-        GameController.instance.apiHelper.SkipTurn(gd.id, GameController.instance.GetPlayerData().id, gd.whoseTurnID);
+        StartCoroutine(GameController.instance.apiHelper.SkipTurn(gd.id, GameController.instance.GetPlayerData().id, gd.whoseTurnID));
 
         GameController.instance.UpdateGameData(gd);
         GameController.instance.UpdatePlayerStateData(psd);
@@ -163,7 +162,7 @@ public class Gameplay : MonoBehaviour
 
         GameController.instance.GetPlayerStateData().manaPoints -= 2;
 
-        GameController.instance.apiHelper.Turn(gameID, userID, 2, 4, 2, 4, 3);
+        StartCoroutine(GameController.instance.apiHelper.Turn(gameID, userID, 2, 4, 2, 4, 3));
    }
 
     public void Quit()

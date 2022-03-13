@@ -24,35 +24,24 @@ public class WelcomeMenu : MonoBehaviour
 
     private bool ProcessInput(string username, string password, int sceneNumber, string firstName = "", string lastName = "")
     {
-        //JOS NESTO PORED USERNAME/PASSWORD
-        //TODO: if 1 -> api helper sign up else if 0 -> api helper log in
         if (sceneNumber == 1)
         {
-            GameController.instance.apiHelper.SignUp(username, password, firstName, lastName);
-            if (GameController.instance.apiHelper.ud != null)
-            {
-                GameController.instance.SetPlayerData(GameController.instance.apiHelper.ud);
-                GameController.instance.JoinApp();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            StartCoroutine(GameController.instance.apiHelper.SignUp(username, password, firstName, lastName));
         }
         else
         {
-            GameController.instance.apiHelper.LogIn(username, password);
-            if (GameController.instance.apiHelper.ud != null)
-            {
-                GameController.instance.SetPlayerData(GameController.instance.apiHelper.ud);
-                GameController.instance.JoinApp();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            StartCoroutine(GameController.instance.apiHelper.LogIn(username, password));
+        }
+
+        if (GameController.instance.apiHelper.ud != null)
+        {
+            GameController.instance.SetPlayerData(GameController.instance.apiHelper.ud);
+            GameController.instance.JoinApp();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -109,8 +98,6 @@ public class WelcomeMenu : MonoBehaviour
 
     public void Quit()
     {
-        GameController.instance.apiHelper.GetDeckWithCards(6055);
-
-        //GameController.instance.Quit();
+        GameController.instance.Quit();
     }
 }

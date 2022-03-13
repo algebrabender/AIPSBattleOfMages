@@ -34,7 +34,7 @@ public class SendInvites : MonoBehaviour
         int gameID = GameController.instance.apiHelper.gd.id;
         int userFromID = GameController.instance.apiHelper.psd.userID;
 
-        GameController.instance.apiHelper.SendInvite(gameID, username, tag, userFromID);
+        StartCoroutine(GameController.instance.apiHelper.SendInvite(gameID, username, tag, userFromID));
 
     }
 

@@ -33,7 +33,7 @@ namespace webapi.Controllers
         }
         
         [Route("AddUserToGame/{gameID}/{userID}/{mageType}/{numOfSpellCards}/{numOfAttackCards}/{numOfBuffCards}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             var result = await gameService.AddUserToGame(gameID, userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
@@ -41,7 +41,7 @@ namespace webapi.Controllers
         }
         
         [Route("JoinRandomGame/{userID}/{mageType}/{numOfSpellCards}/{numOfAttackCards}/{numOfBuffCards}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             var result = await gameService.JoinRandomGame(userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
@@ -98,7 +98,7 @@ namespace webapi.Controllers
         }
         
         [Route("Turn/{gameID}/{turnUserID}/{manaSpent}/{attackedUserID}/{damageDone}/{nextUserID}/{cardID}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID)
         { 
             var game = await gameService.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID, cardID);
@@ -107,7 +107,7 @@ namespace webapi.Controllers
         }
 
         [Route("SendInvite/{gameID}/{username}/{tag}/{userFrom}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> SendInvite(int gameID, string username, string tag, int userFrom)
         {
             bool invite = await gameService.SendInvite(gameID, username, tag, userFrom);
@@ -116,7 +116,7 @@ namespace webapi.Controllers
         }
 
         [Route("SkipTurn/{gameID}/{turnUserID}/{nextUserID}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> SkipTurn(int gameID, int turnUserID, int nextUserID)
         {
             var game = await gameService.SkipTurn(gameID, turnUserID, nextUserID);

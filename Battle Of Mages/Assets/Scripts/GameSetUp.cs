@@ -27,6 +27,23 @@ public class GameSetUp : MonoBehaviour
         Ice
     }
 
+    private bool GetData(int gameID, int userID)
+    {
+        StartCoroutine(GameController.instance.apiHelper.GetPlayerStateData(gameID, userID));
+        PlayerStateData psd = GameController.instance.apiHelper.psd;
+
+        if (psd != null)
+        {
+            GameController.instance.UpdatePlayerStateData(psd);
+
+            StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(psd.deckID));
+
+            return true;
+        }
+
+        return false;
+    }
+
     public async void CreateGame()
     {
         string terrain = ((MagicType)typeOfTerrainDropdown.value).ToString();
@@ -41,26 +58,20 @@ public class GameSetUp : MonoBehaviour
         gd.whoseTurnID = userID;
         gd.numOfPlayers = numOfPlayersDropdown.value + 2;
 
-        GameController.instance.apiHelper.CreateGame(gd, terrain, userID, mage, spellCards, attackCards, buffCards);
+        StartCoroutine(GameController.instance.apiHelper.CreateGame(gd, terrain, userID, mage, spellCards, attackCards, buffCards));
+
         GameData newGame = GameController.instance.apiHelper.gd;
+
         if (newGame != null)
         {
             List<Player> players = new List<Player>();
             players.Add(GameController.instance.GetPlayer());
-            PlayerStateData psd;
-            GameController.instance.apiHelper.GetPlayerStateData(newGame.id, userID);
 
             await GameController.instance.signalRConnector.JoinGame(newGame.id, GameController.instance.GetPlayerData().username.Replace("\"", ""));
 
-            psd = GameController.instance.apiHelper.psd;
-
-            if (psd != null)
+            if (GetData(newGame.id, userID))
             {
                 GameController.instance.SetGame(newGame, players);
-
-                GameController.instance.UpdatePlayerStateData(psd);
-
-                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);
@@ -81,27 +92,18 @@ public class GameSetUp : MonoBehaviour
         int buffCards = Int32.Parse(numOfBuffCards.text);
         int gameID = Int32.Parse(gameIDEntryField.text);
 
-        GameController.instance.apiHelper.AddUserToGame(gameID, userID, mageType, spellCards, attackCards, buffCards);
+        StartCoroutine(GameController.instance.apiHelper.AddUserToGame(gameID, userID, mageType, spellCards, attackCards, buffCards));
+
         GameData gd = GameController.instance.apiHelper.gd;
+
         if(gd != null)
         {
-            GameController.instance.apiHelper.GetPlayerStateData(gd.id, userID);
-
             string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
             await GameController.instance.signalRConnector.JoinGame(gameID, username);
 
-
-            PlayerStateData psd = GameController.instance.apiHelper.psd;
-
-            if (psd != null)
+            if (GetData(gd.id, userID))
             {
-                GameController.instance.apiHelper.GetPlayersInGame(gd.id);
-
                 GameController.instance.SetGameData(gd);
-
-                GameController.instance.UpdatePlayerStateData(psd);
-
-                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);
@@ -122,27 +124,18 @@ public class GameSetUp : MonoBehaviour
         int attackCards = Int32.Parse(numOfAttackCards.text);
         int buffCards = Int32.Parse(numOfBuffCards.text);
 
-        GameController.instance.apiHelper.JoinRandomGame(userID, mageType, spellCards, attackCards, buffCards);
+        StartCoroutine(GameController.instance.apiHelper.JoinRandomGame(userID, mageType, spellCards, attackCards, buffCards));
+
         GameData gd = GameController.instance.apiHelper.gd;
 
         if (gd != null)
         {
-            GameController.instance.apiHelper.GetPlayerStateData(gd.id, userID);
-
             string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
             await GameController.instance.signalRConnector.JoinGame(gd.id, username);
 
-            PlayerStateData psd = GameController.instance.apiHelper.psd;
-
-            if (psd != null)
+            if (GetData(gd.id, userID))
             {
-                GameController.instance.apiHelper.GetPlayersInGame(gd.id);
-
                 GameController.instance.SetGameData(gd);
-
-                GameController.instance.UpdatePlayerStateData(psd);
-
-                GameController.instance.apiHelper.GetDeckWithCards(psd.deckID);
 
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);
