@@ -25,6 +25,9 @@ public class SignalRConnector
             logging.SetMinimumLevel(LogLevel.Debug);
         })
         .Build();
+
+        connection.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        connection.ServerTimeout = TimeSpan.FromMinutes(1);
     }
 
     public async Task InitAsync()

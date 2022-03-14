@@ -69,6 +69,8 @@ namespace webapi
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                options.ClientTimeoutInterval = TimeSpan.FromMinutes(1);
             });    
         }
 

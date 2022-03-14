@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     public APIHelper apiHelper = new APIHelper();
     private Player player = new Player();
     private Game game = new Game();
+    public string chatHistory = "";
 
     public WelcomeMenu welcomeMenu;
 
