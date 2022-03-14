@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 
 public class SignalRConnector
 {
@@ -18,6 +19,11 @@ public class SignalRConnector
     {
         connection = new HubConnectionBuilder()
         .WithUrl("https://localhost:5001/messageHub")
+        .ConfigureLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Debug);
+        })
         .Build();
     }
 
