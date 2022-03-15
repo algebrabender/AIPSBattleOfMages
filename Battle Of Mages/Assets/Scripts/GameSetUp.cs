@@ -73,6 +73,8 @@ public class GameSetUp : MonoBehaviour
             {
                 GameController.instance.SetGame(newGame, players);
 
+                StartCoroutine(GameController.instance.apiHelper.GetTerrainType(newGame.id));
+
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);
                 else if (gd.numOfPlayers == 3)
@@ -105,6 +107,8 @@ public class GameSetUp : MonoBehaviour
             {
                 GameController.instance.SetGameData(gd);
 
+                StartCoroutine(GameController.instance.apiHelper.GetTerrainType(gd.id));
+
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);
                 else if (gd.numOfPlayers == 3)
@@ -136,6 +140,8 @@ public class GameSetUp : MonoBehaviour
             if (GetData(gd.id, userID))
             {
                 GameController.instance.SetGameData(gd);
+
+                StartCoroutine(GameController.instance.apiHelper.GetTerrainType(gd.id));
 
                 if (gd.numOfPlayers == 2)
                     SceneManager.LoadScene(5);

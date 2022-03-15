@@ -362,7 +362,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 614173427}
         m_TargetAssemblyTypeName: GameSetUp, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
@@ -847,7 +847,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 614173427}
         m_TargetAssemblyTypeName: GameSetUp, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1

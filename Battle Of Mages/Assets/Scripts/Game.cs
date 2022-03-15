@@ -7,6 +7,7 @@ public class Game
 {
     private GameData gameData;
     private List<Player> players;
+    private string terrainType;
 
     internal void SetGame(GameData gd, List<Player> players)
     {
@@ -42,5 +43,15 @@ public class Game
     internal void AddPlayer(Player player)
     {
         this.players.Add(player);
+    }
+
+    internal void SetTerrainType(string terrainType)
+    {
+        this.terrainType = terrainType;
+    }
+
+    internal string GetTerrainType()
+    {
+        return this.terrainType;
     }
 }

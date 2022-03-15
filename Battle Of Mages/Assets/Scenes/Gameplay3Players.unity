@@ -1358,8 +1358,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -269, y: -201}
-  m_SizeDelta: {x: 478.00613, y: 129.61296}
+  m_AnchoredPosition: {x: -218.75, y: -211.5}
+  m_SizeDelta: {x: 578.50305, y: 150.6269}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1006568783
 MonoBehaviour:
@@ -2482,7 +2482,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 44e0866d13f30fa46ab65d5861575d8a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2915,6 +2915,11 @@ MonoBehaviour:
   turnText: {fileID: 1006568783}
   chatText: {fileID: 1651545811}
   messageInputField: {fileID: 1401964581}
+  terrainImage: {fileID: 1472529545}
+  fireTerrain: {fileID: 21300000, guid: d0c255285ea5db44c9284e5498c80fc7, type: 3}
+  iceTerrain: {fileID: 21300000, guid: aab8040c9130b054187ceb4ecd55571e, type: 3}
+  earthTerrain: {fileID: 21300000, guid: e496fb686a9294d41a75fe8cdc9959ae, type: 3}
+  airTerrain: {fileID: 21300000, guid: 46de8fd1c2b25c04eaf8c1cabb6dc24d, type: 3}
 --- !u!4 &1652019717
 Transform:
   m_ObjectHideFlags: 0
@@ -3298,7 +3303,7 @@ GameObject:
   - component: {fileID: 1895038424}
   - component: {fileID: 1895038423}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: SkipButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

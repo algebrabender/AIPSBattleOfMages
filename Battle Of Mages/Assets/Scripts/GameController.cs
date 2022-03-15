@@ -65,6 +65,16 @@ public class GameController : MonoBehaviour
         return this.game.GetGameData();
     }
 
+    public void SetGameTerrain(string type)
+    {
+        this.game.SetTerrainType(type);
+    }
+
+    public string GetGameTerrain()
+    {
+        return this.game.GetTerrainType();
+    }
+
     public void UpdateGameData(GameData gd)
     {
         this.game.UpdateGameData(gd);
@@ -90,21 +100,22 @@ public class GameController : MonoBehaviour
         return this.game.GetGamePlayers();
     }
 
-    public bool CheckTurn()
+    public string CheckTurn()
     {
         if (game.GetGameData().whoseTurnID == player.GetPlayerData().id)
-            return true;
+            return player.GetPlayerData().username.Replace("\"", "") + "#" + player.GetPlayerData().tag.Replace("\"", "");
         else
-            return false;
+        {
+            Player player = game.GetGamePlayers().Find(p => p.GetPlayerData().id == game.GetGameData().whoseTurnID);
+            return player.GetPlayerData().username.Replace("\"", "") + "#" + player.GetPlayerData().tag.Replace("\"", "");
+        }
     }
 
-    //TODO: proveriti
     public async void JoinApp()
     {
         await signalRConnector.JoinApp(player.GetPlayerData().id);
     }
 
-    //TODO: proveriti
     public async void LeaveApp()
     {
         await signalRConnector.LeaveApp(player.GetPlayerData().id);

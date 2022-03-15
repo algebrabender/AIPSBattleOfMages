@@ -330,4 +330,25 @@ public class APIHelper
 			LogMessage(req.downloadHandler.text);
 		}
 	}
+
+	public IEnumerator GetTerrainType(int gameID)
+	{
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/Game/GetGameTerrainType/" + gameID))
+		{
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			GameController.instance.SetGameTerrain(req.downloadHandler.text.Replace("\"", ""));
+		}
+	}
 }

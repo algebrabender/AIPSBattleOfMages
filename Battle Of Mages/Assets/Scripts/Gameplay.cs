@@ -15,13 +15,15 @@ public class Gameplay : MonoBehaviour
     public Text turnText;
     public Text chatText;
     public InputField messageInputField;
+    public Image terrainImage;
+    public Sprite fireTerrain;
+    public Sprite iceTerrain;
+    public Sprite earthTerrain;
+    public Sprite airTerrain;
 
     private void ChangeTurnText()
     {
-        if (GameController.instance.CheckTurn())
-            turnText.text = "Your Turn!";
-        else
-            turnText.text = "Player Two turn!"; //TODO: promeniti player two na player x
+        turnText.text = GameController.instance.CheckTurn() + " is playing!";
     }
 
     private void SetTexts()
@@ -54,40 +56,66 @@ public class Gameplay : MonoBehaviour
 
     private void UpdateChat(ChatMessageData obj)
     {
-        var lastMessages = chatText.text;
+        //var lastMessages = chatText.text;
 
-        if (string.IsNullOrEmpty(lastMessages) == false)
-            lastMessages += "\n";
+        //if (string.IsNullOrEmpty(lastMessages) == false)
+        //    lastMessages += "\n";
 
-        lastMessages += $"{obj.Username}: {obj.Message}";
+        string lastMessages = $"{obj.Username}: {obj.Message}";
 
-        chatText.text = lastMessages;
+        GameController.instance.chatHistory += "\n" + lastMessages;
+
+        chatText.text = GameController.instance.chatHistory;
     }
 
     private void UpdateTurn(TurnData obj)
     {
-        Player attacked = GameController.instance.GetGamePlayers().First(p => p.GetPlayerData().id == obj.attackedUser.id);
-        attacked.UpdatePlayerStateData(obj.attackedUser);
-
         GameController.instance.GetGameData().whoseTurnID = obj.nextPlayerID;
 
-        if (GameController.instance.GetPlayerData().id != obj.playedByUser)
+        if (obj.attackedUser != null) //odigrana karta else je skip turn kad ne treba nista
         {
-            //TODO: "pokazati" koju kartu je protivnik odigrao
+            List<Player> players = GameController.instance.GetGamePlayers();
+            Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
+            attacked.UpdatePlayerStateData(obj.attackedUser);
+
+            if (GameController.instance.GetPlayerData().id != obj.playedByUser)
+            {
+                Player player = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
+                //TODO: "pokazati" koju kartu je protivnik odigrao
+
+                //TODO: izabrana karta
+                //player.RemoveCard(card);
+                player.DealCard();
+            }
+            else
+            {
+                //TODO: izabrana karta
+                //player.RemoveCard(card);
+                GameController.instance.GetPlayer().DealCard();
+            }
         }
 
-        SetTexts();
-
-        //Deal New Card
+        SetTexts(); 
     }
 
-    private void UpdateJoinLeave(ChatMessageData obj)
+    private void UpdateJoin(ChatMessageData obj)
     {
+        StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(GameController.instance.GetGameData().id));
+
         UpdateChat(obj);
 
         SetTexts();
 
-        //Deal Cards
+        List<Player> players = GameController.instance.GetGamePlayers();
+        foreach (Player player in players)
+        {
+            player.DealHand();
+        }
+    }
+
+    private void UpdateLeave(ChatMessageData obj)
+    {
+        UpdateChat(obj);
     }
 
     void Awake()
@@ -99,28 +127,61 @@ public class Gameplay : MonoBehaviour
     void Start()
     {
         GameController.instance.signalRConnector.OnChatMessageReceived += UpdateChat;
-        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoinLeave;
-        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateJoinLeave;
+        GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoin;
+        GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateLeave;
         GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurn;
+
+        chatText.text = GameController.instance.chatHistory;
+
+        if (terrainImage.sprite == null)
+        {
+            switch(GameController.instance.GetGameTerrain())
+            {
+                case "fire":
+                    terrainImage.sprite = fireTerrain;
+                    break;
+                case "ice":
+                    terrainImage.sprite = iceTerrain;
+                    break;
+                case "earth":
+                    terrainImage.sprite = earthTerrain;
+                    break;
+                case "air":
+                    terrainImage.sprite = airTerrain;
+                    break;
+            }
+        }
 
         SetTexts();
         ChangeTurnText();
 
-        //Deal Cards
+        GameController.instance.GetPlayer().DealHand();
     }
 
     void Update()
     {
-        //TODO: ako nije Player Turn "blokirati" igranje poteza, ali dozvoliti chat
+        Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
 
-        if (GameController.instance.CheckTurn())
+        if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
         {
+            skipButton.interactable = false;
 
+            //TODO: blokirati cards
+
+            ChangeTurnText();
         }
         else
         {
+            skipButton.interactable = true;
 
+            //TODO: odblokirati karte
+            ChangeTurnText();
         }
+
+        chatText.text = GameController.instance.chatHistory;
+
+        if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
+            SetTexts();
     }
 
     public void SkipTurn()
@@ -129,10 +190,8 @@ public class Gameplay : MonoBehaviour
 
         List<Player> players = GameController.instance.GetGamePlayers();
 
-        int playerID = players.IndexOf(GameController.instance.GetPlayer());
         UserData nextPlayerData = players[0].GetPlayerData();
         gd.whoseTurnID = nextPlayerData.id;
-        gd.whoseTurnID = 12; 
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 
@@ -154,16 +213,6 @@ public class Gameplay : MonoBehaviour
 
         await GameController.instance.signalRConnector.SendChatMessage(gameID, usernameWithTag, message);
     }
-
-   public void ClgButton()
-   {
-        int gameID = GameController.instance.GetGameData().id;
-        int userID = GameController.instance.GetPlayerData().id;
-
-        GameController.instance.GetPlayerStateData().manaPoints -= 2;
-
-        StartCoroutine(GameController.instance.apiHelper.Turn(gameID, userID, 2, 4, 2, 4, 3));
-   }
 
     public void Quit()
     {
