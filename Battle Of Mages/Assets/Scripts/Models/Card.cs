@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Models;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, ICardContext
 {
     public CardData cardData = null;
     public string type = null;
@@ -15,6 +17,8 @@ public class Card : MonoBehaviour
     public Image frameImage = null;
     public Image burnImage = null;
     public Image destroyImage = null;
+
+    private ICardStrategy cardStrategy;
 
     public void Initialize()
     {
@@ -34,5 +38,15 @@ public class Card : MonoBehaviour
 
         //costImage.sprite = GameController.instance.healthNumbers[cardData.cost];
         //damageImage.sprite = GameController.instance.damageNumbers[cardData.damage];
+    }
+
+    public void SetStrategy(ICardStrategy cardStrategy)
+    {
+        this.cardStrategy = cardStrategy;
+    }
+
+    public async Task<GameData> Turn()
+    {
+        return await this.cardStrategy.Turn();
     }
 }
