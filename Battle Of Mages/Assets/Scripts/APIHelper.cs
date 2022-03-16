@@ -114,6 +114,8 @@ public class APIHelper
 			}
 
 			this.gd = JsonConvert.DeserializeObject<GameData>(req.downloadHandler.text);
+
+			GameController.instance.turnIndex = 0;
 		}
 	}
 
@@ -201,7 +203,7 @@ public class APIHelper
 		}
 	}
 
-	public IEnumerator GetDeckWithCards(int deckID)
+	public IEnumerator GetDeckWithCards(int deckID, int userID)
 	{
 		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/Card/GetCardsByDeckID/" + deckID))
 		{
@@ -220,7 +222,10 @@ public class APIHelper
 
 			List<CardData> data = JsonConvert.DeserializeObject<List<CardData>>(req.downloadHandler.text);
 
-			GameController.instance.GetPlayer().SetDeck(data);
+			if (GameController.instance.GetPlayerData().id == userID)
+				GameController.instance.GetPlayer().SetDeck(data);
+			else
+				GameController.instance.GetGamePlayers().Find(p => p.GetPlayerData().id == userID).SetDeck(data);
 		}
 	}
 
@@ -349,6 +354,27 @@ public class APIHelper
 			}
 
 			GameController.instance.SetGameTerrain(req.downloadHandler.text.Replace("\"", ""));
+		}
+	}
+
+	public IEnumerator GetMageType(int gameID)
+	{
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/User/GetUserMageType/" + GameController.instance.GetPlayerData().id + "/" + gameID))
+		{
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			GameController.instance.SetPlayerMageType(req.downloadHandler.text.Replace("\"", ""));
 		}
 	}
 }

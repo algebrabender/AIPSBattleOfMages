@@ -36,7 +36,7 @@ public class GameSetUp : MonoBehaviour
         {
             GameController.instance.UpdatePlayerStateData(psd);
 
-            StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(psd.deckID));
+            StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(psd.deckID, userID));
 
             return true;
         }
@@ -68,6 +68,8 @@ public class GameSetUp : MonoBehaviour
             players.Add(GameController.instance.GetPlayer());
 
             await GameController.instance.signalRConnector.JoinGame(newGame.id, GameController.instance.GetPlayerData().username.Replace("\"", ""));
+
+            StartCoroutine(GameController.instance.apiHelper.GetMageType(newGame.id));
 
             if (GetData(newGame.id, userID))
             {
@@ -103,6 +105,8 @@ public class GameSetUp : MonoBehaviour
             string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
             await GameController.instance.signalRConnector.JoinGame(gameID, username);
 
+            StartCoroutine(GameController.instance.apiHelper.GetMageType(gd.id));
+
             if (GetData(gd.id, userID))
             {
                 GameController.instance.SetGameData(gd);
@@ -136,6 +140,8 @@ public class GameSetUp : MonoBehaviour
         {
             string username = GameController.instance.GetPlayerData().username.Replace("\"", "");
             await GameController.instance.signalRConnector.JoinGame(gd.id, username);
+
+            StartCoroutine(GameController.instance.apiHelper.GetMageType(gd.id));
 
             if (GetData(gd.id, userID))
             {

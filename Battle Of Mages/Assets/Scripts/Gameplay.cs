@@ -20,6 +20,11 @@ public class Gameplay : MonoBehaviour
     public Sprite iceTerrain;
     public Sprite earthTerrain;
     public Sprite airTerrain;
+    public List<Card> playerHand;
+    public List<Card> playerTwoHand;
+    public List<Card> playerThreeHand;
+    public List<Card> playerFourHand;
+    private bool cardsSet = true;
 
     private void ChangeTurnText()
     {
@@ -54,6 +59,23 @@ public class Gameplay : MonoBehaviour
         }
     }
 
+    private void DealHandForPlayers()
+    {
+        List<Player> players = GameController.instance.GetGamePlayers();
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (i == 0)
+                players[i].DealHand(playerTwoHand);
+            else if (i == 1)
+                players[i].DealHand(playerThreeHand);
+            else
+                players[i].DealHand(playerFourHand);
+        }
+
+        cardsSet = true;
+    }
+
     private void UpdateChat(ChatMessageData obj)
     {
         //var lastMessages = chatText.text;
@@ -71,10 +93,10 @@ public class Gameplay : MonoBehaviour
     private void UpdateTurn(TurnData obj)
     {
         GameController.instance.GetGameData().whoseTurnID = obj.nextPlayerID;
+        List<Player> players = GameController.instance.GetGamePlayers();
 
         if (obj.attackedUser != null) //odigrana karta else je skip turn kad ne treba nista
         {
-            List<Player> players = GameController.instance.GetGamePlayers();
             Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
             attacked.UpdatePlayerStateData(obj.attackedUser);
 
@@ -106,16 +128,25 @@ public class Gameplay : MonoBehaviour
 
         SetTexts();
 
+        GameData gd = GameController.instance.GetGameData();
         List<Player> players = GameController.instance.GetGamePlayers();
-        foreach (Player player in players)
+
+        if (gd.numOfPlayers == players.Count)
         {
-            player.DealHand();
+            foreach (Player player in players)
+            {
+                StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().id, player.GetPlayerData().id));
+            }
+
+            cardsSet = false;
         }
     }
 
     private void UpdateLeave(ChatMessageData obj)
     {
         UpdateChat(obj);
+
+        //TOOD: srediti
     }
 
     void Awake()
@@ -155,7 +186,16 @@ public class Gameplay : MonoBehaviour
         SetTexts();
         ChangeTurnText();
 
-        GameController.instance.GetPlayer().DealHand();
+        GameController.instance.GetPlayer().DealHand(playerHand);
+
+        List<Player> players = GameController.instance.GetGamePlayers();
+        foreach (Player player in players)
+        {
+            StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().deckID, player.GetPlayerData().id));
+        }
+
+        if (players.Count == GameController.instance.GetGameData().numOfPlayers - 1)
+            DealHandForPlayers();
     }
 
     void Update()
@@ -182,16 +222,17 @@ public class Gameplay : MonoBehaviour
 
         if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
             SetTexts();
+
+        if (!cardsSet)
+            DealHandForPlayers();
     }
 
     public void SkipTurn()
     {
         GameData gd = GameController.instance.GetGameData();
-
         List<Player> players = GameController.instance.GetGamePlayers();
-
-        UserData nextPlayerData = players[0].GetPlayerData();
-        gd.whoseTurnID = nextPlayerData.id;
+        int nextTurn = (GameController.instance.GetPlayer().GetPlayerStateData().turnOrder + 1) % gd.numOfPlayers;
+        gd.whoseTurnID = players.Find(p => p.GetPlayerStateData().turnOrder == nextTurn).GetPlayerData().id;
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
         psd.manaPoints += 1;
 

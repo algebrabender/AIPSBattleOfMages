@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using webapi.DataLayer;
 using webapi.DataLayer.Models;
@@ -49,10 +50,11 @@ namespace webapi.Repository
             return await this.dbSet.FirstOrDefaultAsync(umg => umg.GameID == gameID && umg.UserID == userID);
         }
 
-        public async Task<PlayerState> GetByGameID(int gameID)
+        public async Task<int> GetCountByGameID(int gameID)
         {
-            return await this.dbSet.FirstOrDefaultAsync(umg => umg.GameID == gameID);
-        }
+            List<PlayerState> players = await this.dbSet.Where(umg => umg.GameID == gameID).ToListAsync();
+            return players.Count;
+        } 
 
         public async Task<string> GetUserMageType(int userID, int gameID)
         {

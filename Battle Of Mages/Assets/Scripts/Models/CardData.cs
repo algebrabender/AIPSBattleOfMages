@@ -9,7 +9,6 @@ public class CardData
     public int id;
     public string title;
     public string description;
-    public string cardType;
     public string type;
     public int manaCost;
     public int damage;

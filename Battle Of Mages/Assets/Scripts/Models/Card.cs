@@ -9,35 +9,42 @@ public class Card : MonoBehaviour, ICardContext
 {
     public CardData cardData = null;
     public string type = null;
+    public int indexInHand = -1;
     public Text titleText = null;
     public Text descriptionText = null;
     public Text damageText = null;
     public Text manaCostText = null;
     public Image cardImage = null;
-    public Image frameImage = null;
-    public Image burnImage = null;
-    public Image destroyImage = null;
+    public Image highlightImage = null;
+    public Sprite fireCard = null;
+    public Sprite iceCard = null;
+    public Sprite earthCard = null;
+    public Sprite airCard = null;
 
     private ICardStrategy cardStrategy;
 
-    public void Initialize()
+    public void SetCard()
     {
-        if (cardData == null)
-        {
-            Debug.LogError("Card has no CardData");
-            return;
-        }
-
         titleText.text = cardData.title;
         descriptionText.text = cardData.description;
         manaCostText.text = cardData.manaCost.ToString();
         damageText.text = cardData.damage.ToString();
 
-        //cardImage.sprite = cardData.cardImage;
-        //frameImage.sprite = cardData.frameImage;
-
-        //costImage.sprite = GameController.instance.healthNumbers[cardData.cost];
-        //damageImage.sprite = GameController.instance.damageNumbers[cardData.damage];
+        switch(type)
+        {
+            case "fire":
+                cardImage.sprite = fireCard;
+                break;
+            case "ice":
+                cardImage.sprite = iceCard;
+                break;
+            case "earth":
+                cardImage.sprite = earthCard;
+                break;
+            case "air":
+                cardImage.sprite = airCard;
+                break;
+        }
     }
 
     public void SetStrategy(ICardStrategy cardStrategy)

@@ -12,4 +12,5 @@ public class PlayerStateData
     public int manaPoints;
     public int healthPoints;
     public UserData user;
+    public int turnOrder;
 }

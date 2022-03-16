@@ -111,6 +111,7 @@ namespace webapi.Services
                 playerState.User = user;
                 playerState.DeckID = deck.ID;
                 playerState.Deck = deck;
+                playerState.TurnOrder = 0;
 
                 playerState.ManaPoints = 5;
                 playerState.HealthPoints = 10;
@@ -161,7 +162,8 @@ namespace webapi.Services
                 playerState.User = user;
                 playerState.DeckID = deck.ID;
                 playerState.Deck = deck;
-
+                playerState.TurnOrder = await this.unitOfWork.PlayerStateRepository.GetCountByGameID(gameID);
+                
                 playerState.ManaPoints = 5;
                 playerState.HealthPoints = 10;
                 

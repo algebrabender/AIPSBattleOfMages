@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     private Player player = new Player();
     private Game game = new Game();
     public string chatHistory = "";
+    public int turnIndex = 0;
 
     public WelcomeMenu welcomeMenu;
 
@@ -43,6 +44,11 @@ public class GameController : MonoBehaviour
     public UserData GetPlayerData()
     {
         return this.player.GetPlayerData();
+    }
+
+    public void SetPlayerMageType(string mageType)
+    {
+        this.player.SetMageType(mageType);
     }
 
     public void SetGame(GameData gd, List<Player> players)
