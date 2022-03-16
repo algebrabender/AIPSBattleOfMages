@@ -265,9 +265,23 @@ namespace webapi.Services
                 umgTurnuser.ManaPoints -= manaSpent;
                 unitOfWork.PlayerStateRepository.Update(umgTurnuser);
 
-                PlayerState umgAttackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
-                umgAttackedUser.HealthPoints -= damageDone;                
-                unitOfWork.PlayerStateRepository.Update(umgAttackedUser);
+                TurnStruct turn = new TurnStruct();
+
+                if(turnUserID == attackedUserID)
+                {
+                    umgTurnuser.HealthPoints += damageDone;
+                    unitOfWork.PlayerStateRepository.Update(umgTurnuser);
+                    turn.AttackedUser = umgTurnuser;
+                }
+                else
+                {
+                    PlayerState umgAttackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
+                    umgAttackedUser.HealthPoints -= damageDone;
+                    unitOfWork.PlayerStateRepository.Update(umgAttackedUser);
+                    turn.AttackedUser = umgAttackedUser;
+                }
+          
+                
 
                 Game game = await unitOfWork.GameRepository.GetById(gameID);
                 game.WhoseTurnID = nextUserID;   
@@ -278,10 +292,8 @@ namespace webapi.Services
                 unitOfWork.CardDeckRepository.DeleteCardFromDeck(card, deck);               
 
                 await unitOfWork.CompleteAsync();
-
-                TurnStruct turn = new TurnStruct();
-                turn.PlayedByUserID = turnUserID;
-                turn.AttackedUser = umgAttackedUser;
+            
+                turn.PlayedByUserID = turnUserID;        
                 turn.DamageDone = damageDone;
                 turn.NextPlayerID = game.WhoseTurnID;
                 turn.Card = card;

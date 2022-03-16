@@ -9,7 +9,7 @@ namespace Assets.Scripts.Models
     public interface ICardContext
     {
         void SetStrategy(ICardStrategy cardStrategy);
-        Task<GameData> Turn(); //TODO: parametri
+        void Turn(int gameID, int turnUserID, int attackedUserID, int nextUserID, CardData cardData); //TODO: parametri
 
     }
 }

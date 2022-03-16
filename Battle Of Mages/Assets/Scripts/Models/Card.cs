@@ -45,8 +45,8 @@ public class Card : MonoBehaviour, ICardContext
         this.cardStrategy = cardStrategy;
     }
 
-    public async Task<GameData> Turn()
+    public void Turn(int gameID, int turnUserID, int attackedUserID, int nextUserID, CardData cardData)
     {
-        return await this.cardStrategy.Turn();
+        this.cardStrategy.Turn(gameID, turnUserID, attackedUserID, nextUserID, cardData);
     }
 }
