@@ -19,6 +19,7 @@ using webapi.Repository;
 using webapi.Services;
 using webapi.Interfaces.ServiceInterfaces;
 using webapi.Communication;
+using webapi.Services.Strategy;
 
 namespace webapi
 {
@@ -37,6 +38,7 @@ namespace webapi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //TODO: pogledati da li ovo treba ili transient
+            services.AddScoped<CardContext>();
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IDeckService, DeckService>();
             services.AddScoped<IGameService, GameService>();

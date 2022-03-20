@@ -9,6 +9,7 @@ using webapi.Interfaces;
 using webapi.Interfaces.ServiceInterfaces;
 using webapi.Communication;
 using Microsoft.AspNetCore.SignalR;
+using webapi.Services.Strategy;
 
 namespace webapi.Services
 {
@@ -16,6 +17,7 @@ namespace webapi.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private HubService hubService;
+        private ICardContext cardContext;
 
         private struct TurnStruct
         {
@@ -70,10 +72,11 @@ namespace webapi.Services
                 }
         }
 
-        public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub) 
+        public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub, CardContext cardContext) 
         {
             this.unitOfWork = unitOfWork;
             this.hubService = new HubService(hub);
+            this.cardContext = cardContext;
         }
 
         public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
@@ -263,46 +266,82 @@ namespace webapi.Services
         {
             using (unitOfWork)
             {
-                PlayerState umgTurnuser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
-                umgTurnuser.ManaPoints -= manaSpent;
-                unitOfWork.PlayerStateRepository.Update(umgTurnuser);
-
-                TurnStruct turn = new TurnStruct();
-
-                if(turnUserID == attackedUserID)
+                Card card = await unitOfWork.CardRepository.GetById(cardID);
+                Game game = await unitOfWork.GameRepository.GetGameWithTerrain(gameID);
+                PlayerState user = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
+                var mageType = await unitOfWork.PlayerStateRepository.GetUserMageType(turnUserID, gameID);
+                switch (card.Type)
                 {
-                    umgTurnuser.HealthPoints += damageDone;
-                    unitOfWork.PlayerStateRepository.Update(umgTurnuser);
-                    turn.AttackedUser = umgTurnuser;
-                }
-                else
-                {
-                    PlayerState umgAttackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
-                    umgAttackedUser.HealthPoints -= damageDone;
-                    unitOfWork.PlayerStateRepository.Update(umgAttackedUser);
-                    turn.AttackedUser = umgAttackedUser;
-                }
-          
-                
+                    case "attack":
+                        {
+                            if (game.Terrain.Type == "")
+                            {
+                                if (game.Terrain.Type == mageType)
+                                    this.cardContext.SetStrategy(new DoubleBoostedAttack(unitOfWork));
+                                else
+                                    this.cardContext.SetStrategy(new BoostedAttack(unitOfWork));
+                            }
+                            else if (mageType == "")
+                            {
+                                this.cardContext.SetStrategy(new BoostedAttack(unitOfWork));
 
-                Game game = await unitOfWork.GameRepository.GetById(gameID);
-                game.WhoseTurnID = nextUserID;   
+                            }
+                            else
+                                this.cardContext.SetStrategy(new BaseAttack(unitOfWork));
+                        }
+                        break;
+                    case "heal":
+                        {
+                            if (game.Terrain.Type == "")
+                            {
+                                if (game.Terrain.Type == mageType)
+                                    this.cardContext.SetStrategy(new DoubleBoostedHeal(unitOfWork));
+                                else
+                                    this.cardContext.SetStrategy(new BoostedHeal(unitOfWork));
+                            }
+                            else if (mageType == "")
+                            {
+                                this.cardContext.SetStrategy(new BoostedHeal(unitOfWork));
+
+                            }
+                            else
+                                this.cardContext.SetStrategy(new BaseHeal(unitOfWork));
+                        }
+                        break;
+                    case "add damage":
+                        this.cardContext.SetStrategy(new AddDamage(unitOfWork));
+                        break;
+                    case "reduce cost":
+                        this.cardContext.SetStrategy(new ReduceCost(unitOfWork));
+                        break;
+                }
+
+                PlayerState attackedUser = await this.cardContext.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID, card);
+
+                user.ManaPoints -= manaSpent;
+                unitOfWork.PlayerStateRepository.Update(user);
+
+                game.WhoseTurnID = nextUserID;
                 unitOfWork.GameRepository.Update(game);
 
-                Card card = await unitOfWork.CardRepository.GetById(cardID);
-                Deck deck = await unitOfWork.DeckRepository.GetDeckWithCards(umgTurnuser.DeckID);
-                unitOfWork.CardDeckRepository.DeleteCardFromDeck(card, deck);               
+                Deck deck = await unitOfWork.DeckRepository.GetDeckWithCards(user.DeckID);
+                unitOfWork.CardDeckRepository.DeleteCardFromDeck(card, deck);
+
+                TurnStruct turn = new TurnStruct()
+                {
+                    PlayedByUserID = turnUserID,
+                    DamageDone = damageDone,
+                    NextPlayerID = game.WhoseTurnID,
+                    Card = card,
+                    AttackedUser = attackedUser
+                };
 
                 await unitOfWork.CompleteAsync();
-            
-                turn.PlayedByUserID = turnUserID;        
-                turn.DamageDone = damageDone;
-                turn.NextPlayerID = game.WhoseTurnID;
-                turn.Card = card;
-                
+
                 await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
-                
+
                 return game;
+
             }
         }
         public async Task<bool> SendInvite(int gameID, string username, string tag, int userFrom)

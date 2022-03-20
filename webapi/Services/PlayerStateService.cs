@@ -17,7 +17,7 @@ namespace webapi.Services
         {
             this.unitOfWork = unitOfWork;
         }
-
+        
         public async Task<List<PlayerState>> GetPlayersInGame(int gameID)
         {
             using (unitOfWork)
