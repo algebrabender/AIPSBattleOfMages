@@ -1,11 +1,7 @@
-﻿using Assets.Scripts.Models;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour, ICardContext
+public class Card : MonoBehaviour
 {
     public CardData cardData = null;
     public string type = null;
@@ -21,7 +17,6 @@ public class Card : MonoBehaviour, ICardContext
     public Sprite earthCard = null;
     public Sprite airCard = null;
 
-    private ICardStrategy cardStrategy;
 
     public void SetCard()
     {
@@ -47,13 +42,4 @@ public class Card : MonoBehaviour, ICardContext
         }
     }
 
-    public void SetStrategy(ICardStrategy cardStrategy)
-    {
-        this.cardStrategy = cardStrategy;
-    }
-
-    public void Turn(int gameID, int turnUserID, int attackedUserID, int nextUserID, CardData cardData)
-    {
-        this.cardStrategy.Turn(gameID, turnUserID, attackedUserID, nextUserID, cardData);
-    }
 }

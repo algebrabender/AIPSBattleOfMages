@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Assets.Scripts.Models;
+﻿using System.Collections.Generic;
 
 public class Player
 {
@@ -83,45 +78,6 @@ public class Player
             if (currentDeck[0].air == 1)
                 hand[i].type = "air";
 
-            switch (hand[i].cardData.type)
-            {
-                case "attack":
-                    {
-                        if (terrainType == hand[i].type)
-                        {
-                            if (terrainType == mageType)
-                                hand[i].SetStrategy(new DoubleBoostedAttack());
-                            else
-                                hand[i].SetStrategy(new BoostedAttack());
-                        }
-                        else if (mageType == card.type)
-                            hand[i].SetStrategy(new BoostedAttack());
-                        else
-                            hand[i].SetStrategy(new BaseAttack());
-                    }
-                    break;
-                case "heal":
-                    {
-                        if (terrainType == card.type)
-                        {
-                            if (terrainType == mageType)
-                                hand[i].SetStrategy(new DoubleBoostedHeal());
-                            else
-                                hand[i].SetStrategy(new BoostedHeal());
-                        }
-                        else if (mageType == card.type)
-                            hand[i].SetStrategy(new BoostedHeal());
-                        else
-                            hand[i].SetStrategy(new BaseHeal());
-                    }
-                    break;
-                case "add damage":
-                    hand[i].SetStrategy(new AddDamage());
-                    break;
-                case "reduce cost":
-                    hand[i].SetStrategy(new ReduceCost());
-                    break;
-            }
 
             hand[i].SetCard();
 
@@ -146,46 +102,6 @@ public class Player
             card.type = "earth";
         if (currentDeck[0].air == 1)
             card.type = "air";
-
-        switch (card.cardData.type)
-        {
-            case "attack":
-                {
-                    if (terrainType == card.type)
-                    {
-                        if (terrainType == mageType)
-                            card.SetStrategy(new DoubleBoostedAttack());
-                        else
-                            card.SetStrategy(new BoostedAttack());
-                    }
-                    else if (mageType == card.type)
-                        card.SetStrategy(new BoostedAttack());
-                    else
-                        card.SetStrategy(new BaseAttack());
-                }
-                break;
-            case "heal":
-                {
-                    if (terrainType == card.type)
-                    {
-                        if (terrainType == mageType)
-                            card.SetStrategy(new DoubleBoostedHeal());
-                        else
-                            card.SetStrategy(new BoostedHeal());
-                    }
-                    else if (mageType == card.type)
-                        card.SetStrategy(new BoostedHeal());
-                    else
-                        card.SetStrategy(new BaseHeal());
-                }
-                break;
-            case "add damage":
-                card.SetStrategy(new AddDamage());
-                break;
-            case "reduce cost":
-                card.SetStrategy(new ReduceCost());
-                break;
-        }
 
         currentHand.Add(card);
         currentDeck.Remove(currentDeck[0]);
