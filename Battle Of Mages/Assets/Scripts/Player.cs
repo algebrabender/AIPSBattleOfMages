@@ -5,7 +5,6 @@ public class Player
     private UserData userData;
     private List<CardData> currentDeck;
     private PlayerStateData playerStateData;
-    private List<Card> currentHand = new List<Card>(5);
     private string mageType;
 
     internal void SetPlayer(UserData ud, PlayerStateData psd = null)
@@ -54,18 +53,10 @@ public class Player
         return this.currentDeck;
     }
 
-    internal List<Card> GetHand()
-    {
-        return this.currentHand;
-    }
-
     internal void DealHand(List<Card> hand)
     {
-        string terrainType = GameController.instance.GetGameTerrain();
-
         for (int i = 0; i < 5; i++)
         {
-            Card card = new Card();
             hand[i].cardData = currentDeck[0];
             hand[i].indexInHand = i;
 
@@ -81,34 +72,25 @@ public class Player
 
             hand[i].SetCard();
 
-            currentHand.Add(card);
             currentDeck.Remove(currentDeck[0]);
         }
     }
 
-    internal void DealCard()
+    internal void DealCard(List<Card> hand)
     {
-        string terrainType = GameController.instance.GetGameTerrain();
-
-        Card card = new Card();
-        card.cardData = currentDeck[0];
-        card.indexInHand = 4;
+        hand[4].cardData = currentDeck[0];
+        hand[4].indexInHand = 4;
 
         if (currentDeck[0].fire == 1)
-            card.type = "fire";
+            hand[4].type = "fire";
         if (currentDeck[0].ice == 1)
-            card.type = "ice";
+            hand[4].type = "ice";
         if (currentDeck[0].earth == 1)
-            card.type = "earth";
+            hand[4].type = "earth";
         if (currentDeck[0].air == 1)
-            card.type = "air";
+            hand[4].type = "air";
 
-        currentHand.Add(card);
         currentDeck.Remove(currentDeck[0]);
     }
 
-    internal void RemoveCard(int index)
-    {
-        currentHand.RemoveAt(index);
-    }
 }

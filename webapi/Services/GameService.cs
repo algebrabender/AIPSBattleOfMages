@@ -262,13 +262,14 @@ namespace webapi.Services
                 return game;
             }
         }
-        public async Task<Game> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, int cardID)
+        public async Task<Game> Turn(int gameID, int turnUserID, int attackedUserID, int nextUserID, int cardID)
         {
             using (unitOfWork)
             {
                 Card card = await unitOfWork.CardRepository.GetById(cardID);
                 Game game = await unitOfWork.GameRepository.GetGameWithTerrain(gameID);
                 PlayerState user = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
+                CardDeck cardDeck = await unitOfWork.CardDeckRepository.GetByDeckIDAndCardID(user.DeckID, cardID);
                 var mageType = await unitOfWork.PlayerStateRepository.GetUserMageType(turnUserID, gameID);
                 switch (card.Type)
                 {
@@ -316,9 +317,9 @@ namespace webapi.Services
                         break;
                 }
 
-                PlayerState attackedUser = await this.cardContext.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID, card);
+                PlayerState attackedUser = await this.cardContext.Turn(gameID, turnUserID, attackedUserID, card.Damage + cardDeck.DamageBooster, nextUserID, cardID);
 
-                user.ManaPoints -= manaSpent;
+                user.ManaPoints -= (card.ManaCost - cardDeck.ManaReducer);
                 unitOfWork.PlayerStateRepository.Update(user);
 
                 game.WhoseTurnID = nextUserID;
@@ -330,7 +331,7 @@ namespace webapi.Services
                 TurnStruct turn = new TurnStruct()
                 {
                     PlayedByUserID = turnUserID,
-                    DamageDone = damageDone,
+                    DamageDone = card.Damage,
                     NextPlayerID = game.WhoseTurnID,
                     Card = card,
                     AttackedUser = attackedUser

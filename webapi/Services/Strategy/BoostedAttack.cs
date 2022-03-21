@@ -14,12 +14,12 @@ namespace webapi.Services.Strategy
         {
             this.unitOfWork = unitOfWork;
         }
-        public async Task<PlayerState> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, Card card)
+        public async Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
             using (unitOfWork)
             {
                 PlayerState attackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
-                attackedUser.HealthPoints -= card.Damage + 1;
+                attackedUser.HealthPoints -= damageDone + 1;
 
                 unitOfWork.PlayerStateRepository.Update(attackedUser);
                 await unitOfWork.CompleteAsync();

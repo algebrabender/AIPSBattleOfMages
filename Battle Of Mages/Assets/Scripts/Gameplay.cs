@@ -107,13 +107,13 @@ public class Gameplay : MonoBehaviour
 
                 //TODO: izabrana karta
                 //player.RemoveCard(card);
-                player.DealCard();
+                //player.DealCard(playerHand);
             }
             else
             {
                 //TODO: izabrana karta
                 //player.RemoveCard(card);
-                GameController.instance.GetPlayer().DealCard();
+                GameController.instance.GetPlayer().DealCard(playerHand);
             }
         }
 

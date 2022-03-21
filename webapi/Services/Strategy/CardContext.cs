@@ -15,9 +15,9 @@ namespace webapi.Services.Strategy
             this.strategy = cardStrategy;
         }
 
-        public async Task<PlayerState> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, Card card)
+        public async Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
-            return await this.strategy.Turn(gameID, turnUserID, manaSpent, attackedUserID, damageDone, nextUserID, card);
+            return await this.strategy.Turn(gameID, turnUserID, attackedUserID, damageDone, nextUserID, cardID);
         }
     }
 }

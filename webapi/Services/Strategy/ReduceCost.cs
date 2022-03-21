@@ -13,9 +13,17 @@ namespace webapi.Services.Strategy
         {
             this.unitOfWork = unitOfWork;
         }
-        public Task<PlayerState> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, Card card)
+        public async Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
-            throw new System.NotImplementedException();
+            PlayerState user = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
+            CardDeck cardDeck = await unitOfWork.CardDeckRepository.GetByDeckIDAndCardID(user.DeckID, cardID);
+
+            cardDeck.ManaReducer = damageDone;
+
+            unitOfWork.CardDeckRepository.Update(cardDeck);
+            await unitOfWork.CompleteAsync();
+
+            return user;
         }
     }
 }

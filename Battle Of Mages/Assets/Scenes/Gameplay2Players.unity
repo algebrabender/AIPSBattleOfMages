@@ -1808,6 +1808,7 @@ GameObject:
   m_Component:
   - component: {fileID: 418785511}
   - component: {fileID: 418785512}
+  - component: {fileID: 418785513}
   m_Layer: 5
   m_Name: CardOne
   m_TagString: Untagged
@@ -1871,6 +1872,19 @@ MonoBehaviour:
   iceCard: {fileID: 21300000, guid: fa4668164cbdef64080392323363c8d4, type: 3}
   earthCard: {fileID: 21300000, guid: 204f92b4c85c9c440bf500115e17ce4c, type: 3}
   airCard: {fileID: 21300000, guid: c4cef7839d2ce6b41917555a13a93dc1, type: 3}
+--- !u!65 &418785513
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418785510}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1.2, z: 1.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &456177120
 GameObject:
   m_ObjectHideFlags: 0

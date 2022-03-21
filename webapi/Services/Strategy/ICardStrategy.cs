@@ -6,6 +6,6 @@ namespace webapi.Services.Strategy
 {
     public interface ICardStrategy
     {
-        public Task<PlayerState> Turn(int gameID, int turnUserID, int manaSpent, int attackedUserID, int damageDone, int nextUserID, Card card);
+        public Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID);
     }
 }

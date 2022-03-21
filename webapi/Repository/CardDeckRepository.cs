@@ -70,5 +70,10 @@ namespace webapi.Repository
         {
             base.Update(entity);
         }
+
+        public async Task<CardDeck> GetByDeckIDAndCardID(int deckID, int cardID)
+        {
+            return await this.dbSet.FirstAsync(cd => cd.DeckID == deckID && cd.CardID == cardID);
+        }
     }
 }
