@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public CardData cardData = null;
     public string type = null;
@@ -16,7 +17,7 @@ public class Card : MonoBehaviour
     public Sprite iceCard = null;
     public Sprite earthCard = null;
     public Sprite airCard = null;
-
+    internal bool clicked = false;
 
     public void SetCard()
     {
@@ -42,4 +43,18 @@ public class Card : MonoBehaviour
         }
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        clicked = true;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        highlightImage.gameObject.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        highlightImage.gameObject.SetActive(false);
+    }
 }

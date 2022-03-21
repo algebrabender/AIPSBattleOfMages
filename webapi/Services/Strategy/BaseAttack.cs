@@ -16,16 +16,12 @@ namespace webapi.Services.Strategy
         }
         public async Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
-            using(unitOfWork)
-            {
-                PlayerState attackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
-                attackedUser.HealthPoints -= damageDone;
+            PlayerState attackedUser = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
+            attackedUser.HealthPoints -= damageDone;
 
-                unitOfWork.PlayerStateRepository.Update(attackedUser);
-                await unitOfWork.CompleteAsync();
+            unitOfWork.PlayerStateRepository.Update(attackedUser);
 
-                return attackedUser;
-            }
+            return attackedUser;
         }
     }
 }

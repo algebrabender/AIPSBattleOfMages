@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class Gameplay : MonoBehaviour
 {
     public Text playerInfoText;
-    public Text playerTwoInfoText;
+    public Text playerTwoInfoText = null;
     public Text playerThreeInfoText = null;
     public Text playerFourInfoText = null;
     public Text turnText;
@@ -24,6 +24,9 @@ public class Gameplay : MonoBehaviour
     public List<Card> playerTwoHand;
     public List<Card> playerThreeHand;
     public List<Card> playerFourHand;
+    public Player playerTwo;
+    public Player playerThree;
+    public Player playerFour;
     private bool cardsSet = true;
 
     private void ChangeTurnText()
@@ -48,14 +51,23 @@ public class Gameplay : MonoBehaviour
             UserData enemyData = enemy.GetPlayerData();
             PlayerStateData enemyPSD = enemy.GetPlayerStateData();
             if (i + 1 == 1)
+            {
                 playerTwoInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
                                         "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+                playerTwo.SetPlayer(enemyData, enemyPSD);
+            }
             else if (i + 1 == 2)
+            {
                 playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
                                           "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+                playerThree.SetPlayer(enemyData, enemyPSD);
+            }
             else
+            {
                 playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
                                          "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+                playerFour.SetPlayer(enemyData, enemyPSD);
+            }
         }
     }
 
@@ -103,17 +115,32 @@ public class Gameplay : MonoBehaviour
             if (GameController.instance.GetPlayerData().id != obj.playedByUser)
             {
                 Player player = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
-                //TODO: "pokazati" koju kartu je protivnik odigrao
 
-                //TODO: izabrana karta
-                //player.RemoveCard(card);
-                //player.DealCard(playerHand);
-            }
-            else
-            {
-                //TODO: izabrana karta
-                //player.RemoveCard(card);
-                GameController.instance.GetPlayer().DealCard(playerHand);
+                //TODO: proveriti da li radi kako treba
+                if (playerTwo.GetPlayerData() == player.GetPlayerData())
+                {
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    card.highlightImage.enabled = true;
+                    playerTwoHand.Remove(card);
+                    player.DealHand(playerTwoHand);
+                    card.highlightImage.enabled = false;
+                }
+                else if (playerThree.GetPlayerData() == player.GetPlayerData())
+                {
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    card.highlightImage.enabled = true;
+                    playerThreeHand.Remove(card);
+                    player.DealHand(playerThreeHand);
+                    card.highlightImage.enabled = false;
+                }
+                else if (playerFour.GetPlayerData() == player.GetPlayerData())
+                {
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    card.highlightImage.enabled = true;
+                    playerFourHand.Remove(card);
+                    player.DealHand(playerFourHand);
+                    card.highlightImage.enabled = false;
+                }
             }
         }
 
@@ -145,8 +172,6 @@ public class Gameplay : MonoBehaviour
     private void UpdateLeave(ChatMessageData obj)
     {
         UpdateChat(obj);
-
-        //TOOD: srediti
     }
 
     void Awake()
@@ -200,13 +225,17 @@ public class Gameplay : MonoBehaviour
 
     void Update()
     {
+        if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
+            SetTexts();
+
+        if (!cardsSet)
+            DealHandForPlayers();
+
         Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
 
         if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
         {
             skipButton.interactable = false;
-
-            //TODO: blokirati cards
 
             ChangeTurnText();
         }
@@ -214,17 +243,46 @@ public class Gameplay : MonoBehaviour
         {
             skipButton.interactable = true;
 
-            //TODO: odblokirati karte
             ChangeTurnText();
+
+            foreach (Card card in playerHand)
+            {
+                if (card.clicked)
+                {
+                    Player player = GameController.instance.GetGamePlayers().FirstOrDefault(p => p.clicked == true);
+
+                    if (player.clicked)
+                    {
+                        card.clicked = false;
+
+                        playerHand.Remove(card);
+
+                        player.clicked = false;
+
+                        Turn(card.cardData.id, player.GetPlayerData().id);
+
+                        //TODO: videti da li radi kako treba
+                        playerHand.Remove(card);
+
+                        GameController.instance.GetPlayer().DealCard(playerHand);
+
+                        break;
+                    }
+                }
+            }  
         }
 
         chatText.text = GameController.instance.chatHistory;
+    }
 
-        if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
-            SetTexts();
+    public void Turn(int cardID, int attackedUser)
+    {
+        GameData gd = GameController.instance.GetGameData();
+        List<Player> players = GameController.instance.GetGamePlayers();
+        int nextTurn = (GameController.instance.GetPlayer().GetPlayerStateData().turnOrder + 1) % gd.numOfPlayers;
+        gd.whoseTurnID = players.Find(p => p.GetPlayerStateData().turnOrder == nextTurn).GetPlayerData().id;
 
-        if (!cardsSet)
-            DealHandForPlayers();
+        StartCoroutine(GameController.instance.apiHelper.Turn(gd.id, GameController.instance.GetPlayerData().id, attackedUser, gd.whoseTurnID, cardID));
     }
 
     public void SkipTurn()

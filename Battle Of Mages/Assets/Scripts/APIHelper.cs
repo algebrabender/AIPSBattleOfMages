@@ -265,10 +265,10 @@ public class APIHelper
 		}
 	}
 
-	public IEnumerator Turn(int gameID, int userID, int manaSpent, int attackedUser, int damageDone, int nextUserID, int cardID)
+	public IEnumerator Turn(int gameID, int userID, int attackedUser, int nextUserID, int cardID)
 	{
-		string link = "https://localhost:5001/Game/Turn/" + gameID + "/" + userID + "/" + manaSpent
-					  + "/" + attackedUser + "/" + damageDone + "/" + nextUserID + "/" + cardID;
+		string link = "https://localhost:5001/Game/Turn/" + gameID + "/" + userID
+					  + "/" + attackedUser + "/" + nextUserID + "/" + cardID;
 
 		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
 		{

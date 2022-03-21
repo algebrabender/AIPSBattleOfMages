@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Player
+public class Player : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private UserData userData;
     private List<CardData> currentDeck;
     private PlayerStateData playerStateData;
     private string mageType;
+    internal bool clicked = false;
+    public Image highlightImage = null;
 
     internal void SetPlayer(UserData ud, PlayerStateData psd = null)
     {
@@ -93,4 +99,18 @@ public class Player
         currentDeck.Remove(currentDeck[0]);
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        GameController.instance.GetGamePlayers().First(p => p.userData == this.userData).clicked = true;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        highlightImage.gameObject.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        highlightImage.gameObject.SetActive(false);
+    }
 }
