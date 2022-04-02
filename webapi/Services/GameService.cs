@@ -337,9 +337,28 @@ namespace webapi.Services
                     AttackedUser = attackedUser
                 };
 
-                await unitOfWork.CompleteAsync();
-
                 await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
+
+                if(attackedUser.HealthPoints <= 0)
+                {
+                    Game gameWithPlayerStates = await unitOfWork.GameRepository.GetGameWithPlayerStates(gameID);
+                    for(int i = attackedUser.TurnOrder + 1; i < game.NumOfPlayers; i++)
+                    {
+                        PlayerState ps = await unitOfWork.PlayerStateRepository.GetById(gameWithPlayerStates.PlayerStates[i].ID);
+                        ps.TurnOrder -= 1;
+                        unitOfWork.PlayerStateRepository.Update(ps);
+                    }
+
+                    game.NumOfPlayers -= 1;
+                    unitOfWork.GameRepository.Update(game);
+                    
+                    unitOfWork.PlayerStateRepository.Delete(gameID, attackedUserID);
+                    
+                    await hubService.NotifyUser(attackedUserID, "EndGame", "You lost!");
+                    await hubService.NotifyOnGameChanges(gameID, "RemoveUserFromGame", user);
+                }
+
+                await unitOfWork.CompleteAsync();
 
                 return game;
 
