@@ -208,6 +208,7 @@ namespace webapi.Services
                 game.PlayerStates.Remove(ps);
 
                 unitOfWork.PlayerStateRepository.Delete(ps.GameID, ps.UserID); 
+                unitOfWork.DeckRepository.Delete(ps.DeckID);
 
                 unitOfWork.GameRepository.Update(game);
                 
@@ -351,8 +352,14 @@ namespace webapi.Services
 
                     game.NumOfPlayers -= 1;
                     unitOfWork.GameRepository.Update(game);
-                    
+
                     unitOfWork.PlayerStateRepository.Delete(gameID, attackedUserID);
+                    unitOfWork.DeckRepository.Delete(attackedUser.DeckID);
+
+                    if(game.NumOfPlayers == 1)
+                    {
+                        await hubService.NotifyUser(turnUserID, "EndGame", "You won!");
+                    }
                     
                     await hubService.NotifyUser(attackedUserID, "EndGame", "You lost!");
                     await hubService.NotifyOnPlayersChanges(gameID, "RemoveUserFromGame", user, game);

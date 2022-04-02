@@ -6,9 +6,10 @@ using UnityEngine.UI;
 
 public class EndGame : MonoBehaviour
 {
+    public Text endGameText;
     private void Awake()
     {
-       //TODO: postaviti tekst ko je winner
+        endGameText.text = GameController.instance.endGameText;
     }
 
     public void MainMenu()

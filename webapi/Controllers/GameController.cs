@@ -51,7 +51,7 @@ namespace webapi.Controllers
         }
 
         [Route("RemoveUserFromGame/{gameID}/{userID}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> RemoveUserFromGame(int gameID, int userID)
         {
             var result = await gameService.RemoveUserFromGame(gameID, userID);
