@@ -52,21 +52,36 @@ public class Gameplay : MonoBehaviour
             PlayerStateData enemyPSD = enemy.GetPlayerStateData();
             if (i + 1 == 1)
             {
-                playerTwoInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                if (enemyData.id == -1)
+                    playerTwoInfoText.text = "";
+                else
+                {
+                    playerTwoInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
                                         "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
-                playerTwo.SetPlayer(enemyData, enemyPSD);
+                    playerTwo.SetPlayer(enemyData, enemyPSD);
+                }
             }
             else if (i + 1 == 2)
             {
-                playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
-                                          "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
-                playerThree.SetPlayer(enemyData, enemyPSD);
+                if (enemyData.id == -1)
+                    playerThreeInfoText.text = "";
+                else
+                {
+                    playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                            "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
+                    playerThree.SetPlayer(enemyData, enemyPSD);
+                }
             }
             else
             {
-                playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                if (enemyData.id == -1)
+                    playerFourInfoText.text = "";
+                else
+                {
+                    playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
                                          "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
-                playerFour.SetPlayer(enemyData, enemyPSD);
+                    playerFour.SetPlayer(enemyData, enemyPSD);
+                }
             }
         }
     }
@@ -149,29 +164,53 @@ public class Gameplay : MonoBehaviour
 
     private void UpdateJoin(ChatMessageData obj)
     {
-        StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(GameController.instance.GetGameData().id));
-
         UpdateChat(obj);
+    }
 
-        SetTexts();
+    private void UpdateAddedUser(UserData ud, PlayerStateData psd)
+    {
+        Player player = new Player();
+        player.SetPlayer(ud, psd);
+        GameController.instance.UpdateGamePlayers(player);
+
+        StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().id, player.GetPlayerData().id));
 
         GameData gd = GameController.instance.GetGameData();
         List<Player> players = GameController.instance.GetGamePlayers();
 
-        if (gd.numOfPlayers == players.Count)
+        if (gd.numOfPlayers == players.Count - 1)
         {
-            foreach (Player player in players)
-            {
-                StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().id, player.GetPlayerData().id));
-            }
-
-            cardsSet = false;
+            GameController.instance.GetPlayer().DealHand(playerHand);
+            DealHandForPlayers();
         }
+
+        SetTexts();
     }
 
     private void UpdateLeave(ChatMessageData obj)
     {
         UpdateChat(obj);
+    }
+
+    private void UpdateRemoveUser(UserData ud, GameData gd)
+    {
+        List<Player> players = GameController.instance.GetGamePlayers();
+        Player player = players.First(p => p.GetPlayerData().id == ud.id);
+        player.UpdateUserData(new UserData { id = -1, username = "", firstName = "", lastName = "", tag = "" });
+
+        for (int i = player.GetPlayerStateData().turnOrder + 1; i < gd.numOfPlayers + 1; i++)
+        {
+            PlayerStateData psd = players.First(p => p.GetPlayerStateData().turnOrder == i).GetPlayerStateData();
+            psd.turnOrder -= 1;
+        }
+
+        GameController.instance.UpdateGameData(gd);
+    }
+
+    private void UpdateEndGame(string obj)
+    {
+        GameController.instance.endGameText = obj;
+        SceneManager.LoadScene(10);
     }
 
     void Awake()
@@ -186,6 +225,9 @@ public class Gameplay : MonoBehaviour
         GameController.instance.signalRConnector.OnJoinMessageReceived += UpdateJoin;
         GameController.instance.signalRConnector.OnLeaveMessageReceived += UpdateLeave;
         GameController.instance.signalRConnector.OnTurnInfoReceived += UpdateTurn;
+        GameController.instance.signalRConnector.OnPlayersChangesReceived += UpdateAddedUser;
+        GameController.instance.signalRConnector.OnEndGame += UpdateEndGame;
+        GameController.instance.signalRConnector.OnRemoveUserFromGame += UpdateRemoveUser;
 
         chatText.text = GameController.instance.chatHistory;
 
@@ -211,7 +253,7 @@ public class Gameplay : MonoBehaviour
         SetTexts();
         ChangeTurnText();
 
-        GameController.instance.GetPlayer().DealHand(playerHand);
+        //GameController.instance.GetPlayer().DealHand(playerHand);
 
         List<Player> players = GameController.instance.GetGamePlayers();
         foreach (Player player in players)
@@ -220,16 +262,22 @@ public class Gameplay : MonoBehaviour
         }
 
         if (players.Count == GameController.instance.GetGameData().numOfPlayers - 1)
+        {
+            GameController.instance.GetPlayer().DealHand(playerHand);
             DealHandForPlayers();
+        }
     }
 
     void Update()
     {
-        if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
-            SetTexts();
+        //if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
+        //    SetTexts();
 
-        if (!cardsSet)
-            DealHandForPlayers();
+        //if (!cardsSet)
+        //{
+        //    GameController.instance.GetPlayer().DealHand(playerHand);
+        //    DealHandForPlayers();
+        //}
 
         Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
 

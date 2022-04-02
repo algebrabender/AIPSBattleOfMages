@@ -355,7 +355,7 @@ namespace webapi.Services
                     unitOfWork.PlayerStateRepository.Delete(gameID, attackedUserID);
                     
                     await hubService.NotifyUser(attackedUserID, "EndGame", "You lost!");
-                    await hubService.NotifyOnGameChanges(gameID, "RemoveUserFromGame", user);
+                    await hubService.NotifyOnPlayersChanges(gameID, "RemoveUserFromGame", user, game);
                 }
 
                 await unitOfWork.CompleteAsync();

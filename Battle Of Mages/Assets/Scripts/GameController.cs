@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     private Game game = new Game();
     public string chatHistory = "";
     public int turnIndex = 0;
+    public string endGameText = "";
 
     public WelcomeMenu welcomeMenu;
 
