@@ -377,4 +377,30 @@ public class APIHelper
 			GameController.instance.SetPlayerMageType(req.downloadHandler.text.Replace("\"", ""));
 		}
 	}
+
+	public IEnumerator RemoveUserFromGame(int gameID, int userID)
+	{
+		if (this.gd != null)
+			yield break;
+
+		string link = "https://localhost:5001/Game/RemoveUserFromGame/" + gameID + "/" + userID;
+
+		using (UnityWebRequest req = UnityWebRequest.Post(link, "POST"))
+		{
+			req.SetRequestHeader("accept", "*/*");
+
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+		}
+	}
 }

@@ -351,16 +351,20 @@ namespace webapi.Services
                     }
 
                     game.NumOfPlayers -= 1;
-                    unitOfWork.GameRepository.Update(game);
+                    
 
                     unitOfWork.PlayerStateRepository.Delete(gameID, attackedUserID);
                     unitOfWork.DeckRepository.Delete(attackedUser.DeckID);
 
                     if(game.NumOfPlayers == 1)
                     {
+                        unitOfWork.PlayerStateRepository.Delete(gameID, turnUserID);
+                        unitOfWork.DeckRepository.Delete(user.DeckID);
+                        game.WinnerUserID = turnUserID;
                         await hubService.NotifyUser(turnUserID, "EndGame", "You won!");
                     }
-                    
+                    unitOfWork.GameRepository.Update(game);
+
                     await hubService.NotifyUser(attackedUserID, "EndGame", "You lost!");
                     await hubService.NotifyOnPlayersChanges(gameID, "RemoveUserFromGame", user, game);
                 }

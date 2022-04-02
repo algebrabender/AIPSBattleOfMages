@@ -205,6 +205,8 @@ public class Gameplay : MonoBehaviour
         }
 
         GameController.instance.UpdateGameData(gd);
+
+        SetTexts();
     }
 
     private void UpdateEndGame(string obj)
@@ -270,15 +272,6 @@ public class Gameplay : MonoBehaviour
 
     void Update()
     {
-        //if (playerTwoInfoText.text == "" || playerThreeInfoText.text == "" || playerFourInfoText.text == "")
-        //    SetTexts();
-
-        //if (!cardsSet)
-        //{
-        //    GameController.instance.GetPlayer().DealHand(playerHand);
-        //    DealHandForPlayers();
-        //}
-
         Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
 
         if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
@@ -363,7 +356,8 @@ public class Gameplay : MonoBehaviour
 
     public void Quit()
     {
-        GameController.instance.Quit();
+        StartCoroutine(GameController.instance.apiHelper.RemoveUserFromGame(GameController.instance.GetGameData().id, GameController.instance.GetPlayerData().id));
+        SceneManager.LoadScene(2);
     }
 
     public void SendInvites()
