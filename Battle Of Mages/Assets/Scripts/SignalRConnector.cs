@@ -12,6 +12,7 @@ public class SignalRConnector
     public Action<ChatMessageData> OnChatMessageReceived;
     public Action<InviteData> OnInviteReceived;
     public Action<ChatMessageData> OnJoinMessageReceived;
+    public Action<UserData> OnJoinUpdateReceived;
     public Action<ChatMessageData> OnLeaveMessageReceived;
     public Action<TurnData> OnTurnInfoReceived;
 
@@ -70,6 +71,11 @@ public class SignalRConnector
             OnTurnInfoReceived.Invoke(turn);
         });
 
+
+        connection.On<UserData>("AddUserToGame", user =>
+        {
+            OnJoinUpdateReceived.Invoke(user);
+        });
 
         await this.StartConnectionAsync();
     }
