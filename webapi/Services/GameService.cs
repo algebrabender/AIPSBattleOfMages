@@ -181,7 +181,7 @@ namespace webapi.Services
 
                 await unitOfWork.CompleteAsync();
 
-                await hubService.NotifyOnGameChanges(gameID, "AddUserToGame", user);
+                await hubService.NotifyOnPlayersChanges(gameID, "AddUserToGame", user, playerState);
 
                 return game;
             }
