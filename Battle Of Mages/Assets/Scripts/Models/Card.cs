@@ -50,11 +50,13 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        highlightImage.gameObject.SetActive(true);
+        if (cardData != null)
+            highlightImage.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        highlightImage.gameObject.SetActive(false);
+        if (cardData != null)
+            highlightImage.gameObject.SetActive(false);
     }
 }

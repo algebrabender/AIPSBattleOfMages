@@ -31,7 +31,7 @@ public class SignalRConnector
         .Build();
 
         connection.KeepAliveInterval = TimeSpan.FromSeconds(15);
-        connection.ServerTimeout = TimeSpan.FromMinutes(1);
+        connection.ServerTimeout = TimeSpan.FromMinutes(5);
     }
 
     public async Task InitAsync()

@@ -28,6 +28,7 @@ public class Gameplay : MonoBehaviour
     public Player playerThree;
     public Player playerFour;
     private bool cardsSet = true;
+    private bool turnHappend = false;
 
     private void ChangeTurnText()
     {
@@ -99,8 +100,6 @@ public class Gameplay : MonoBehaviour
             else
                 players[i].DealHand(playerFourHand);
         }
-
-        cardsSet = true;
     }
 
     private void UpdateChat(ChatMessageData obj)
@@ -121,45 +120,71 @@ public class Gameplay : MonoBehaviour
     {
         GameController.instance.GetGameData().whoseTurnID = obj.nextPlayerID;
         List<Player> players = GameController.instance.GetGamePlayers();
+        Player player = GameController.instance.GetPlayer();
 
         if (obj.attackedUser != null) //odigrana karta else je skip turn kad ne treba nista
         {
-            Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
-            attacked.UpdatePlayerStateData(obj.attackedUser);
-
-            if (GameController.instance.GetPlayerData().id != obj.playedByUser)
+            if (player.GetPlayerData().id != obj.playedByUserID)
             {
-                Player player = players.Find(p => p.GetPlayerData().id == obj.attackedUser.id);
+                if (player.GetPlayerData().id == obj.attackedUser.userID)
+                {
+                    PlayerStateData psd = player.GetPlayerStateData();
+                    psd.healthPoints -= obj.damageDone;
+                }
+                else
+                {
+                    Player attacked = players.Find(plr => plr.GetPlayerData().id == obj.attackedUser.userID);
+                    attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
+                }
+
+                Player p = players.Find(pl => pl.GetPlayerData().id == obj.playedByUserID);
 
                 //TODO: proveriti da li radi kako treba
-                if (playerTwo.GetPlayerData() == player.GetPlayerData())
+                if (playerTwo.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    card.highlightImage.enabled = true;
-                    playerTwoHand.Remove(card);
-                    player.DealHand(playerTwoHand);
-                    card.highlightImage.enabled = false;
+                    playerTwo.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    //card.highlightImage.enabled = true;
+                    ////playerTwoHand.Remove(card);
+                    ////player.DealHand(playerTwoHand);
+                    //card.highlightImage.enabled = false;
                 }
-                else if (playerThree.GetPlayerData() == player.GetPlayerData())
+                else if (playerThree.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    card.highlightImage.enabled = true;
-                    playerThreeHand.Remove(card);
-                    player.DealHand(playerThreeHand);
-                    card.highlightImage.enabled = false;
+                    playerThree.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    //card.highlightImage.enabled = true;
+                    ////playerThreeHand.Remove(card);
+                    ////player.DealHand(playerThreeHand);
+                    //card.highlightImage.enabled = false;
                 }
-                else if (playerFour.GetPlayerData() == player.GetPlayerData())
+                else if (playerFour.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    card.highlightImage.enabled = true;
-                    playerFourHand.Remove(card);
-                    player.DealHand(playerFourHand);
-                    card.highlightImage.enabled = false;
+                    playerFour.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    //card.highlightImage.enabled = true;
+                    ////playerFourHand.Remove(card);
+                    ////player.DealHand(playerFourHand);
+                    //card.highlightImage.enabled = false;
                 }
             }
+            else
+            {
+                Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
+                attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
+
+                PlayerStateData psd = player.GetPlayerStateData();
+                psd.manaPoints -= obj.card.manaCost;
+            }
+        }
+        else
+        {
+            Player skippedTurn = players.Find(p => p.GetPlayerData().id == obj.playedByUserID);
+            if (skippedTurn.GetPlayerData() != null)
+                skippedTurn.GetPlayerStateData().manaPoints += 1;
         }
 
-        SetTexts(); 
+        turnHappend = true;
     }
 
     private void UpdateJoin(ChatMessageData obj)
@@ -172,16 +197,17 @@ public class Gameplay : MonoBehaviour
         Player player = new Player();
         player.SetPlayer(ud, psd);
         GameController.instance.UpdateGamePlayers(player);
-
-        StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().id, player.GetPlayerData().id));
-
+        
         GameData gd = GameController.instance.GetGameData();
         List<Player> players = GameController.instance.GetGamePlayers();
 
-        if (gd.numOfPlayers == players.Count - 1)
+        StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(psd.deckID, ud.id));
+
+        if (gd.numOfPlayers - 1 == players.Count)
         {
-            GameController.instance.GetPlayer().DealHand(playerHand);
-            DealHandForPlayers();
+            //GameController.instance.GetPlayer().DealHand(playerHand);
+            //DealHandForPlayers();
+            cardsSet = false;
         }
 
         SetTexts();
@@ -274,6 +300,19 @@ public class Gameplay : MonoBehaviour
     {
         Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
 
+        if (turnHappend)
+        {
+            SetTexts();
+            turnHappend = false;
+        }
+
+        if (!cardsSet)
+        {
+            GameController.instance.GetPlayer().DealHand(playerHand);
+            DealHandForPlayers();
+            cardsSet = true;
+        }
+
         if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
         {
             skipButton.interactable = false;
@@ -291,21 +330,19 @@ public class Gameplay : MonoBehaviour
                 if (card.clicked)
                 {
                     Player player = GameController.instance.GetGamePlayers().FirstOrDefault(p => p.clicked == true);
-
+                    
                     if (player.clicked)
                     {
                         card.clicked = false;
-
-                        playerHand.Remove(card);
 
                         player.clicked = false;
 
                         Turn(card.cardData.id, player.GetPlayerData().id);
 
                         //TODO: videti da li radi kako treba
-                        playerHand.Remove(card);
+                        //playerHand.Remove(card);
 
-                        GameController.instance.GetPlayer().DealCard(playerHand);
+                        GameController.instance.GetPlayer().DealCard(playerHand, card);
 
                         break;
                     }

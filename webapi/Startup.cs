@@ -72,7 +72,7 @@ namespace webapi
             {
                 options.EnableDetailedErrors = true;
                 options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-                options.ClientTimeoutInterval = TimeSpan.FromMinutes(1);
+                options.ClientTimeoutInterval = TimeSpan.FromMinutes(5);
             });    
         }
 

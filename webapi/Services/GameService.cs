@@ -168,7 +168,7 @@ namespace webapi.Services
                 playerState.TurnOrder = await this.unitOfWork.PlayerStateRepository.GetCountByGameID(gameID);
                 
                 playerState.ManaPoints = 5;
-                playerState.HealthPoints = 10;
+                playerState.HealthPoints = 2;
                 
                 unitOfWork.PlayerStateRepository.Create(playerState);
 

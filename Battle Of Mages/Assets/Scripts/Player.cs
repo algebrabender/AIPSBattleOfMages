@@ -82,19 +82,20 @@ public class Player : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
         }
     }
 
-    internal void DealCard(List<Card> hand)
+    internal void DealCard(List<Card> hand, Card playedCard)
     {
-        hand[4].cardData = currentDeck[0];
-        hand[4].indexInHand = 4;
+        int index = hand.FindIndex(c => c.cardData.id == playedCard.cardData.id);
+        hand[index].cardData = currentDeck[0];
+        //hand[index].indexInHand = 4;
 
         if (currentDeck[0].fire == 1)
-            hand[4].type = "fire";
+            hand[index].type = "fire";
         if (currentDeck[0].ice == 1)
-            hand[4].type = "ice";
+            hand[index].type = "ice";
         if (currentDeck[0].earth == 1)
-            hand[4].type = "earth";
+            hand[index].type = "earth";
         if (currentDeck[0].air == 1)
-            hand[4].type = "air";
+            hand[index].type = "air";
 
         currentDeck.Remove(currentDeck[0]);
     }
