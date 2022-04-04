@@ -139,33 +139,23 @@ public class Gameplay : MonoBehaviour
 
                 Player p = players.Find(pl => pl.GetPlayerData().id == obj.playedByUserID);
 
-                //TODO: proveriti da li radi kako treba
                 if (playerTwo.GetPlayerData().id == p.GetPlayerData().id)
                 {
                     playerTwo.GetPlayerStateData().manaPoints -= obj.card.manaCost;
-                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    //card.highlightImage.enabled = true;
-                    ////playerTwoHand.Remove(card);
-                    ////player.DealHand(playerTwoHand);
-                    //card.highlightImage.enabled = false;
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    GameController.instance.GetPlayer().DealCard(playerTwoHand, card);
                 }
                 else if (playerThree.GetPlayerData().id == p.GetPlayerData().id)
                 {
                     playerThree.GetPlayerStateData().manaPoints -= obj.card.manaCost;
-                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    //card.highlightImage.enabled = true;
-                    ////playerThreeHand.Remove(card);
-                    ////player.DealHand(playerThreeHand);
-                    //card.highlightImage.enabled = false;
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    GameController.instance.GetPlayer().DealCard(playerThreeHand, card);
                 }
                 else if (playerFour.GetPlayerData().id == p.GetPlayerData().id)
                 {
                     playerFour.GetPlayerStateData().manaPoints -= obj.card.manaCost;
-                    //Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    //card.highlightImage.enabled = true;
-                    ////playerFourHand.Remove(card);
-                    ////player.DealHand(playerFourHand);
-                    //card.highlightImage.enabled = false;
+                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+                    GameController.instance.GetPlayer().DealCard(playerFourHand, card);
                 }
             }
             else
@@ -243,6 +233,7 @@ public class Gameplay : MonoBehaviour
 
     void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
         GameData gameData = GameController.instance.GetGameData();
         StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(gameData.id));
 
@@ -331,22 +322,68 @@ public class Gameplay : MonoBehaviour
             {
                 if (card.clicked)
                 {
-                    Player player = GameController.instance.GetGamePlayers().FirstOrDefault(p => p.clicked == true);
-                    
-                    if (player.clicked)
+                    if (card.cardData.type == "attack")
+                    {
+                        if (playerTwo.clicked)
+                        {
+                            card.clicked = false;
+
+                            playerTwo.clicked = false;
+
+                            UserData ud = playerTwo.GetPlayerData();
+
+                            Turn(card.cardData.id, ud.id);;
+
+                            GameController.instance.GetPlayer().DealCard(playerHand, card);
+
+                            break;
+                        }
+                        else if (playerThree != null && playerThree.clicked)
+                        {
+                            card.clicked = false;
+
+                            playerThree.clicked = false;
+
+                            UserData ud = playerThree.GetPlayerData();
+
+                            Turn(card.cardData.id, ud.id); ;
+
+                            GameController.instance.GetPlayer().DealCard(playerHand, card);
+
+                            break;
+                        }
+                        else if (playerFour != null && playerFour.clicked)
+                        {
+                            card.clicked = false;
+
+                            playerFour.clicked = false;
+
+                            UserData ud = playerFour.GetPlayerData();
+
+                            Turn(card.cardData.id, ud.id); ;
+
+                            GameController.instance.GetPlayer().DealCard(playerHand, card);
+
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else if (card.cardData.type == "heal")
                     {
                         card.clicked = false;
 
-                        player.clicked = false;
-
-                        Turn(card.cardData.id, player.GetPlayerData().id);
-
-                        //TODO: videti da li radi kako treba
-                        //playerHand.Remove(card);
+                        Turn(card.cardData.id, GameController.instance.GetPlayerData().id);
 
                         GameController.instance.GetPlayer().DealCard(playerHand, card);
 
                         break;
+                    }
+                    else
+                    {
+                        //TODO: reduce cost i add damage 
                     }
                 }
             }  

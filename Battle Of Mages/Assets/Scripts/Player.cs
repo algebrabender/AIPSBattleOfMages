@@ -86,7 +86,6 @@ public class Player : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     {
         int index = hand.FindIndex(c => c.cardData.id == playedCard.cardData.id);
         hand[index].cardData = currentDeck[0];
-        //hand[index].indexInHand = 4;
 
         if (currentDeck[0].fire == 1)
             hand[index].type = "fire";
@@ -96,6 +95,8 @@ public class Player : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
             hand[index].type = "earth";
         if (currentDeck[0].air == 1)
             hand[index].type = "air";
+
+        hand[index].SetCard();
 
         currentDeck.Remove(currentDeck[0]);
     }
