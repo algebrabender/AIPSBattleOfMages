@@ -8,19 +8,11 @@ using UnityEngine.UI;
 public class SendInvites : MonoBehaviour
 {
     public InputField player1tag;
-    //za sad jedan po jedan poziv
+    public Text errorMessageText;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        errorMessageText.text = GameController.instance.errorMessage;
     }
 
     public void Send()
@@ -40,6 +32,7 @@ public class SendInvites : MonoBehaviour
 
     public void Back()
     {
+        GameController.instance.errorMessage = "";
         SceneManager.LoadScene(GameController.instance.apiHelper.gd.numOfPlayers + 3);
     }
 

@@ -16,6 +16,7 @@ public class WelcomeMenu : MonoBehaviour
     public InputField passwordEntryField;
     public InputField firstNameEntryField;
     public InputField lastNameEntryField;
+    public Text errorMessageText;
 
     public string userNameText;
     public string passwordText;
@@ -47,19 +48,17 @@ public class WelcomeMenu : MonoBehaviour
 
     public void LogIn()
     {
-        //await signalRConnector.JoinApp(userID);
-
         userNameText = userNameEntryField.text;
         passwordText = passwordEntryField.text;
 
         if (SuccesfullLogIn())
         {
+            GameController.instance.errorMessage = "";
             SceneManager.LoadScene(2);
 
             userNameEntryField.text = string.Empty;
             passwordEntryField.text = string.Empty;
         }
-        //else deo ako je doslo do greske prilikom api poziva
     }
 
     private bool SuccesfullLogIn()
@@ -88,7 +87,6 @@ public class WelcomeMenu : MonoBehaviour
             firstNameEntryField.text = string.Empty;
             lastNameEntryField.text = string.Empty;
         }
-        //else deo ako je doslo do greske prilikom api poziva
     }
 
     private bool SuccesfulSignUp()
@@ -99,5 +97,10 @@ public class WelcomeMenu : MonoBehaviour
     public void Quit()
     {
         GameController.instance.Quit();
+    }
+
+    private void Update()
+    {
+        errorMessageText.text = GameController.instance.errorMessage;
     }
 }

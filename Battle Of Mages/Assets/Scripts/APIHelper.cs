@@ -77,7 +77,8 @@ public class APIHelper
 
 			if (req.error != null)
 			{
-				LogMessage(req.error);
+				//LogMessage(req.error);
+				GameController.instance.errorMessage = "Wrong Username#Tag or Password";
 				yield break;
 			}
 
@@ -140,7 +141,8 @@ public class APIHelper
 
 			if (req.error != null)
 			{
-				LogMessage(req.error);
+				//LogMessage(req.error);
+				GameController.instance.errorMessage = "No Game with ID " + gameID; 
 				yield break;
 			}
 
@@ -169,7 +171,8 @@ public class APIHelper
 
 			if (req.error != null)
 			{
-				LogMessage(req.error);
+				//LogMessage(req.error);
+				GameController.instance.errorMessage = "No free Game right now";
 				yield break;
 			}
 
@@ -328,11 +331,12 @@ public class APIHelper
 
 			if (req.error != null)
 			{
-				LogMessage(req.error);
+				//LogMessage(req.error);
+				GameController.instance.errorMessage = "No such Player";
 				yield break;
 			}
 
-			LogMessage(req.downloadHandler.text);
+			//LogMessage(req.downloadHandler.text);
 		}
 	}
 

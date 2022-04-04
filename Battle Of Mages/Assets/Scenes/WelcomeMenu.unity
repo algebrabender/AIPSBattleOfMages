@@ -1181,6 +1181,7 @@ MonoBehaviour:
   chatHistory: 
   turnIndex: 0
   endGameText: 
+  errorMessage: 
   welcomeMenu: {fileID: 2028886060}
 --- !u!4 &1053134911
 Transform:
@@ -1338,8 +1339,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 10.948, y: -178}
-  m_SizeDelta: {x: 980.1172, y: 104.43587}
+  m_AnchoredPosition: {x: 39.6, y: -180}
+  m_SizeDelta: {x: 922.7905, y: 104.43587}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1386879804
 MonoBehaviour:
@@ -2017,6 +2018,7 @@ MonoBehaviour:
   passwordEntryField: {fileID: 150002647}
   firstNameEntryField: {fileID: 1965693348}
   lastNameEntryField: {fileID: 932415180}
+  errorMessageText: {fileID: 1386879804}
   userNameText: 
   passwordText: 
   firstNameText: 

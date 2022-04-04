@@ -245,6 +245,8 @@ public class Gameplay : MonoBehaviour
     {
         GameData gameData = GameController.instance.GetGameData();
         StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(gameData.id));
+
+        GameController.instance.errorMessage = "";
     }
 
     void Start()

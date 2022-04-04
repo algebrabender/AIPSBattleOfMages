@@ -18,6 +18,7 @@ public class GameSetUp : MonoBehaviour
     public InputField numOfSpellCards;
     public InputField numOfAttackCards;
     public InputField numOfBuffCards;
+    public Text errorMessageText;
 
     public enum MagicType
     {
@@ -167,5 +168,10 @@ public class GameSetUp : MonoBehaviour
     public void Quit()
     {
         GameController.instance.Quit();
+    }
+
+    private void Update()
+    {
+        errorMessageText.text = GameController.instance.errorMessage;
     }
 }

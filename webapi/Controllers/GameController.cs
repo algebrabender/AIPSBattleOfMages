@@ -37,6 +37,9 @@ namespace webapi.Controllers
         public async Task<ActionResult> AddUserToGame(int gameID, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             var result = await gameService.AddUserToGame(gameID, userID, mageType, numOfSpellCards, numOfAttackCards, numOfBuffCards);
+            if (result == null)
+                return BadRequest();
+
             return Ok(result);
         }
         
@@ -111,6 +114,9 @@ namespace webapi.Controllers
         public async Task<ActionResult> SendInvite(int gameID, string username, string tag, int userFrom)
         {
             bool invite = await gameService.SendInvite(gameID, username, tag, userFrom);
+
+            if (invite == false)
+                return BadRequest();
 
             return Ok(invite);
         }

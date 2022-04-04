@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour
     public string chatHistory = "";
     public int turnIndex = 0;
     public string endGameText = "";
+    public string errorMessage = "";
 
     public WelcomeMenu welcomeMenu;
 
