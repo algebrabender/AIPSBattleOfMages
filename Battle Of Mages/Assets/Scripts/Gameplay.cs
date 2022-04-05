@@ -29,6 +29,8 @@ public class Gameplay : MonoBehaviour
     public Player playerFour;
     private bool cardsSet = true;
     private bool turnHappend = false;
+    private Card firstCard = null;
+    private bool secondCard = false;
 
     private void ChangeTurnText()
     {
@@ -143,27 +145,64 @@ public class Gameplay : MonoBehaviour
                 {
                     playerTwo.GetPlayerStateData().manaPoints -= obj.card.manaCost;
                     Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    GameController.instance.GetPlayer().DealCard(playerTwoHand, card);
+                    
+                    if (card.cardData.type == "reduce cost")
+                    {
+                        Card upgraded = playerTwoHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(true, obj.damageDone);
+                    }
+                    else if (card.cardData.type == "add damage")
+                    {
+                        Card upgraded = playerTwoHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(false, obj.damageDone);
+                    }
+
+                    p.DealCard(playerTwoHand, card);
                 }
                 else if (playerThree.GetPlayerData().id == p.GetPlayerData().id)
                 {
                     playerThree.GetPlayerStateData().manaPoints -= obj.card.manaCost;
-                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    GameController.instance.GetPlayer().DealCard(playerThreeHand, card);
+                    Card card = playerThreeHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+
+                    if (card.cardData.type == "reduce cost")
+                    {
+                        Card upgraded = playerThreeHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(true, obj.damageDone);
+                    }
+                    else if (card.cardData.type == "add damage")
+                    {
+                        Card upgraded = playerThreeHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(false, obj.damageDone);
+                    }
+
+                    p.DealCard(playerThreeHand, card);
                 }
                 else if (playerFour.GetPlayerData().id == p.GetPlayerData().id)
                 {
                     playerFour.GetPlayerStateData().manaPoints -= obj.card.manaCost;
-                    Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
-                    GameController.instance.GetPlayer().DealCard(playerFourHand, card);
+                    Card card = playerFourHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
+
+                    if (card.cardData.type == "reduce cost")
+                    {
+                        Card upgraded = playerThreeHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(true, obj.damageDone);
+                    }
+                    else if (card.cardData.type == "add damage")
+                    {
+                        Card upgraded = playerThreeHand.FirstOrDefault(c => c.cardData.id == Int32.Parse(obj.card.description));
+                        upgraded.UpdateCard(false, obj.damageDone);
+                    }
+
+                    p.DealCard(playerFourHand, card);
                 }
             }
             else
             {
-                Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
-                attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
+                //Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
+                //attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
 
                 PlayerStateData psd = player.GetPlayerStateData();
+                psd.healthPoints = obj.attackedUser.healthPoints;
                 psd.manaPoints -= obj.card.manaCost;
             }
         }
@@ -232,8 +271,7 @@ public class Gameplay : MonoBehaviour
     }
 
     void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
+    { 
         GameData gameData = GameController.instance.GetGameData();
         StartCoroutine(GameController.instance.apiHelper.GetGamePlayers(gameData.id));
 
@@ -308,7 +346,7 @@ public class Gameplay : MonoBehaviour
 
         if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
         {
-            skipButton.interactable = false;
+            skipButton.interactable = false; 
 
             ChangeTurnText();
         }
@@ -320,7 +358,7 @@ public class Gameplay : MonoBehaviour
 
             foreach (Card card in playerHand)
             {
-                if (card.clicked)
+                if (card.clicked && !secondCard)
                 {
                     if (card.cardData.type == "attack")
                     {
@@ -383,8 +421,38 @@ public class Gameplay : MonoBehaviour
                     }
                     else
                     {
-                        //TODO: reduce cost i add damage 
+                        card.clicked = false;
+                        secondCard = true;
+                        firstCard = card;
                     }
+                }
+                else if (card.clicked && secondCard)
+                {
+                    //TODO: reduce cost i add damage 
+                    //odigrana card == firstCard
+                    //odigrana na card
+
+                    if (card == firstCard)
+                    {
+                        card.clicked = false;
+                        break;
+                    }
+
+                    card.clicked = false;
+                    secondCard = false;
+
+                    //update secondCard sa reduced cost/added damage
+                    if (firstCard.cardData.type == "reduce cost")
+                        card.UpdateCard(true, firstCard.cardData.damage);
+                    else
+                        card.UpdateCard(false, firstCard.cardData.damage);
+
+                    //api poziv
+                    Turn(firstCard.cardData.id, card.cardData.id);
+
+                    GameController.instance.GetPlayer().DealCard(playerHand, firstCard);
+
+                    break;
                 }
             }  
         }

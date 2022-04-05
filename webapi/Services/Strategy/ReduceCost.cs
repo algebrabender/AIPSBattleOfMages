@@ -15,13 +15,12 @@ namespace webapi.Services.Strategy
         }
         public async Task<PlayerState> Turn(int gameID, int turnUserID, int attackedUserID, int damageDone, int nextUserID, int cardID)
         {
-            PlayerState user = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, attackedUserID);
-            CardDeck cardDeck = await unitOfWork.CardDeckRepository.GetByDeckIDAndCardID(user.DeckID, cardID);
+            PlayerState user = await unitOfWork.PlayerStateRepository.GetByGameIDAndUserID(gameID, turnUserID);
+            CardDeck cardDeck = await unitOfWork.CardDeckRepository.GetByDeckIDAndCardID(user.DeckID, attackedUserID);
 
             cardDeck.ManaReducer = damageDone;
 
             unitOfWork.CardDeckRepository.Update(cardDeck);
-            await unitOfWork.CompleteAsync();
 
             return user;
         }

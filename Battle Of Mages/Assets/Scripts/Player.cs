@@ -108,11 +108,13 @@ public class Player : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        highlightImage.gameObject.SetActive(true);
+        if (userData != null)
+            highlightImage.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        highlightImage.gameObject.SetActive(false);
+        if (userData != null)
+            highlightImage.gameObject.SetActive(false);
     }
 }

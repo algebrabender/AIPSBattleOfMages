@@ -329,6 +329,11 @@ namespace webapi.Services
                 Deck deck = await unitOfWork.DeckRepository.GetDeckWithCards(user.DeckID);
                 unitOfWork.CardDeckRepository.DeleteCardFromDeck(card, deck);
 
+                if (card.Type == "reduce cost" || card.Type == "add damage")
+                {
+                    card = new Card { ID = card.ID, Damage = card.Damage, ManaCost = card.ManaCost, Type = card.Type, Description = attackedUserID.ToString() };
+                }
+
                 TurnStruct turn = new TurnStruct()
                 {
                     PlayedByUserID = turnUserID,

@@ -43,6 +43,14 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         }
     }
 
+    public void UpdateCard(bool mana, int amount)
+    {
+        if (mana)
+            manaCostText.text = (cardData.manaCost - amount).ToString();
+        else
+            damageText.text = (cardData.damage + amount).ToString();
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         clicked = true;
@@ -50,13 +58,13 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (cardData != null)
+        if (cardData.title != "")
             highlightImage.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (cardData != null)
+        if (cardData.title != "")
             highlightImage.gameObject.SetActive(false);
     }
 }
