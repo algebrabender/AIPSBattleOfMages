@@ -13,10 +13,16 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     public Text manaCostText = null;
     public Image cardImage = null;
     public Image highlightImage = null;
+    public Image icon = null;
     public Sprite fireCard = null;
     public Sprite iceCard = null;
     public Sprite earthCard = null;
     public Sprite airCard = null;
+    public Sprite frame = null;
+    public Sprite fireIcon = null;
+    public Sprite iceIcon = null;
+    public Sprite airIcon = null;
+    public Sprite earthIcon = null;
     internal bool clicked = false;
 
     public void SetCard()
@@ -25,20 +31,30 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         descriptionText.text = cardData.description;
         manaCostText.text = cardData.manaCost.ToString();
         damageText.text = cardData.damage.ToString();
+        icon.gameObject.SetActive(true);
 
-        switch(type)
+        switch (type)
         {
+            
             case "fire":
-                cardImage.sprite = fireCard;
+                cardImage.sprite = frame;
+                cardImage.color = new Color(154, 114, 94);
+                icon.sprite = fireIcon;
                 break;
             case "ice":
-                cardImage.sprite = iceCard;
+                cardImage.sprite = frame;
+                cardImage.color = new Color(191, 225, 255);
+                icon.sprite = iceIcon;
                 break;
             case "earth":
-                cardImage.sprite = earthCard;
+                cardImage.sprite = frame;
+                cardImage.color = new Color(174, 111, 82);
+                icon.sprite = earthIcon;
                 break;
             case "air":
-                cardImage.sprite = airCard;
+                cardImage.sprite = frame;
+                cardImage.color = new Color(222, 252, 255);
+                icon.sprite = airIcon;
                 break;
         }
     }
