@@ -202,11 +202,17 @@ public class Gameplay : MonoBehaviour
             }
             else
             {
-                Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
-                attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
-
                 PlayerStateData psd = player.GetPlayerStateData();
                 psd.manaPoints -= obj.card.manaCost;
+
+                if (player.GetPlayerData().id == obj.attackedUser.userID)
+                    psd.healthPoints = obj.attackedUser.healthPoints;
+                else
+                {
+                    Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
+                    attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
+                }
+
             }
         }
         else
@@ -228,11 +234,12 @@ public class Gameplay : MonoBehaviour
     {
         Player player = new Player();
         player.SetPlayer(ud, psd);
-        GameController.instance.UpdateGamePlayers(player);
         
         GameData gd = GameController.instance.GetGameData();
 
         StartCoroutine(GameController.instance.apiHelper.GetMageType(ud.id, gd.id, player));
+
+        GameController.instance.UpdateGamePlayers(player);
 
         List<Player> players = GameController.instance.GetGamePlayers();
 
