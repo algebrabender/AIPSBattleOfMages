@@ -38,22 +38,22 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             
             case "fire":
                 cardImage.sprite = frame;
-                cardImage.color = new Color(154, 114, 94);
+                cardImage.color = new Color(1.0f, 0.596f, 0.24f);
                 icon.sprite = fireIcon;
                 break;
             case "ice":
                 cardImage.sprite = frame;
-                cardImage.color = new Color(191, 225, 255);
+                cardImage.color = new Color(0.75f, 0.88f, 1.0f);
                 icon.sprite = iceIcon;
                 break;
             case "earth":
                 cardImage.sprite = frame;
-                cardImage.color = new Color(174, 111, 82);
+                cardImage.color = new Color(0.68f, 0.43f, 0.31f);
                 icon.sprite = earthIcon;
                 break;
             case "air":
                 cardImage.sprite = frame;
-                cardImage.color = new Color(222, 252, 255);
+                cardImage.color = new Color(0.87f, 0.99f, 1.0f);
                 icon.sprite = airIcon;
                 break;
         }

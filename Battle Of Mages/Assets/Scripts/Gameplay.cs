@@ -292,19 +292,20 @@ public class Gameplay : MonoBehaviour
 
         if (terrainImage.sprite == null)
         {
+            terrainImage.sprite = fireTerrain;
             switch(GameController.instance.GetGameTerrain())
             {
                 case "fire":
-                    terrainImage.sprite = fireTerrain;
+                    terrainImage.color = new Color(0.6f, 0.2f, 0.19f);
                     break;
                 case "ice":
-                    terrainImage.sprite = iceTerrain;
+                    terrainImage.color = new Color(0.447f, 0.64f, 0.81f);
                     break;
                 case "earth":
-                    terrainImage.sprite = earthTerrain;
+                    terrainImage.color = new Color(0.08f, 0.4f, 0.255f);
                     break;
                 case "air":
-                    terrainImage.sprite = airTerrain;
+                    terrainImage.color = new Color(0.75f, 0.88f, 1.0f);
                     break;
             }
         }
