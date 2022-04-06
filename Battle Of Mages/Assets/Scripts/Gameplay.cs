@@ -43,7 +43,8 @@ public class Gameplay : MonoBehaviour
         UserData ud = GameController.instance.GetPlayerData();
         PlayerStateData psd = GameController.instance.GetPlayerStateData();
 
-        playerInfoText.text = ud.username.Replace("\"", "") + "#" + ud.tag.Replace("\"", "") +
+        playerInfoText.text = ud.username.Replace("\"", "") + "#" + ud.tag.Replace("\"", "") + 
+                                "\n" + GameController.instance.GetPlayer().GetMageType() + " mage" + 
                               "\nHealth Points: " + psd.healthPoints + "\nMana Points: " + psd.manaPoints;
 
         List<Player> players = GameController.instance.GetGamePlayers();
@@ -60,6 +61,7 @@ public class Gameplay : MonoBehaviour
                 else
                 {
                     playerTwoInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                        "\n" + enemy.GetMageType() + " mage" +
                                         "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
                     playerTwo.SetPlayer(enemyData, enemyPSD);
                 }
@@ -71,6 +73,7 @@ public class Gameplay : MonoBehaviour
                 else
                 {
                     playerThreeInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                            "\n" + enemy.GetMageType() + " mage" +
                                             "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
                     playerThree.SetPlayer(enemyData, enemyPSD);
                 }
@@ -82,6 +85,7 @@ public class Gameplay : MonoBehaviour
                 else
                 {
                     playerFourInfoText.text = enemyData.username.Replace("\"", "") + "#" + enemyData.tag.Replace("\"", "") +
+                                         "\n" + enemy.GetMageType() + " mage" +
                                          "\nHealth Points: " + enemyPSD.healthPoints + "\nMana Points: " + enemyPSD.manaPoints;
                     playerFour.SetPlayer(enemyData, enemyPSD);
                 }
@@ -131,7 +135,7 @@ public class Gameplay : MonoBehaviour
                 if (player.GetPlayerData().id == obj.attackedUser.userID)
                 {
                     PlayerStateData psd = player.GetPlayerStateData();
-                    psd.healthPoints -= obj.damageDone;
+                    psd.healthPoints = obj.attackedUser.healthPoints;
                 }
                 else
                 {
@@ -198,11 +202,10 @@ public class Gameplay : MonoBehaviour
             }
             else
             {
-                //Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
-                //attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
+                Player attacked = players.Find(p => p.GetPlayerData().id == obj.attackedUser.userID);
+                attacked.GetPlayerStateData().healthPoints = obj.attackedUser.healthPoints;
 
                 PlayerStateData psd = player.GetPlayerStateData();
-                psd.healthPoints = obj.attackedUser.healthPoints;
                 psd.manaPoints -= obj.card.manaCost;
             }
         }
@@ -228,6 +231,9 @@ public class Gameplay : MonoBehaviour
         GameController.instance.UpdateGamePlayers(player);
         
         GameData gd = GameController.instance.GetGameData();
+
+        StartCoroutine(GameController.instance.apiHelper.GetMageType(ud.id, gd.id, player));
+
         List<Player> players = GameController.instance.GetGamePlayers();
 
         StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(psd.deckID, ud.id));
@@ -361,13 +367,20 @@ public class Gameplay : MonoBehaviour
             {
                 if (card.clicked && !secondCard)
                 {
+                    //if (card.cardData.manaCost > GameController.instance.GetPlayerStateData().manaPoints)
+                    //{
+                    //    card.clicked = false;
+                    //    break;
+                    //}
+
                     if (card.cardData.type == "attack")
                     {
-                        if (playerTwo.clicked)
+                        Player player = GameController.instance.GetGamePlayers().FirstOrDefault(p => p.clicked == true);
+                        if (player.GetPlayerData().id == playerTwo.GetPlayerData().id)
                         {
                             card.clicked = false;
 
-                            playerTwo.clicked = false;
+                            player.clicked = false;
 
                             UserData ud = playerTwo.GetPlayerData();
 
@@ -377,11 +390,11 @@ public class Gameplay : MonoBehaviour
 
                             break;
                         }
-                        else if (playerThree != null && playerThree.clicked)
+                        else if (playerThree != null && player.GetPlayerData().id == playerThree.GetPlayerData().id)
                         {
                             card.clicked = false;
 
-                            playerThree.clicked = false;
+                            player.clicked = false;
 
                             UserData ud = playerThree.GetPlayerData();
 
@@ -391,11 +404,11 @@ public class Gameplay : MonoBehaviour
 
                             break;
                         }
-                        else if (playerFour != null && playerFour.clicked)
+                        else if (playerFour != null && player.GetPlayerData().id == playerFour.GetPlayerData().id)
                         {
                             card.clicked = false;
 
-                            playerFour.clicked = false;
+                            player.clicked = false;
 
                             UserData ud = playerFour.GetPlayerData();
 
@@ -429,10 +442,6 @@ public class Gameplay : MonoBehaviour
                 }
                 else if (card.clicked && secondCard)
                 {
-                    //TODO: reduce cost i add damage 
-                    //odigrana card == firstCard
-                    //odigrana na card
-
                     if (card == firstCard)
                     {
                         card.clicked = false;

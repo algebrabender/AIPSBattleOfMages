@@ -382,6 +382,27 @@ public class APIHelper
 		}
 	}
 
+	public IEnumerator GetMageType(int userID, int gameID, Player player)
+	{
+		using (UnityWebRequest req = UnityWebRequest.Get("https://localhost:5001/User/GetUserMageType/" + userID + "/" + gameID))
+		{
+			req.SendWebRequest();
+
+			while (!req.isDone)
+			{
+
+			}
+
+			if (req.error != null)
+			{
+				LogMessage(req.error);
+				yield break;
+			}
+
+			player.SetMageType(req.downloadHandler.text.Replace("\"", ""));
+		}
+	}
+	
 	public IEnumerator RemoveUserFromGame(int gameID, int userID)
 	{
 		if (this.gd != null)

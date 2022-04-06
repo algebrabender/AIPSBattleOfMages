@@ -41,7 +41,6 @@ namespace webapi.Services
                 cards[count] = c;
             }
         }
-
         private async Task DeckCreating(Deck deck, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             //TODO: Proveriti sa svim kartama da li je shuffle ok
@@ -71,14 +70,25 @@ namespace webapi.Services
                     i++;
                 }
         }
+        private bool CheckTypes(string type, Card card)
+        {
+            if (type == "fire" && card.Fire == 1)
+                return true;
+            if (type == "ice" && card.Ice == 1)
+                return true;
+            if (type == "earth" && card.Earth == 1)
+                return true;
+            if (type == "air " && card.Air == 1)
+                return true;
 
+            return false;
+        }
         public GameService(IUnitOfWork unitOfWork, IHubContext<MessageHub> hub, CardContext cardContext) 
         {
             this.unitOfWork = unitOfWork;
             this.hubService = new HubService(hub);
             this.cardContext = cardContext;
         }
-
         public async Task<Game> CreateGame(Game game, string terrainType, int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             using(unitOfWork)
@@ -168,7 +178,7 @@ namespace webapi.Services
                 playerState.TurnOrder = await this.unitOfWork.PlayerStateRepository.GetCountByGameID(gameID);
                 
                 playerState.ManaPoints = 5;
-                playerState.HealthPoints = 2;
+                playerState.HealthPoints = 10;
                 
                 unitOfWork.PlayerStateRepository.Create(playerState);
 
@@ -276,14 +286,14 @@ namespace webapi.Services
                 {
                     case "attack":
                         {
-                            if (game.Terrain.Type == "")
+                            if (CheckTypes(game.Terrain.Type, card))
                             {
                                 if (game.Terrain.Type == mageType)
                                     this.cardContext.SetStrategy(new DoubleBoostedAttack(unitOfWork));
                                 else
                                     this.cardContext.SetStrategy(new BoostedAttack(unitOfWork));
                             }
-                            else if (mageType == "")
+                            else if (CheckTypes(mageType, card))
                             {
                                 this.cardContext.SetStrategy(new BoostedAttack(unitOfWork));
 
@@ -294,14 +304,14 @@ namespace webapi.Services
                         break;
                     case "heal":
                         {
-                            if (game.Terrain.Type == "")
+                            if (CheckTypes(game.Terrain.Type, card))
                             {
                                 if (game.Terrain.Type == mageType)
                                     this.cardContext.SetStrategy(new DoubleBoostedHeal(unitOfWork));
                                 else
                                     this.cardContext.SetStrategy(new BoostedHeal(unitOfWork));
                             }
-                            else if (mageType == "")
+                            else if (CheckTypes(mageType, card))
                             {
                                 this.cardContext.SetStrategy(new BoostedHeal(unitOfWork));
 
@@ -395,7 +405,6 @@ namespace webapi.Services
                 return true;
             }
         }
-
         public async Task<Game> JoinRandomGame(int userID, string mageType, int numOfSpellCards, int numOfAttackCards, int numOfBuffCards)
         {
             using (unitOfWork)
@@ -407,7 +416,6 @@ namespace webapi.Services
                 
             }
         }
-
         public async Task<Game> SkipTurn(int gameID, int turnUserID, int nextUserID)
         {
             using (unitOfWork)
