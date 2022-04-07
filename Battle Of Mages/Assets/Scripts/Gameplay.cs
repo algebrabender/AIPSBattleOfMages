@@ -154,7 +154,7 @@ public class Gameplay : MonoBehaviour
 
                 if (playerTwo.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    playerTwo.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    playerTwo.GetPlayerStateData().manaPoints = obj.manaPoints;
                     Card card = playerTwoHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
                     
                     if (card.cardData.type == "reduce cost")
@@ -172,7 +172,7 @@ public class Gameplay : MonoBehaviour
                 }
                 else if (playerThree.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    playerThree.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    playerThree.GetPlayerStateData().manaPoints = obj.manaPoints;
                     Card card = playerThreeHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
 
                     if (card.cardData.type == "reduce cost")
@@ -190,7 +190,7 @@ public class Gameplay : MonoBehaviour
                 }
                 else if (playerFour.GetPlayerData().id == p.GetPlayerData().id)
                 {
-                    playerFour.GetPlayerStateData().manaPoints -= obj.card.manaCost;
+                    playerFour.GetPlayerStateData().manaPoints = obj.manaPoints;
                     Card card = playerFourHand.FirstOrDefault(c => c.cardData.id == obj.card.id);
 
                     if (card.cardData.type == "reduce cost")
@@ -210,7 +210,7 @@ public class Gameplay : MonoBehaviour
             else
             {
                 PlayerStateData psd = player.GetPlayerStateData();
-                psd.manaPoints -= obj.card.manaCost;
+                psd.manaPoints = obj.manaPoints;
 
                 if (player.GetPlayerData().id == obj.attackedUser.userID)
                     psd.healthPoints = obj.attackedUser.healthPoints;
@@ -226,7 +226,7 @@ public class Gameplay : MonoBehaviour
         {
             Player skippedTurn = players.Find(p => p.GetPlayerData().id == obj.playedByUserID);
             if (skippedTurn.GetPlayerData() != null)
-                skippedTurn.GetPlayerStateData().manaPoints += 1;
+                skippedTurn.GetPlayerStateData().manaPoints = obj.manaPoints;
         }
 
         turnHappend = true;

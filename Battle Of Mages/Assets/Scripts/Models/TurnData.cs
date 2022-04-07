@@ -9,4 +9,5 @@ public class TurnData
     public PlayerStateData attackedUser;
     public int damageDone;
     public int nextPlayerID;
+    public int manaPoints;
 }

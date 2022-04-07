@@ -26,6 +26,7 @@ namespace webapi.Services
             public PlayerState AttackedUser { set; get; }
             public int DamageDone { set; get; }
             public int NextPlayerID { set; get; }
+            public int ManaPoints {set; get; }
         }
 
         private static void Shuffle (List<Card> cards)
@@ -350,7 +351,8 @@ namespace webapi.Services
                     DamageDone = card.Damage,
                     NextPlayerID = game.WhoseTurnID,
                     Card = card,
-                    AttackedUser = attackedUser
+                    AttackedUser = attackedUser,
+                    ManaPoints = user.ManaPoints
                 };
 
                 await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
@@ -444,6 +446,7 @@ namespace webapi.Services
                 turn.DamageDone = -1;
                 turn.NextPlayerID = nextUserID;
                 turn.Card = null;
+                turn.ManaPoints = psdUser.ManaPoints;
                 
                 await hubService.NotifyOnGameChanges(gameID, "Turn", turn);
 
