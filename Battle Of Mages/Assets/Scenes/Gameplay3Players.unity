@@ -8140,7 +8140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300006, guid: 34ecf51bcd3f4424eafda7dafd885bd0, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9091,7 +9091,7 @@ MonoBehaviour:
   descriptionText: {fileID: 1492786795}
   damageText: {fileID: 170253885}
   manaCostText: {fileID: 978275276}
-  cardImage: {fileID: 2144021139}
+  cardImage: {fileID: 2134834540}
   highlightImage: {fileID: 2144021139}
   icon: {fileID: 1805629888}
   fireCard: {fileID: 21300000, guid: 4b24825d0103a784e92deb046d42214b, type: 3}
@@ -9440,7 +9440,7 @@ MonoBehaviour:
   chatText: {fileID: 1716572857}
   messageInputField: {fileID: 1401964581}
   terrainImage: {fileID: 1472529545}
-  fireTerrain: {fileID: 21300000, guid: d0c255285ea5db44c9284e5498c80fc7, type: 3}
+  fireTerrain: {fileID: 21300006, guid: 34ecf51bcd3f4424eafda7dafd885bd0, type: 3}
   iceTerrain: {fileID: 21300000, guid: aab8040c9130b054187ceb4ecd55571e, type: 3}
   earthTerrain: {fileID: 21300000, guid: e496fb686a9294d41a75fe8cdc9959ae, type: 3}
   airTerrain: {fileID: 21300000, guid: 46de8fd1c2b25c04eaf8c1cabb6dc24d, type: 3}
