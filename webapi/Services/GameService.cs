@@ -358,12 +358,19 @@ namespace webapi.Services
                 if(attackedUser.HealthPoints <= 0)
                 {
                     Game gameWithPlayerStates = await unitOfWork.GameRepository.GetGameWithPlayerStates(gameID);
+                    List<PlayerState> pss = gameWithPlayerStates.PlayerStates.OrderBy(ps => ps.TurnOrder).ToList();
                     for(int i = attackedUser.TurnOrder + 1; i < game.NumOfPlayers; i++)
                     {
-                        PlayerState ps = await unitOfWork.PlayerStateRepository.GetById(gameWithPlayerStates.PlayerStates[i].ID);
-                        ps.TurnOrder -= 1;
-                        unitOfWork.PlayerStateRepository.Update(ps);
+                        //PlayerState ps = await unitOfWork.PlayerStateRepository.GetById(gameWithPlayerStates.PlayerStates[i].ID);
+                        //ps.TurnOrder -= 1;
+                        //unitOfWork.PlayerStateRepository.Update(ps);
+                        //gameWithPlayerStates.PlayerStates[i].TurnOrder -= 1;
+                        //unitOfWork.PlayerStateRepository.Update(gameWithPlayerStates.PlayerStates[i]);
+                        pss[i].TurnOrder -= 1;
+                        unitOfWork.PlayerStateRepository.Update(pss[i]);
                     }
+
+                    game.WhoseTurnID = pss[(attackedUser.TurnOrder +1) % game.NumOfPlayers].UserID;
 
                     game.NumOfPlayers -= 1;
                     
@@ -381,7 +388,7 @@ namespace webapi.Services
                     unitOfWork.GameRepository.Update(game);
 
                     await hubService.NotifyUser(attackedUserID, "EndGame", "You lost!");
-                    await hubService.NotifyOnPlayersChanges(gameID, "RemoveUserFromGame", user, game);
+                    await hubService.NotifyOnPlayersChanges(gameID, "RemoveUserFromGame", attackedUserID, game);
                 }
 
                 await unitOfWork.CompleteAsync();

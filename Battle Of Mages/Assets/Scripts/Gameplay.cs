@@ -35,6 +35,13 @@ public class Gameplay : MonoBehaviour
     private void ChangeTurnText()
     {
         turnText.text = GameController.instance.CheckTurn() + " is playing!";
+
+        Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
+
+        if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
+            skipButton.interactable = false;
+        else
+            skipButton.interactable = true;
     }
 
     private void SetTexts()
@@ -247,9 +254,8 @@ public class Gameplay : MonoBehaviour
 
         if (gd.numOfPlayers - 1 == players.Count)
         {
-            //GameController.instance.GetPlayer().DealHand(playerHand);
-            //DealHandForPlayers();
             cardsSet = false;
+            GameObject.Find("SendInvitesButton").GetComponent<Button>().interactable = false;
         }
 
         SetTexts();
@@ -260,19 +266,34 @@ public class Gameplay : MonoBehaviour
         UpdateChat(obj);
     }
 
-    private void UpdateRemoveUser(UserData ud, GameData gd)
+    private void UpdateRemoveUser(int userID, GameData gd)
     {
-        List<Player> players = GameController.instance.GetGamePlayers();
-        Player player = players.First(p => p.GetPlayerData().id == ud.id);
-        player.UpdateUserData(new UserData { id = -1, username = "", firstName = "", lastName = "", tag = "" });
+        Player player = GameController.instance.GetPlayer();
 
-        for (int i = player.GetPlayerStateData().turnOrder + 1; i < gd.numOfPlayers + 1; i++)
+        if (player.GetPlayerData().id == userID)
+            return;
+
+        List<Player> players = GameController.instance.GetGamePlayers();
+        Player killedPlayer = players.First(p => p.GetPlayerData().id == userID);
+        killedPlayer.UpdateUserData(new UserData { id = -1, username = "", firstName = "", lastName = "", tag = "" });
+        killedPlayer.GetPlayerStateData().turnOrder = gd.numOfPlayers + 1;
+
+        int turnPlus = 1;
+
+        if (player.GetPlayerStateData().turnOrder == killedPlayer.GetPlayerStateData().turnOrder + 1)
         {
-            PlayerStateData psd = players.First(p => p.GetPlayerStateData().turnOrder == i).GetPlayerStateData();
-            psd.turnOrder -= 1;
+            player.GetPlayerStateData().turnOrder -= 1;
+            turnPlus++;
+        }
+        for (int i = killedPlayer.GetPlayerStateData().turnOrder + turnPlus; i < gd.numOfPlayers + 1; i++)
+        {
+                PlayerStateData ps = players.First(p => p.GetPlayerStateData().turnOrder == i).GetPlayerStateData();
+                ps.turnOrder -= 1;
         }
 
         GameController.instance.UpdateGameData(gd);
+
+        ChangeTurnText();
 
         SetTexts();
     }
@@ -323,14 +344,12 @@ public class Gameplay : MonoBehaviour
             }
         }
 
-        SetTexts();
-        ChangeTurnText();
-
-        //GameController.instance.GetPlayer().DealHand(playerHand);
+        GameData gd = GameController.instance.GetGameData();
 
         List<Player> players = GameController.instance.GetGamePlayers();
         foreach (Player player in players)
         {
+            StartCoroutine(GameController.instance.apiHelper.GetMageType(player.GetPlayerData().id, gd.id, player));
             StartCoroutine(GameController.instance.apiHelper.GetDeckWithCards(player.GetPlayerStateData().deckID, player.GetPlayerData().id));
         }
 
@@ -338,15 +357,18 @@ public class Gameplay : MonoBehaviour
         {
             GameController.instance.GetPlayer().DealHand(playerHand);
             DealHandForPlayers();
+            GameObject.Find("SendInvitesButton").GetComponent<Button>().interactable = false;
         }
+
+        SetTexts();
+        ChangeTurnText();
     }
 
     void Update()
     {
-        Button skipButton = GameObject.Find("SkipButton").GetComponent<Button>();
-
         if (turnHappend)
         {
+            ChangeTurnText();
             SetTexts();
             turnHappend = false;
         }
@@ -360,26 +382,20 @@ public class Gameplay : MonoBehaviour
 
         if (GameController.instance.GetGameData().whoseTurnID != GameController.instance.GetPlayerData().id)
         {
-            skipButton.interactable = false; 
+            //skipButton.interactable = false; 
 
-            ChangeTurnText();
+            //ChangeTurnText();
         }
         else
         {
-            skipButton.interactable = true;
+            //skipButton.interactable = true;
 
-            ChangeTurnText();
+            //ChangeTurnText();
 
             foreach (Card card in playerHand)
             {
                 if (card.clicked && !secondCard)
                 {
-                    //if (card.cardData.manaCost > GameController.instance.GetPlayerStateData().manaPoints)
-                    //{
-                    //    card.clicked = false;
-                    //    break;
-                    //}
-
                     if (card.cardData.type == "attack")
                     {
                         Player player = GameController.instance.GetGamePlayers().FirstOrDefault(p => p.clicked == true);

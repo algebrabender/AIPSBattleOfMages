@@ -284,7 +284,7 @@ public class APIHelper
 
 			if (req.error != null)
 			{
-				LogMessage(req.error);
+				LogMessage("ovde");
 				yield break;
 			}
 

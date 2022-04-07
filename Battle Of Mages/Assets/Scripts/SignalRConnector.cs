@@ -17,7 +17,7 @@ public class SignalRConnector
     public Action<TurnData> OnTurnInfoReceived;
     public Action<UserData, PlayerStateData> OnPlayersChangesReceived;
     public Action<string> OnEndGame;
-    public Action<UserData, GameData> OnRemoveUserFromGame;
+    public Action<int, GameData> OnRemoveUserFromGame;
 
     public SignalRConnector()
     {
@@ -84,9 +84,9 @@ public class SignalRConnector
             OnEndGame.Invoke(msg);
         });
 
-        connection.On<UserData, GameData>("RemoveUserFromGame", (user, game) =>
+        connection.On<int, GameData>("RemoveUserFromGame", (userID, game) =>
         {
-            OnRemoveUserFromGame.Invoke(user, game);
+            OnRemoveUserFromGame.Invoke(userID, game);
         });
 
         await this.StartConnectionAsync();
