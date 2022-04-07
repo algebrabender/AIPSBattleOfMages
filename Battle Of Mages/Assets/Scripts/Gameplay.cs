@@ -276,7 +276,6 @@ public class Gameplay : MonoBehaviour
         List<Player> players = GameController.instance.GetGamePlayers();
         Player killedPlayer = players.First(p => p.GetPlayerData().id == userID);
         killedPlayer.UpdateUserData(new UserData { id = -1, username = "", firstName = "", lastName = "", tag = "" });
-        killedPlayer.GetPlayerStateData().turnOrder = gd.numOfPlayers + 1;
 
         int turnPlus = 1;
 
@@ -290,6 +289,8 @@ public class Gameplay : MonoBehaviour
                 PlayerStateData ps = players.First(p => p.GetPlayerStateData().turnOrder == i).GetPlayerStateData();
                 ps.turnOrder -= 1;
         }
+
+        killedPlayer.GetPlayerStateData().turnOrder = gd.numOfPlayers + 1;
 
         GameController.instance.UpdateGameData(gd);
 
